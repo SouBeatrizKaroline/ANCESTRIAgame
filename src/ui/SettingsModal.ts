@@ -1,5 +1,7 @@
 import { GameState } from '../state/GameState';
 import { AudioManager } from '../engine/AudioManager';
+import { applyDocumentLanguage, t } from '../i18n';
+import { Language } from '../data/types';
 
 export class SettingsModal {
   private container: HTMLElement;
@@ -22,21 +24,32 @@ export class SettingsModal {
         <div class="settings-window">
           <div class="settings-header">
             <div>
-              <span class="badge">Preferências</span>
-              <h2>Configurações & Acessibilidade</h2>
+              <span class="badge">${t('settings.badge')}</span>
+              <h2>${t('settings.title')}</h2>
             </div>
-            <button class="btn-close" id="btn-close-settings" aria-label="Fechar">&times;</button>
+            <button class="btn-close" id="btn-close-settings" aria-label="${t('settings.close')}">&times;</button>
           </div>
 
           <div class="settings-body">
-            <!-- Acessibilidade Visual e Motora -->
             <section class="settings-section">
-              <h3>Acessibilidade e Visual</h3>
+              <h3>${t('settings.language')}</h3>
+              <div class="setting-row">
+                <div class="setting-info"><strong>${t('settings.language')}</strong><small>${t('settings.languageHelp')}</small></div>
+                <select id="setting-language" class="select-input" aria-label="${t('settings.language')}">
+                  <option value="es" ${s.language === 'es' ? 'selected' : ''}>Español</option>
+                  <option value="pt-BR" ${s.language === 'pt-BR' ? 'selected' : ''}>Português</option>
+                  <option value="en" ${s.language === 'en' ? 'selected' : ''}>English</option>
+                </select>
+              </div>
+            </section>
+
+            <section class="settings-section">
+              <h3>${t('settings.accessibility')}</h3>
 
               <div class="setting-row">
                 <div class="setting-info">
-                  <strong>Reduzir Movimento</strong>
-                  <small>Minimiza animações de câmera, oscilação de passos e rotações dinâmicas.</small>
+                  <strong>${t('settings.motion')}</strong>
+                  <small>${t('settings.motionHelp')}</small>
                 </div>
                 <label class="toggle-switch">
                   <input type="checkbox" id="setting-reduce-motion" ${s.reduceMotion ? 'checked' : ''} />
@@ -46,8 +59,8 @@ export class SettingsModal {
 
               <div class="setting-row">
                 <div class="setting-info">
-                  <strong>Alto Contraste</strong>
-                  <small>Aumenta a nitidez visual dos textos, botões e contornos de interface.</small>
+                  <strong>${t('settings.contrast')}</strong>
+                  <small>${t('settings.contrastHelp')}</small>
                 </div>
                 <label class="toggle-switch">
                   <input type="checkbox" id="setting-high-contrast" ${s.highContrast ? 'checked' : ''} />
@@ -57,19 +70,19 @@ export class SettingsModal {
 
               <div class="setting-row">
                 <div class="setting-info">
-                  <strong>Tamanho do Texto</strong>
+                  <strong>${t('settings.textSize')}</strong>
                   <small>Ajusta a escala tipográfica das descrições, diálogos e diário.</small>
                 </div>
                 <select id="setting-font-size" class="select-input">
-                  <option value="normal" ${s.fontSize === 'normal' ? 'selected' : ''}>Normal</option>
-                  <option value="grande" ${s.fontSize === 'grande' ? 'selected' : ''}>Grande</option>
-                  <option value="muito_grande" ${s.fontSize === 'muito_grande' ? 'selected' : ''}>Muito Grande</option>
+                  <option value="normal" ${s.fontSize === 'normal' ? 'selected' : ''}>${t('size.normal')}</option>
+                  <option value="grande" ${s.fontSize === 'grande' ? 'selected' : ''}>${t('size.large')}</option>
+                  <option value="muito_grande" ${s.fontSize === 'muito_grande' ? 'selected' : ''}>${t('size.xlarge')}</option>
                 </select>
               </div>
 
               <div class="setting-row">
                 <div class="setting-info">
-                  <strong>Legendas e Diálogos Escritos</strong>
+                  <strong>${t('settings.subtitles')}</strong>
                   <small>Exibe todas as falas, descrições e avisos sem depender de áudio.</small>
                 </div>
                 <label class="toggle-switch">
@@ -81,11 +94,11 @@ export class SettingsModal {
 
             <!-- Áudio e Som -->
             <section class="settings-section">
-              <h3>Áudio e Trilha Sonora</h3>
+              <h3>${t('settings.audio')}</h3>
 
               <div class="setting-row">
                 <div class="setting-info">
-                  <strong>Efeitos Sonoros (SFX)</strong>
+                  <strong>${t('settings.sfx')} (SFX)</strong>
                   <small>Passos, cliques, interações com objetos e fanfarras.</small>
                 </div>
                 <div class="range-wrapper">
@@ -96,7 +109,7 @@ export class SettingsModal {
 
               <div class="setting-row">
                 <div class="setting-info">
-                  <strong>Música Ambiente Andina</strong>
+                  <strong>${t('settings.music')}</strong>
                   <small>Melodias pentatônicas calmas de flauta quena e sons naturais.</small>
                 </div>
                 <div class="range-wrapper">
@@ -108,9 +121,9 @@ export class SettingsModal {
 
             <!-- Gerenciamento de Dados -->
             <section class="settings-section">
-              <h3>Armazenamento e Dados Locais</h3>
-              <p class="setting-note">Seu progresso é gravado de forma 100% segura e privada diretamente no seu navegador, sem envio de informações pessoais para a nuvem.</p>
-              <button class="btn-danger" id="btn-reset-save">Reiniciar Todo o Progresso do Jogo</button>
+              <h3>${t('settings.storage')}</h3>
+              <p class="setting-note">${t('settings.storageHelp')}</p>
+              <button class="btn-danger" id="btn-reset-save">${t('settings.reset')}</button>
             </section>
           </div>
         </div>
@@ -122,6 +135,13 @@ export class SettingsModal {
 
   private attachEvents(): void {
     const state = GameState.getInstance();
+
+    const language = this.container.querySelector('#setting-language') as HTMLSelectElement;
+    language?.addEventListener('change', () => {
+      state.updateSettings({ language: language.value as Language });
+      applyDocumentLanguage(language.value as Language);
+      this.render();
+    });
 
     this.container.querySelector('#btn-close-settings')?.addEventListener('click', () => {
       AudioManager.getInstance().playClick();
@@ -170,9 +190,9 @@ export class SettingsModal {
 
     const resetBtn = this.container.querySelector('#btn-reset-save');
     resetBtn?.addEventListener('click', () => {
-      if (confirm('Tem certeza de que deseja apagar o progresso e reiniciar as descobertas?')) {
+      if (confirm(t('settings.confirmReset'))) {
         state.resetProgress();
-        alert('Progresso reiniciado com sucesso.');
+        alert(t('settings.resetDone'));
         this.close();
         window.location.reload();
       }

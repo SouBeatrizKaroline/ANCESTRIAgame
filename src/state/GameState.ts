@@ -1,4 +1,4 @@
-import { GameSaveData, RegionId, UserSettings } from '../data/types';
+import { CultureId, GameSaveData, RegionId, UserSettings } from '../data/types';
 import { ANDES_MISSIONS } from '../data/missions/andesMissions';
 import { ANDES_DISCOVERIES } from '../data/discoveries/andesDiscoveries';
 
@@ -10,6 +10,7 @@ export type GameEvent =
   | 'mission_updated'
   | 'mission_completed'
   | 'settings_changed'
+  | 'culture_changed'
   | 'region_changed'
   | 'interaction_target_changed';
 
@@ -19,8 +20,9 @@ export class GameState {
   private static instance: GameState;
 
   public knowledgeFragments: number = 0;
-  public currentRegionId: RegionId = 'andes';
-  public unlockedRegionIds: RegionId[] = ['andes'];
+  public currentRegionId: RegionId = 'mesoamerica';
+  public selectedCultureId: CultureId = 'mexica';
+  public unlockedRegionIds: RegionId[] = ['mesoamerica'];
   public completedMissionIds: string[] = [];
   public activeMissionId: string | null = 'mission_main_andes';
   public unlockedDiscoveryIds: string[] = [];
@@ -33,6 +35,7 @@ export class GameState {
   } | null = null;
 
   public settings: UserSettings = {
+    language: 'es',
     reduceMotion: false,
     soundVolume: 0.8,
     musicVolume: 0.5,
@@ -152,6 +155,13 @@ export class GameState {
     this.emit('settings_changed', this.settings);
   }
 
+  public selectCulture(cultureId: CultureId): void {
+    this.selectedCultureId = cultureId;
+    this.currentRegionId = cultureId === 'mexica' || cultureId === 'maya' ? 'mesoamerica' : 'andes';
+    this.save();
+    this.emit('culture_changed', cultureId);
+  }
+
   public setNearbyInteraction(interaction: typeof this.nearbyInteraction): void {
     if (
       this.nearbyInteraction?.id !== interaction?.id ||
@@ -165,7 +175,7 @@ export class GameState {
   public save(): void {
     try {
       const data: GameSaveData = {
-        version: 1,
+        version: 2,
         lastSavedAt: new Date().toISOString(),
         knowledgeFragments: this.knowledgeFragments,
         unlockedRegionIds: this.unlockedRegionIds,
@@ -174,6 +184,7 @@ export class GameState {
         unlockedDiscoveryIds: this.unlockedDiscoveryIds,
         playerTransform: this.playerTransform,
         currentRegionId: this.currentRegionId,
+        selectedCultureId: this.selectedCultureId,
         settings: this.settings
       };
       localStorage.setItem(SAVE_KEY, JSON.stringify(data));
@@ -193,7 +204,8 @@ export class GameState {
         this.completedMissionIds = data.completedMissionIds || [];
         this.activeMissionId = data.activeMissionId || 'mission_main_andes';
         this.unlockedDiscoveryIds = data.unlockedDiscoveryIds || [];
-        this.currentRegionId = data.currentRegionId || 'andes';
+        this.currentRegionId = data.currentRegionId || 'mesoamerica';
+        this.selectedCultureId = data.selectedCultureId || 'mexica';
         if (data.playerTransform) {
           this.playerTransform = data.playerTransform;
         }
@@ -211,11 +223,13 @@ export class GameState {
   public resetProgress(): void {
     localStorage.removeItem(SAVE_KEY);
     this.knowledgeFragments = 0;
-    this.unlockedRegionIds = ['andes'];
+    this.unlockedRegionIds = ['mesoamerica'];
     this.completedMissionIds = [];
     this.activeMissionId = 'mission_main_andes';
     this.unlockedDiscoveryIds = [];
     this.playerTransform = { x: 0, y: 0.7, z: 12, rotationY: 0 };
+    this.currentRegionId = 'mesoamerica';
+    this.selectedCultureId = 'mexica';
     ANDES_MISSIONS.forEach((m) => {
       m.isCompleted = false;
       m.isActive = m.id === 'mission_main_andes';

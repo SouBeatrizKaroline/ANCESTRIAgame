@@ -2,8 +2,10 @@ import './styles/main.css';
 import { GameEngine } from './engine/GameEngine';
 import { UIManager } from './ui/UIManager';
 import { AudioManager } from './engine/AudioManager';
+import { applyDocumentLanguage, getLanguage } from './i18n';
 
 window.addEventListener('DOMContentLoaded', () => {
+  applyDocumentLanguage(getLanguage());
   const canvasContainer = document.getElementById('game-canvas-container');
   const uiRoot = document.getElementById('ui-root');
 

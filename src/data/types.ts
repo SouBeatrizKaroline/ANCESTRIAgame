@@ -3,6 +3,7 @@
  */
 
 export type CultureId = 'inca' | 'maya' | 'mexica' | 'amazonia' | 'indigenas_brasil';
+export type Language = 'es' | 'pt-BR' | 'en';
 export type RegionId = 'andes' | 'mesoamerica' | 'amazonia' | 'territorios_brasil';
 
 export type DiscoveryCategory =
@@ -165,6 +166,7 @@ export interface Artifact {
 }
 
 export interface UserSettings {
+  language: Language;
   reduceMotion: boolean;
   soundVolume: number; // 0 to 1
   musicVolume: number; // 0 to 1
@@ -188,5 +190,6 @@ export interface GameSaveData {
     rotationY: number;
   };
   currentRegionId: RegionId;
+  selectedCultureId: CultureId;
   settings: UserSettings;
 }
