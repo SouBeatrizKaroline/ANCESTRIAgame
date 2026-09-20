@@ -916,6 +916,7 @@ html, body {
 }
 
 .culture-selection-window { max-width: 920px; }
+.game-brand-subtitle { margin: -6px 0 10px; color: var(--color-gold); font-size: .82rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
 .culture-intro { color: #cbd5e1; line-height: 1.65; margin: 0 0 20px; }
 .culture-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 16px; }
 .culture-card { border: 1px solid rgba(255,255,255,.12); border-radius: var(--border-radius-md); padding: 20px; background: rgba(15,23,42,.52); }

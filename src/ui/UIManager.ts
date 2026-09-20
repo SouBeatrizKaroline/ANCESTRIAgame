@@ -74,7 +74,7 @@ export class UIManager {
     });
 
     this.regionMapModal = new RegionMapModal(this.modalContainer, (regionId) => {
-      this.showToast(`Região ${regionId.toUpperCase()} selecionada.`, 'info');
+      this.showToast(`Territorio ${regionId.toUpperCase()} seleccionado.`, 'info');
     });
 
     this.hud = new HUD(this.hudContainer, {
@@ -115,18 +115,18 @@ export class UIManager {
       state.completeMissionStep('mission_main_andes', 'step_intihuatana');
       state.unlockDiscovery('disc_intihuatana');
       this.showToast(
-        'Você contemplou o alinhamento solar no Intihuatana! (+25 Fragmentos)',
+        '¡Has observado la alineación solar del Intihuatana! (+25 fragmentos)',
         'success'
       );
     } else if (objectId === 'obj_qullqa_deposito') {
       state.unlockDiscovery('disc_qullqa');
-      this.showToast('Você examinou o sistema de ventilação das Qullqas!', 'info');
+      this.showToast('¡Has examinado el sistema de ventilación de las qullqas!', 'info');
     } else if (objectId === 'obj_terraces_canal') {
       state.unlockDiscovery('disc_andenes');
-      this.showToast('Você inspecionou a engenharia hidráulica dos terraços!', 'info');
+      this.showToast('¡Has observado la ingeniería hidráulica de las terrazas!', 'info');
     } else if (objectId === 'obj_bridge') {
       state.unlockDiscovery('disc_qeswachaka');
-      this.showToast('Você atravessou a ponte pênsil Q\'eswachaka!', 'success');
+      this.showToast('¡Has cruzado el puente colgante Q\'eswachaka!', 'success');
     }
   }
 
@@ -171,14 +171,14 @@ export class UIManager {
     state.on('discovery_unlocked', (discoveryId: string) => {
       AudioManager.getInstance().playDiscovery();
       const disc = ANDES_DISCOVERIES.find((d) => d.id === discoveryId);
-      const name = disc ? disc.name : 'Nova Sabedoria';
-      this.showToast(`Nova Descoberta Registrada no Diário: ${name} (+20 Fragmentos)`, 'success');
+      const name = disc ? disc.name : 'Nuevo saber';
+      this.showToast(`Nuevo descubrimiento registrado: ${name} (+20 fragmentos)`, 'success');
     });
 
     state.on('mission_completed', (mission) => {
       if (mission) {
         AudioManager.getInstance().playMissionComplete();
-        this.showToast(`Missão Concluída: ${mission.title}! (+${mission.rewardFragments} Fragmentos)`, 'success');
+        this.showToast(`Misión completada: ${mission.title} (+${mission.rewardFragments} fragmentos)`, 'success');
       }
     });
 

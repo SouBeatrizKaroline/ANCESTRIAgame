@@ -27,16 +27,16 @@ export class RegionMapModal {
         <div class="atlas-window">
           <div class="atlas-header">
             <div>
-              <span class="badge">Mapeamento Histórico das Américas</span>
-              <h2>Atlas das Origens</h2>
-              <p class="atlas-subtitle">Escolha uma região ancestral para explorar e vivenciar seus saberes</p>
+              <span class="badge">Territorios y memorias de las Américas</span>
+              <h2>ANCESTRIA</h2>
+              <p class="atlas-subtitle">Elige un territorio para conocer saberes desde contextos y perspectivas propias</p>
             </div>
-            <button class="btn-close" id="btn-close-atlas" aria-label="Fechar Atlas">&times;</button>
+            <button class="btn-close" id="btn-close-atlas" aria-label="Cerrar mapa">&times;</button>
           </div>
 
           <div class="atlas-map-visual">
             <div class="atlas-map-banner">
-              <span class="fragments-pill">✨ Seus Fragmentos de Conhecimento: <strong>${fragments}</strong></span>
+              <span class="fragments-pill">✨ Tus fragmentos de conocimiento: <strong>${fragments}</strong></span>
             </div>
 
             <div class="region-cards-grid">
@@ -50,7 +50,7 @@ export class RegionMapModal {
                   <div class="region-card ${r.status} ${isUnlocked ? 'unlocked' : 'locked'}">
                     <div class="region-card-top">
                       <span class="region-status-badge ${r.status}">
-                        ${isAvailable ? 'Jogável (MVP)' : 'Em Expansão'}
+                        ${isAvailable ? 'Jugable (MVP)' : 'En expansión'}
                       </span>
                       <span class="region-period">${r.timePeriod}</span>
                     </div>
@@ -60,8 +60,8 @@ export class RegionMapModal {
                     <p class="region-desc">${r.description}</p>
 
                     <div class="region-meta">
-                      <span>👤 ${r.npcCount} Mestres/NPCs</span>
-                      <span>📜 ${r.discoveriesCount} Descobertas</span>
+                      <span>👤 ${r.npcCount} personajes</span>
+                      <span>📜 ${r.discoveriesCount} descubrimientos</span>
                     </div>
 
                     <div class="region-action">
@@ -69,12 +69,12 @@ export class RegionMapModal {
                         isAvailable
                           ? `
                         <button class="btn-primary btn-enter-region" data-region-id="${r.id}">
-                          Explorar Agora &rarr;
+                          Explorar ahora &rarr;
                         </button>
                       `
                           : `
                         <button class="btn-secondary btn-locked-region" disabled>
-                          ${canUnlock ? 'Desbloqueio em Breve' : `Requer ${r.unlockRequirementFragments} Fragmentos`}
+                          ${canUnlock ? 'Disponible próximamente' : `Requiere ${r.unlockRequirementFragments} fragmentos`}
                         </button>
                       `
                       }

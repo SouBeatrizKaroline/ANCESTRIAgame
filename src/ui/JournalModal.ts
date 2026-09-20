@@ -39,10 +39,10 @@ export class JournalModal {
           <div class="journal-header">
             <div>
               <span class="badge">Registro Cultural</span>
-              <h2>Diário do Explorador</h2>
-              <p class="journal-counter">Descobertas Registradas: <strong>${unlockedCount} / ${totalCount}</strong></p>
+              <h2>Diario de memorias</h2>
+              <p class="journal-counter">Descubrimientos registrados: <strong>${unlockedCount} / ${totalCount}</strong></p>
             </div>
-            <button class="btn-close" id="btn-close-journal" aria-label="Fechar Diário">&times;</button>
+            <button class="btn-close" id="btn-close-journal" aria-label="Cerrar diario">&times;</button>
           </div>
 
           <div class="journal-toolbar">
@@ -99,7 +99,7 @@ export class JournalModal {
               </div>
               <div class="journal-card-info">
                 <span class="card-category">${item.category}</span>
-                <h3 class="card-title">Descoberta a Revelar</h3>
+                <h3 class="card-title">Descubrimiento por revelar</h3>
                 <p class="card-hint"><em>Pista: ${item.locationHint}</em></p>
               </div>
             </div>

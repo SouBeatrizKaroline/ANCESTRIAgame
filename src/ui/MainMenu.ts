@@ -41,7 +41,8 @@ export class MainMenu {
         <div class="main-menu-card">
           <div class="menu-brand">
             <span class="hero-badge">${t('menu.badge')}</span>
-            <h1 class="game-title">Atlas das Origens</h1>
+            <h1 class="game-title">ANCESTRIA</h1>
+            <p class="game-brand-subtitle">Stories. Peoples. Memories.</p>
             <p class="game-tagline">${t('menu.tagline')}</p>
           </div>
 

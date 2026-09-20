@@ -7,7 +7,7 @@ export const ANDES_MISSIONS: Mission[] = [
     type: 'principal',
     regionId: 'andes',
     cultureId: 'inca',
-    summary: 'Aprenda os três pilares da civilização andina (comunicação, agricultura vertical e registro) e registre o conhecimento no Atlas das Origens.',
+    summary: 'Conoce tres dimensiones de la vida andina — comunicación, agricultura vertical y registro — y documenta lo aprendido en ANCESTRIA.',
     rewardFragments: 100,
     historicalContext: 'O Tawantinsuyu manteve a coesão de milhões de habitantes ao longo de 4.000 km de cordilheira sem uso de rodas ou escrita alfabética, articulando estradas, terraços ecológicos e quipus.',
     isActive: true,

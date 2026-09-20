@@ -39,11 +39,11 @@ export class HUD {
         <!-- Barra Superior -->
         <header class="hud-top-bar">
           <div class="hud-brand">
-            <span class="region-pill">Andes • Vale Sagrado</span>
+            <span class="region-pill">ANCESTRIA • Andes</span>
           </div>
 
           <div class="hud-center-stats">
-            <div class="stat-pill fragments-stat" title="Fragmentos de Conhecimento">
+            <div class="stat-pill fragments-stat" title="Fragmentos de conocimiento">
               <span class="stat-icon">✨</span>
               <span class="stat-value" id="hud-fragments-count">${state.knowledgeFragments}</span>
               <span class="stat-label">Fragmentos</span>
@@ -51,16 +51,16 @@ export class HUD {
           </div>
 
           <div class="hud-top-actions">
-            <button class="hud-btn" id="btn-hud-journal" title="Abrir Diário do Explorador [J]">
-              <span>📖 Diário</span>
+            <button class="hud-btn" id="btn-hud-journal" title="Abrir diario [J]">
+              <span>📖 Diario</span>
             </button>
-            <button class="hud-btn" id="btn-hud-atlas" title="Abrir Atlas das Origens [M]">
-              <span>🗺️ Atlas</span>
+            <button class="hud-btn" id="btn-hud-atlas" title="Abrir mapa de ANCESTRIA [M]">
+              <span>🗺️ Mapa</span>
             </button>
-            <button class="hud-btn" id="btn-hud-settings" title="Configurações">
+            <button class="hud-btn" id="btn-hud-settings" title="Configuración">
               <span>⚙️</span>
             </button>
-            <button class="hud-btn" id="btn-hud-menu" title="Menu Principal">
+            <button class="hud-btn" id="btn-hud-menu" title="Menú principal">
               <span>🏠</span>
             </button>
           </div>
@@ -75,7 +75,7 @@ export class HUD {
         <div class="hud-interaction-banner" id="hud-interaction-banner" style="display: none;">
           <button class="btn-interaction-prompt" id="btn-hud-interact">
             <span class="key-badge">E</span>
-            <span id="interaction-prompt-text">Interagir</span>
+            <span id="interaction-prompt-text">Interactuar</span>
           </button>
         </div>
 
@@ -92,7 +92,7 @@ export class HUD {
           </div>
 
           <button class="touch-action-btn" id="btn-touch-action">
-            <span>AÇÃO [E]</span>
+            <span>ACCIÓN [E]</span>
           </button>
         </div>
       </div>
@@ -109,9 +109,9 @@ export class HUD {
     if (!mission) {
       return `
         <div class="mission-header">
-          <h4>Exploração Livre</h4>
+          <h4>Exploración libre</h4>
         </div>
-        <p class="mission-desc">Descubra os mistérios do Vale Sagrado e registre artefatos no seu diário.</p>
+        <p class="mission-desc">Descubre memorias y registra hallazgos en tu diario.</p>
       `;
     }
 
@@ -121,12 +121,12 @@ export class HUD {
 
     return `
       <div class="mission-header">
-        <span class="mission-badge">${mission.type === 'principal' ? 'Missão Principal' : 'Missão Secundária'}</span>
+        <span class="mission-badge">${mission.type === 'principal' ? 'Misión principal' : 'Misión secundaria'}</span>
         <h4>${mission.title}</h4>
       </div>
       <div class="mission-step">
         <span class="step-bullet">●</span>
-        <p><strong>Objetivo Atual:</strong> ${currentStep ? currentStep.description : 'Missão Concluída!'}</p>
+        <p><strong>Objetivo actual:</strong> ${currentStep ? currentStep.description : '¡Misión completada!'}</p>
       </div>
       <div class="mission-progress-bar">
         <div class="progress-fill" style="width: ${progressPercent}%;"></div>

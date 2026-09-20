@@ -1,5 +1,5 @@
 /**
- * Atlas das Origens - Tipos e Interfaces do Sistema de Dados e Gameplay
+ * ANCESTRIA - Tipos e Interfaces do Sistema de Dados e Gameplay
  */
 
 export type CultureId = 'inca' | 'maya' | 'mexica' | 'amazonia' | 'indigenas_brasil';

@@ -1,5 +1,7 @@
-# Atlas das Origens 🏛️🌎
-### Jogo Educativo de Aventura e Exploração 2.5D / 3D Low-Poly sobre os Saberes e Civilizações das Américas
+# ANCESTRIA 🏛️🌎
+### *Stories. Peoples. Memories.*
+
+Jogo educativo de aventura e exploração 2.5D / 3D low-poly sobre saberes e povos originários das Américas.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 [![Three.js](https://img.shields.io/badge/Three.js-r160-black.svg)](https://threejs.org/)
@@ -27,7 +29,7 @@ Histórias, saberes, nomes e elementos culturais devem ser apresentados como con
 
 ## 📖 Visão Geral e Conceito
 
-O **Atlas das Origens** é um jogo educativo de exploração e aventura construído para a web, com estética visual que mescla **interface 2D acolhedora** e um **mundo tridimensional 2.5D low-poly estilizado**.
+O **ANCESTRIA** é um jogo educativo de exploração e aventura construído para a web, com estética visual que mescla **interface 2D acolhedora** e um **mundo tridimensional 2.5D low-poly estilizado**.
 
 O jogador assume o papel de um **Explorador do Conhecimento** que viaja por diferentes regiões e períodos históricos das Américas através de um mapa interativo ancestral. Longe de ser uma plataforma transmissiva ou um mero compilador de perguntas e respostas (quizzes descontextualizados), o jogo ancora a aprendizagem na própria jogabilidade: **explorar o ambiente, interagir com personagens contextuais, manipular tecnologias históricas e registrar descobertas em um diário de campo**.
 
@@ -156,7 +158,7 @@ Gemini-RepoLab/
     │   ├── MainMenu.ts            # Menu principal do jogo
     │   ├── DialogueModal.ts       # Caixa de diálogo no estilo RPG
     │   ├── JournalModal.ts        # Diário do Explorador categorizado com busca
-    │   ├── RegionMapModal.ts      # Mapa continental do Atlas das Origens
+    │   ├── RegionMapModal.ts      # Mapa continental de ANCESTRIA
     │   ├── SettingsModal.ts       # Painel de configurações e acessibilidade
     │   ├── AboutModal.ts          # Manifesto pedagógico e lista de fontes
     │   └── Minigames/             # Minigames educativos modulares
@@ -210,7 +212,7 @@ npm run preview
 | **Mover Personagem** | `W, A, S, D` ou `Setas Direcionais` | D-Pad virtual no canto inferior esquerdo |
 | **Interagir / Conversar / Ação** | `Tecla E`, `Espaço` ou `Enter` | Botão tátil `AÇÃO [E]` ou balão na tela |
 | **Abrir Diário do Explorador** | `Tecla J` ou botão no topo da tela | Toque no botão `📖 Diário` no HUD |
-| **Abrir Atlas das Origens (Mapa)** | `Tecla M` ou botão no topo da tela | Toque no botão `🗺️ Atlas` no HUD |
+| **Abrir mapa de ANCESTRIA** | `Tecla M` ou botão no topo da tela | Toque no botão `🗺️ Mapa` no HUD |
 | **Configurações e Acessibilidade** | Botão `⚙️` no HUD | Toque no ícone de engrenagem |
 | **Menu Principal** | Botão `🏠` no HUD | Toque no ícone de casa |
 
