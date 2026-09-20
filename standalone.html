@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Atlas das Origens - Standalone (Navegador Direto)</title>
+    <meta name="description" content="Execução direta no navegador sem necessidade de build do jogo Atlas das Origens" />
+    <link rel="stylesheet" href="./src/styles/main.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app">
+      <div id="game-canvas-container" role="region" aria-label="Cenário 3D dos Andes"></div>
+      <div id="ui-root"></div>
+    </div>
+
+    <!-- Script de carregamento com fallback e execução direta -->
+    <script type="module">
+      import './src/main.ts';
+    </script>
+  </body>
+</html>
