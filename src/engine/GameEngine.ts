@@ -1,0 +1,154 @@
+import * as THREE from 'three';
+import { PlayerController } from './PlayerController';
+import { WorldRenderer } from './WorldRenderer';
+import { GameState } from '../state/GameState';
+
+export class GameEngine {
+  private container: HTMLElement;
+  public scene: THREE.Scene;
+  public camera: THREE.PerspectiveCamera;
+  public renderer: THREE.WebGLRenderer;
+  public playerController: PlayerController;
+  public worldRenderer: WorldRenderer;
+
+  private clock: THREE.Clock;
+  private isRunning: boolean = false;
+  private animationFrameId: number | null = null;
+
+  // Parâmetros de câmera suave isométrica 2.5D
+  private cameraOffset = new THREE.Vector3(0, 11, 12);
+  private cameraLookTarget = new THREE.Vector3();
+
+  constructor(
+    container: HTMLElement,
+    onTriggerNpc: (npcId: string) => void,
+    onTriggerObject: (objectId: string) => void
+  ) {
+    this.container = container;
+    this.clock = new THREE.Clock();
+
+    // 1. Cena com atmosfera andina límpida
+    this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(0xa7c5eb); // Céu azul andino claro
+    this.scene.fog = new THREE.FogExp2(0xa7c5eb, 0.015);
+
+    // 2. Câmera com ângulo isométrico acolhedor (2.5D)
+    const aspect = container.clientWidth / (container.clientHeight || 1);
+    this.camera = new THREE.PerspectiveCamera(45, aspect, 0.5, 120);
+
+    // 3. Renderizador WebGL otimizado
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    this.renderer.setSize(container.clientWidth, container.clientHeight);
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.container.appendChild(this.renderer.domElement);
+
+    // 4. Iluminação solar acolhedora e luz difusa
+    this.setupLighting();
+
+    // 5. Controlador do Jogador
+    this.playerController = new PlayerController();
+    this.scene.add(this.playerController.group);
+
+    // 6. Construtor do Cenário Andino
+    this.worldRenderer = new WorldRenderer(this.scene);
+    this.worldRenderer.buildAndesEnvironment(this.playerController, onTriggerNpc, onTriggerObject);
+
+    // 7. Event listeners
+    window.addEventListener('resize', this.onWindowResize.bind(this));
+  }
+
+  private setupLighting(): void {
+    // Luz ambiente suave (rebote do céu e da terra)
+    const ambientLight = new THREE.AmbientLight(0xfff3b0, 0.65);
+    this.scene.add(ambientLight);
+
+    // Luz solar direta (Inti) projetando sombras límpidas
+    const sunLight = new THREE.DirectionalLight(0xfffae0, 1.1);
+    sunLight.position.set(18, 30, 20);
+    sunLight.castShadow = true;
+    sunLight.shadow.mapSize.width = 1024;
+    sunLight.shadow.mapSize.height = 1024;
+    sunLight.shadow.camera.near = 1;
+    sunLight.shadow.camera.far = 70;
+    sunLight.shadow.camera.left = -25;
+    sunLight.shadow.camera.right = 25;
+    sunLight.shadow.camera.top = 25;
+    sunLight.shadow.camera.bottom = -25;
+    this.scene.add(sunLight);
+
+    // Luz secundária suave para sombras não ficarem pretas
+    const fillLight = new THREE.DirectionalLight(0xa0c4ff, 0.35);
+    fillLight.position.set(-15, 12, -15);
+    this.scene.add(fillLight);
+  }
+
+  public start(): void {
+    if (this.isRunning) return;
+    this.isRunning = true;
+    this.clock.start();
+    this.loop();
+  }
+
+  public stop(): void {
+    this.isRunning = false;
+    if (this.animationFrameId !== null) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+  }
+
+  private loop = (): void => {
+    if (!this.isRunning) return;
+    const delta = Math.min(this.clock.getDelta(), 0.1);
+    const elapsedTime = this.clock.getElapsedTime();
+
+    // Atualiza jogador
+    this.playerController.update(delta);
+
+    // Anima elementos ambientais
+    this.worldRenderer.animate(elapsedTime);
+
+    // Câmera segue o jogador suavemente
+    const playerPos = this.playerController.group.position;
+    const targetCamX = playerPos.x + this.cameraOffset.x;
+    const targetCamY = playerPos.y + this.cameraOffset.y;
+    const targetCamZ = playerPos.z + this.cameraOffset.z;
+
+    const isReducedMotion = GameState.getInstance().settings.reduceMotion;
+    const lerpFactor = isReducedMotion ? 0.3 : 0.08;
+
+    this.camera.position.x += (targetCamX - this.camera.position.x) * lerpFactor;
+    this.camera.position.y += (targetCamY - this.camera.position.y) * lerpFactor;
+    this.camera.position.z += (targetCamZ - this.camera.position.z) * lerpFactor;
+
+    this.cameraLookTarget.lerp(playerPos, lerpFactor);
+    this.camera.lookAt(
+      this.cameraLookTarget.x,
+      this.cameraLookTarget.y + 0.8,
+      this.cameraLookTarget.z
+    );
+
+    this.renderer.render(this.scene, this.camera);
+    this.animationFrameId = requestAnimationFrame(this.loop);
+  };
+
+  private onWindowResize(): void {
+    if (!this.container) return;
+    const width = this.container.clientWidth || window.innerWidth;
+    const height = this.container.clientHeight || window.innerHeight;
+    this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(width, height);
+  }
+
+  public destroy(): void {
+    this.stop();
+    window.removeEventListener('resize', this.onWindowResize.bind(this));
+    if (this.renderer.domElement.parentElement) {
+      this.renderer.domElement.parentElement.removeChild(this.renderer.domElement);
+    }
+    this.renderer.dispose();
+  }
+}
