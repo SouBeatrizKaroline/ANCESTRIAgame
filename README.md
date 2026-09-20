@@ -9,6 +9,22 @@
 
 ---
 
+## Idiomas e percurso inicial
+
+- **Español** é o idioma padrão do jogo.
+- **Português** e **English** podem ser escolhidos em **Configurações e acessibilidade**.
+- A preferência de idioma é persistida localmente no navegador e reaplicada ao recarregar.
+- O catálogo de povos começa por **Mexica**, relacionando de forma contextualizada esse nome próprio ao termo internacionalmente mais conhecido “Azteca/Asteca/Aztec”.
+- Incas, Maias e futuros povos são entradas independentes e extensíveis; a arquitetura não os trata como uma cultura originária homogênea.
+
+As traduções da interface ficam centralizadas em `src/i18n/index.ts`, e o fluxo de escolha de povo em `src/ui/CultureSelectionModal.ts`. Para adicionar um idioma, inclua seu código no tipo `Language`, em `SUPPORTED_LANGUAGES` e no catálogo de mensagens. Para adicionar um povo jogável, crie seus dados culturais/fontes e uma entrada própria no seletor, sem reutilizar narrativas de outro povo como se fossem equivalentes.
+
+### Diretriz editorial
+
+Histórias, saberes, nomes e elementos culturais devem ser apresentados como conhecimentos situados, apoiados em relatos, tradições, fontes e perspectivas de povos originários. Fontes indígenas devem ser priorizadas; documentos coloniais podem ser contextualizados como registros históricos, mas não devem ocupar automaticamente o lugar de voz principal.
+
+---
+
 ## 📖 Visão Geral e Conceito
 
 O **Atlas das Origens** é um jogo educativo de exploração e aventura construído para a web, com estética visual que mescla **interface 2D acolhedora** e um **mundo tridimensional 2.5D low-poly estilizado**.

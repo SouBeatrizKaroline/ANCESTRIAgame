@@ -7,6 +7,7 @@ import { JournalModal } from './JournalModal';
 import { RegionMapModal } from './RegionMapModal';
 import { SettingsModal } from './SettingsModal';
 import { AboutModal } from './AboutModal';
+import { CultureSelectionModal } from './CultureSelectionModal';
 import { TerracesMinigame } from './Minigames/TerracesMinigame';
 import { QuipuMinigame } from './Minigames/QuipuMinigame';
 import { StoneworkMinigame } from './Minigames/StoneworkMinigame';
@@ -25,6 +26,7 @@ export class UIManager {
   public regionMapModal!: RegionMapModal;
   public settingsModal!: SettingsModal;
   public aboutModal!: AboutModal;
+  public cultureSelectionModal!: CultureSelectionModal;
 
   private onVirtualMoveCallback: (dx: number, dz: number) => void;
   private onInteractCallback: () => void;
@@ -66,6 +68,10 @@ export class UIManager {
     this.journalModal = new JournalModal(this.modalContainer);
     this.settingsModal = new SettingsModal(this.modalContainer);
     this.aboutModal = new AboutModal(this.modalContainer);
+    this.cultureSelectionModal = new CultureSelectionModal(this.modalContainer, () => {
+      this.hud.render();
+      onStartGame();
+    });
 
     this.regionMapModal = new RegionMapModal(this.modalContainer, (regionId) => {
       this.showToast(`Região ${regionId.toUpperCase()} selecionada.`, 'info');
@@ -82,8 +88,7 @@ export class UIManager {
 
     this.mainMenu = new MainMenu(this.modalContainer, {
       onPlayGame: () => {
-        this.hud.render();
-        onStartGame();
+        this.cultureSelectionModal.show();
       },
       onOpenAtlas: () => this.regionMapModal.show(),
       onOpenJournal: () => this.journalModal.show(),

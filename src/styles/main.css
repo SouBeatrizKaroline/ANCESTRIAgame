@@ -915,6 +915,19 @@ html, body {
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+.culture-selection-window { max-width: 920px; }
+.culture-intro { color: #cbd5e1; line-height: 1.65; margin: 0 0 20px; }
+.culture-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 16px; }
+.culture-card { border: 1px solid rgba(255,255,255,.12); border-radius: var(--border-radius-md); padding: 20px; background: rgba(15,23,42,.52); }
+.culture-card-active { border-color: var(--color-gold); background: linear-gradient(145deg, rgba(180,83,9,.2), rgba(15,23,42,.62)); }
+.culture-card-planned { opacity: .64; }
+.culture-status { display: inline-block; color: var(--color-gold); font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
+.culture-card h3 { margin: 10px 0; }
+.culture-card p { color: #cbd5e1; line-height: 1.55; }
+.culture-name-note { font-size: .82rem; border-left: 2px solid var(--color-gold); padding-left: 10px; }
+.culture-back { margin-top: 18px; }
+@media (max-width: 760px) { .culture-grid { grid-template-columns: 1fr; } }
+
 .setting-info strong {
   display: block;
   margin-bottom: 4px;
