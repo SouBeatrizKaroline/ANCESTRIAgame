@@ -1,7 +1,7 @@
 import { GameState } from '../state/GameState';
 import { AudioManager } from '../engine/AudioManager';
-import { applyDocumentLanguage, t } from '../i18n';
 import { Language } from '../data/types';
+import { applyDocumentLanguage, getLanguage, t } from '../i18n';
 
 export class SettingsModal {
   private container: HTMLElement;
@@ -20,30 +20,119 @@ export class SettingsModal {
   private render(): void {
     const state = GameState.getInstance();
     const s = state.settings;
-    const extra = s.language === 'es'
-      ? { textHelp:'Ajusta la escala de las descripciones, los diálogos y el diario.', subtitlesHelp:'Muestra diálogos, descripciones y avisos sin depender del audio.', sfxHelp:'Pasos, clics, interacciones con objetos y celebraciones.', musicHelp:'Melodías suaves y sonidos ambientales.' }
-      : s.language === 'pt-BR'
-        ? { textHelp:'Ajusta a escala das descrições, dos diálogos e do diário.', subtitlesHelp:'Mostra diálogos, descrições e avisos sem depender do áudio.', sfxHelp:'Passos, cliques, interações com objetos e celebrações.', musicHelp:'Melodias suaves e sons ambientes.' }
-        : { textHelp:'Adjusts the scale of descriptions, dialogue, and the journal.', subtitlesHelp:'Shows dialogue, descriptions, and notices without relying on audio.', sfxHelp:'Footsteps, clicks, object interactions, and celebrations.', musicHelp:'Gentle melodies and ambient sounds.' };
+    const lang = getLanguage();
+
+    const copy = lang === 'es'
+      ? {
+          badge: 'Preferencias',
+          title: 'Configuración y accesibilidad',
+          close: 'Cerrar',
+          langHeader: 'Idioma y localización',
+          langTitle: 'Idioma de la experiencia',
+          langSub: 'El español es el idioma principal. Puedes alternar a portugués o inglés en cualquier momento.',
+          accessHeader: 'Accesibilidad visual y motriz',
+          reduceMotion: 'Reducir movimiento',
+          reduceMotionSub: 'Minimiza animaciones de cámara, oscilación de pasos y transiciones dinámicas.',
+          highContrast: 'Alto contraste',
+          highContrastSub: 'Aumenta la visibilidad y nitidez de textos, botones y contornos.',
+          fontSize: 'Tamaño del texto',
+          fontSizeSub: 'Ajusta la escala tipográfica de descripciones, diálogos y el diario.',
+          normal: 'Normal',
+          large: 'Grande',
+          xlarge: 'Muy grande',
+          subtitles: 'Subtítulos y textos completos',
+          subtitlesSub: 'Muestra todos los diálogos y avisos por escrito, permitiendo jugar sin audio.',
+          audioHeader: 'Audio y ambientación sonora',
+          sfx: 'Efectos de sonido (SFX)',
+          sfxSub: 'Pasos, interacciones, campanas y avisos de progreso.',
+          music: 'Música ambiental andina',
+          musicSub: 'Melodías pentatónicas de flauta quena y sonidos naturales sintetizados.',
+          storageHeader: 'Almacenamiento y privacidad',
+          storageSub: 'Tu progreso se guarda de forma segura y privada directamente en tu navegador, sin enviar datos a servidores externos.',
+          resetBtn: 'Reiniciar todo el progreso del juego',
+          resetConfirm: '¿Estás seguro de que deseas reiniciar todo el progreso de ANCESTRIA? Se borrarán los fragmentos y descubrimientos guardados en este navegador.'
+        }
+      : lang === 'pt-BR'
+      ? {
+          badge: 'Preferências',
+          title: 'Configurações e acessibilidade',
+          close: 'Fechar',
+          langHeader: 'Idioma e localização',
+          langTitle: 'Idioma da experiência',
+          langSub: 'O espanhol é o idioma principal. Você pode alternar para português ou inglês a qualquer momento.',
+          accessHeader: 'Acessibilidade visual e motora',
+          reduceMotion: 'Reduzir movimento',
+          reduceMotionSub: 'Minimiza animações de câmera, oscilação de passos e rotações dinâmicas.',
+          highContrast: 'Alto contraste',
+          highContrastSub: 'Aumenta a nitidez visual de textos, botões e contornos de interface.',
+          fontSize: 'Tamanho do texto',
+          fontSizeSub: 'Ajusta a escala tipográfica das descrições, diálogos e diário.',
+          normal: 'Normal',
+          large: 'Grande',
+          xlarge: 'Muito grande',
+          subtitles: 'Legendas e diálogos escritos',
+          subtitlesSub: 'Exibe todas as falas, descrições e avisos sem depender de áudio.',
+          audioHeader: 'Áudio e ambientação sonora',
+          sfx: 'Efeitos sonoros (SFX)',
+          sfxSub: 'Passos, cliques, interações com objetos e fanfarras.',
+          music: 'Música ambiente andina',
+          musicSub: 'Melodias pentatônicas calmas de flauta quena e sons naturais sintetizados.',
+          storageHeader: 'Armazenamento e privacidade',
+          storageSub: 'Seu progresso é gravado de forma 100% segura e privada diretamente no seu navegador, sem envio de informações pessoais.',
+          resetBtn: 'Reiniciar todo o progresso do jogo',
+          resetConfirm: 'Tem certeza de que deseja reiniciar todo o progresso de ANCESTRIA? Os fragmentos e memórias salvos neste navegador serão limpos.'
+        }
+      : {
+          badge: 'Preferences',
+          title: 'Settings and accessibility',
+          close: 'Close',
+          langHeader: 'Language and localization',
+          langTitle: 'Experience language',
+          langSub: 'Spanish is the primary language. You can switch to Portuguese or English at any time.',
+          accessHeader: 'Visual and motor accessibility',
+          reduceMotion: 'Reduce motion',
+          reduceMotionSub: 'Minimizes camera swings, walking bob, and dynamic camera rotations.',
+          highContrast: 'High contrast',
+          highContrastSub: 'Enhances visibility and contrast of text, buttons, and borders.',
+          fontSize: 'Text size',
+          fontSizeSub: 'Adjusts font scale across descriptions, dialogues, and the journal.',
+          normal: 'Normal',
+          large: 'Large',
+          xlarge: 'Extra large',
+          subtitles: 'Subtitles and full text',
+          subtitlesSub: 'Presents all dialogue and alerts in text, enabling complete play without audio.',
+          audioHeader: 'Audio and soundscape',
+          sfx: 'Sound effects (SFX)',
+          sfxSub: 'Footsteps, clicks, interactions, and progress fanfares.',
+          music: 'Andean ambient soundtrack',
+          musicSub: 'Procedural pentatonic quena flute melodies and natural wind soundscapes.',
+          storageHeader: 'Local storage and privacy',
+          storageSub: 'Progress is saved privately and securely on this device without transmitting personal data.',
+          resetBtn: 'Reset all game progress',
+          resetConfirm: 'Are you sure you want to reset all ANCESTRIA progress? All saved fragments and journal discoveries on this device will be cleared.'
+        };
 
     this.container.innerHTML = `
       <div class="settings-modal-overlay">
         <div class="settings-window">
           <div class="settings-header">
             <div>
-              <span class="badge">${t('settings.badge')}</span>
-              <h2>${t('settings.title')}</h2>
+              <span class="badge">${copy.badge}</span>
+              <h2>${copy.title}</h2>
             </div>
-            <button class="btn-close" id="btn-close-settings" aria-label="${t('settings.close')}">&times;</button>
+            <button class="btn-close" id="btn-close-settings" aria-label="${copy.close}">&times;</button>
           </div>
 
           <div class="settings-body">
             <section class="settings-section">
-              <h3>${t('settings.language')}</h3>
+              <h3>${copy.langHeader}</h3>
               <div class="setting-row">
-                <div class="setting-info"><strong>${t('settings.language')}</strong><small>${t('settings.languageHelp')}</small></div>
-                <select id="setting-language" class="select-input" aria-label="${t('settings.language')}">
-                  <option value="es" ${s.language === 'es' ? 'selected' : ''}>Español</option>
+                <div class="setting-info">
+                  <strong>${copy.langTitle}</strong>
+                  <small>${copy.langSub}</small>
+                </div>
+                <select id="setting-language-select" class="select-input">
+                  <option value="es" ${s.language === 'es' ? 'selected' : ''}>Español (Principal)</option>
                   <option value="pt-BR" ${s.language === 'pt-BR' ? 'selected' : ''}>Português</option>
                   <option value="en" ${s.language === 'en' ? 'selected' : ''}>English</option>
                 </select>
@@ -51,12 +140,12 @@ export class SettingsModal {
             </section>
 
             <section class="settings-section">
-              <h3>${t('settings.accessibility')}</h3>
+              <h3>${copy.accessHeader}</h3>
 
               <div class="setting-row">
                 <div class="setting-info">
-                  <strong>${t('settings.motion')}</strong>
-                  <small>${t('settings.motionHelp')}</small>
+                  <strong>${copy.reduceMotion}</strong>
+                  <small>${copy.reduceMotionSub}</small>
                 </div>
                 <label class="toggle-switch">
                   <input type="checkbox" id="setting-reduce-motion" ${s.reduceMotion ? 'checked' : ''} />
@@ -66,8 +155,8 @@ export class SettingsModal {
 
               <div class="setting-row">
                 <div class="setting-info">
-                  <strong>${t('settings.contrast')}</strong>
-                  <small>${t('settings.contrastHelp')}</small>
+                  <strong>${copy.highContrast}</strong>
+                  <small>${copy.highContrastSub}</small>
                 </div>
                 <label class="toggle-switch">
                   <input type="checkbox" id="setting-high-contrast" ${s.highContrast ? 'checked' : ''} />
@@ -77,20 +166,20 @@ export class SettingsModal {
 
               <div class="setting-row">
                 <div class="setting-info">
-                  <strong>${t('settings.textSize')}</strong>
-                  <small>${extra.textHelp}</small>
+                  <strong>${copy.fontSize}</strong>
+                  <small>${copy.fontSizeSub}</small>
                 </div>
                 <select id="setting-font-size" class="select-input">
-                  <option value="normal" ${s.fontSize === 'normal' ? 'selected' : ''}>${t('size.normal')}</option>
-                  <option value="grande" ${s.fontSize === 'grande' ? 'selected' : ''}>${t('size.large')}</option>
-                  <option value="muito_grande" ${s.fontSize === 'muito_grande' ? 'selected' : ''}>${t('size.xlarge')}</option>
+                  <option value="normal" ${s.fontSize === 'normal' ? 'selected' : ''}>${copy.normal}</option>
+                  <option value="grande" ${s.fontSize === 'grande' ? 'selected' : ''}>${copy.large}</option>
+                  <option value="muito_grande" ${s.fontSize === 'muito_grande' ? 'selected' : ''}>${copy.xlarge}</option>
                 </select>
               </div>
 
               <div class="setting-row">
                 <div class="setting-info">
-                  <strong>${t('settings.subtitles')}</strong>
-                  <small>${extra.subtitlesHelp}</small>
+                  <strong>${copy.subtitles}</strong>
+                  <small>${copy.subtitlesSub}</small>
                 </div>
                 <label class="toggle-switch">
                   <input type="checkbox" id="setting-subtitles" ${s.subtitles ? 'checked' : ''} />
@@ -99,14 +188,13 @@ export class SettingsModal {
               </div>
             </section>
 
-            <!-- Áudio e Som -->
             <section class="settings-section">
-              <h3>${t('settings.audio')}</h3>
+              <h3>${copy.audioHeader}</h3>
 
               <div class="setting-row">
                 <div class="setting-info">
-                  <strong>${t('settings.sfx')} (SFX)</strong>
-                  <small>${extra.sfxHelp}</small>
+                  <strong>${copy.sfx}</strong>
+                  <small>${copy.sfxSub}</small>
                 </div>
                 <div class="range-wrapper">
                   <input type="range" id="setting-sfx-volume" min="0" max="1" step="0.05" value="${s.soundVolume}" />
@@ -116,8 +204,8 @@ export class SettingsModal {
 
               <div class="setting-row">
                 <div class="setting-info">
-                  <strong>${t('settings.music')}</strong>
-                  <small>${extra.musicHelp}</small>
+                  <strong>${copy.music}</strong>
+                  <small>${copy.musicSub}</small>
                 </div>
                 <div class="range-wrapper">
                   <input type="range" id="setting-music-volume" min="0" max="1" step="0.05" value="${s.musicVolume}" />
@@ -126,34 +214,34 @@ export class SettingsModal {
               </div>
             </section>
 
-            <!-- Gerenciamento de Dados -->
             <section class="settings-section">
-              <h3>${t('settings.storage')}</h3>
-              <p class="setting-note">${t('settings.storageHelp')}</p>
-              <button class="btn-danger" id="btn-reset-save">${t('settings.reset')}</button>
+              <h3>${copy.storageHeader}</h3>
+              <p class="setting-note">${copy.storageSub}</p>
+              <button class="btn-danger" id="btn-reset-save">${copy.resetBtn}</button>
             </section>
           </div>
         </div>
       </div>
     `;
 
-    this.attachEvents();
+    this.attachEvents(copy.resetConfirm);
   }
 
-  private attachEvents(): void {
+  private attachEvents(resetConfirmMsg: string): void {
     const state = GameState.getInstance();
-
-    const language = this.container.querySelector('#setting-language') as HTMLSelectElement;
-    language?.addEventListener('change', () => {
-      state.updateSettings({ language: language.value as Language });
-      applyDocumentLanguage(language.value as Language);
-      this.render();
-    });
 
     this.container.querySelector('#btn-close-settings')?.addEventListener('click', () => {
       AudioManager.getInstance().playClick();
       this.close();
       this.onDismiss();
+    });
+
+    const langSelect = this.container.querySelector('#setting-language-select') as HTMLSelectElement;
+    langSelect?.addEventListener('change', () => {
+      const language = langSelect.value as Language;
+      state.updateSettings({ language });
+      applyDocumentLanguage(language);
+      this.render();
     });
 
     const reduceMotion = this.container.querySelector('#setting-reduce-motion') as HTMLInputElement;
@@ -183,26 +271,23 @@ export class SettingsModal {
     sfxVol?.addEventListener('input', () => {
       const val = parseFloat(sfxVol.value);
       state.updateSettings({ soundVolume: val });
-      AudioManager.getInstance().updateVolumes();
       if (sfxVal) sfxVal.textContent = `${Math.round(val * 100)}%`;
-    });
-
-    const musVol = this.container.querySelector('#setting-music-volume') as HTMLInputElement;
-    const musVal = this.container.querySelector('#music-volume-val');
-    musVol?.addEventListener('input', () => {
-      const val = parseFloat(musVol.value);
-      state.updateSettings({ musicVolume: val });
       AudioManager.getInstance().updateVolumes();
-      if (musVal) musVal.textContent = `${Math.round(val * 100)}%`;
     });
 
-    const resetBtn = this.container.querySelector('#btn-reset-save');
-    resetBtn?.addEventListener('click', () => {
-      if (confirm(t('settings.confirmReset'))) {
+    const musicVol = this.container.querySelector('#setting-music-volume') as HTMLInputElement;
+    const musicVal = this.container.querySelector('#music-volume-val');
+    musicVol?.addEventListener('input', () => {
+      const val = parseFloat(musicVol.value);
+      state.updateSettings({ musicVolume: val });
+      if (musicVal) musicVal.textContent = `${Math.round(val * 100)}%`;
+      AudioManager.getInstance().updateVolumes();
+    });
+
+    this.container.querySelector('#btn-reset-save')?.addEventListener('click', () => {
+      if (confirm(resetConfirmMsg)) {
         state.resetProgress();
-        alert(t('settings.resetDone'));
-        this.close();
-        window.location.reload();
+        this.render();
       }
     });
   }
