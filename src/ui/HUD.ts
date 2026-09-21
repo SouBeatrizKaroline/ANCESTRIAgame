@@ -59,22 +59,22 @@ export class HUD {
 
           <div class="hud-top-actions">
             <button class="hud-btn" id="btn-hud-journal" title="${t('hud.journal')} [J]">
-              <span>📖 ${t('hud.journal')}</span>
+              <span class="hud-btn-icon">📖</span><span class="hud-btn-label">${t('hud.journal')}</span>
             </button>
             <button class="hud-btn" id="btn-hud-atlas" title="${t('hud.map')} [M]">
-              <span>🗺️ ${t('hud.map')}</span>
+              <span class="hud-btn-icon">🗺️</span><span class="hud-btn-label">${t('hud.map')}</span>
             </button>
             <button class="hud-btn" id="btn-hud-settings" title="${t('hud.settings')}">
-              <span>⚙️</span>
+              <span class="hud-btn-icon">⚙️</span><span class="hud-btn-label">${t('hud.settings')}</span>
             </button>
             <button class="hud-btn" id="btn-hud-menu" title="${t('hud.home')}">
-              <span>🏠</span>
+              <span class="hud-btn-icon">🏠</span><span class="hud-btn-label">${t('hud.home')}</span>
             </button>
           </div>
         </header>
 
         <!-- Cartão de Missão Ativa -->
-        <aside class="hud-mission-card" id="hud-mission-card">
+        <aside class="hud-mission-card" id="hud-mission-card" tabindex="0" role="button" aria-expanded="false">
           ${this.renderActiveMission()}
         </aside>
 
@@ -154,6 +154,17 @@ export class HUD {
   }
 
   private attachEvents(): void {
+    const missionCard = this.container.querySelector<HTMLElement>('#hud-mission-card');
+    const toggleMission = () => {
+      if (!window.matchMedia('(max-width: 600px)').matches || !missionCard) return;
+      const expanded = missionCard.classList.toggle('expanded');
+      missionCard.setAttribute('aria-expanded', String(expanded));
+    };
+    missionCard?.addEventListener('click', toggleMission);
+    missionCard?.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggleMission(); }
+    });
+
     this.container.querySelector('#btn-hud-journal')?.addEventListener('click', () => {
       AudioManager.getInstance().playClick();
       this.onOpenJournal();
