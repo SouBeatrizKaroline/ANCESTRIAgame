@@ -51,9 +51,9 @@ export class MainMenu {
             <p class="game-brand-subtitle">Stories. Peoples. Memories.</p>
             <p class="game-tagline">${t('menu.tagline')}</p>
             <div class="featured-journey">
-              <span class="featured-kicker">RECORRIDO INICIAL · MÉXICO-TENOCHTITLAN</span>
+              <span class="featured-kicker">${t('menu.featuredKicker')}</span>
               <strong>Mexica</strong>
-              <p>Memoria, agua, ciudad y conocimiento vivo.</p>
+              <p>${t('menu.featuredText')}</p>
             </div>
             <p class="menu-ethics-note">${t('menu.footer')}</p>
           </section>
@@ -87,11 +87,13 @@ export class MainMenu {
               <span>${t('menu.about')}</span>
             </button>
             </div>
-            <footer class="main-menu-footer"><span>PROTÓTIPO</span><span>Web · 3D educativo</span></footer>
+            <footer class="main-menu-footer"><span>${t('menu.prototype')}</span><span>${t('menu.educational3d')}</span></footer>
           </section>
         </div>
       </div>
     `;
+
+    applyDocumentLanguage(state.settings.language);
 
     this.attachEvents();
   }

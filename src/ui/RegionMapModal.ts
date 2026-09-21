@@ -3,6 +3,7 @@ import { AudioManager } from '../engine/AudioManager';
 import { ALL_REGIONS } from '../data/regions';
 import { RegionId } from '../data/types';
 import { getLanguage, t } from '../i18n';
+import { ATLAS_SOURCE_URL, PEOPLE_CATALOG } from '../data/peopleCatalog';
 
 const REGION_COPY: Record<string, Record<RegionId, { name: string; subtitle: string; period: string; description: string }>> = {
   es: {
@@ -28,6 +29,7 @@ const REGION_COPY: Record<string, Record<RegionId, { name: string; subtitle: str
 export class RegionMapModal {
   private container: HTMLElement;
   private onSelectRegion: (regionId: RegionId) => void;
+  private activeView: 'territories' | 'peoples' = 'territories';
 
   constructor(container: HTMLElement, onSelectRegion: (regionId: RegionId) => void) {
     this.container = container;
@@ -43,6 +45,12 @@ export class RegionMapModal {
     const state = GameState.getInstance();
     const fragments = state.knowledgeFragments;
     const regions = Object.values(ALL_REGIONS);
+    const lang = getLanguage();
+    const labels = lang === 'es'
+      ? { territories:'Territorios', peoples:'13 pueblos y formaciones', living:'Pueblo contemporáneo', historical:'Formación histórica', language:'Lenguas', source:'Fuente panorámica', caution:'Estas fichas son puntos de partida. Cada recorrido jugable requiere fuentes indígenas propias, actuales y específicas.' }
+      : lang === 'pt-BR'
+        ? { territories:'Territórios', peoples:'13 povos e formações', living:'Povo contemporâneo', historical:'Formação histórica', language:'Línguas', source:'Fonte panorâmica', caution:'Estas fichas são pontos de partida. Cada percurso jogável exige fontes indígenas próprias, atuais e específicas.' }
+        : { territories:'Territories', peoples:'13 peoples and formations', living:'Contemporary people', historical:'Historical formation', language:'Languages', source:'Overview source', caution:'These profiles are starting points. Every playable journey requires current, specific Indigenous sources of its own.' };
 
     this.container.innerHTML = `
       <div class="atlas-modal-overlay">
@@ -58,10 +66,10 @@ export class RegionMapModal {
 
           <div class="atlas-map-visual">
             <div class="atlas-map-banner">
+              <nav class="atlas-view-tabs"><button class="${this.activeView === 'territories' ? 'active' : ''}" data-atlas-view="territories">${labels.territories}</button><button class="${this.activeView === 'peoples' ? 'active' : ''}" data-atlas-view="peoples">${labels.peoples}</button></nav>
               <span class="fragments-pill">✨ ${t('atlas.fragments')}: <strong>${fragments}</strong></span>
             </div>
-
-            <div class="region-cards-grid">
+            ${this.activeView === 'territories' ? `<div class="region-cards-grid">
               ${regions
                 .map((r) => {
                   const copy = REGION_COPY[getLanguage()][r.id];
@@ -106,7 +114,7 @@ export class RegionMapModal {
                 `;
                 })
                 .join('')}
-            </div>
+            </div>` : `<p class="people-catalog-caution">${labels.caution}</p><div class="people-catalog-grid">${PEOPLE_CATALOG.map((person) => `<article class="people-catalog-card"><div class="people-card-top"><span class="region-status-badge">${person.kind === 'living' ? labels.living : labels.historical}</span><span>${person.kind === 'living' ? '●' : '◆'}</span></div><h3>${person.name[lang]}</h3><p class="people-territory">📍 ${person.territory[lang]}</p><p>${person.summary[lang]}</p><div class="people-language"><strong>${labels.language}:</strong> ${person.languages[lang]}</div></article>`).join('')}</div><a class="atlas-source-link" href="${ATLAS_SOURCE_URL}" target="_blank" rel="noopener noreferrer">${labels.source}: Atlas sociolingüístico UNICEF / FUNPROEIB Andes ↗</a>`}
           </div>
         </div>
       </div>
@@ -131,6 +139,7 @@ export class RegionMapModal {
         this.onSelectRegion(regionId);
       });
     });
+    this.container.querySelectorAll<HTMLButtonElement>('[data-atlas-view]').forEach((button) => button.addEventListener('click', () => { this.activeView = button.dataset.atlasView as 'territories' | 'peoples'; AudioManager.getInstance().playClick(); this.render(); }));
   }
 
   public close(): void {

@@ -10,6 +10,8 @@ const messages = {
     'menu.journal': 'Diario de exploración', 'menu.settings': 'Configuración y accesibilidad',
     'menu.about': 'Propósito educativo y fuentes',
     'menu.footer': 'Contenido construido con respeto a la pluralidad cultural y prioridad para fuentes y perspectivas indígenas.',
+    'menu.featuredKicker': 'Recorrido inicial · Mexico-Tenochtitlan', 'menu.featuredText': 'Memoria, agua, ciudad y conocimiento vivo.',
+    'menu.prototype': 'Prototipo', 'menu.educational3d': 'Web · 3D educativo',
     'settings.badge': 'Preferencias', 'settings.title': 'Configuración y accesibilidad',
     'settings.language': 'Idioma', 'settings.languageHelp': 'El español es el idioma inicial. Tu elección queda guardada en este dispositivo.',
     'settings.accessibility': 'Accesibilidad visual', 'settings.motion': 'Reducir movimiento',
@@ -46,6 +48,8 @@ const messages = {
     'menu.start': 'Iniciar jornada', 'menu.continue': 'Continuar exploração', 'menu.people': 'Povo e percurso', 'menu.atlas': 'Atlas das Américas',
     'menu.journal': 'Diário de exploração', 'menu.settings': 'Configurações e acessibilidade', 'menu.about': 'Propósito educacional e fontes',
     'menu.footer': 'Conteúdo construído com respeito à pluralidade cultural e prioridade para fontes e perspectivas indígenas.',
+    'menu.featuredKicker': 'Percurso inicial · Mexico-Tenochtitlan', 'menu.featuredText': 'Memória, água, cidade e conhecimento vivo.',
+    'menu.prototype': 'Protótipo', 'menu.educational3d': 'Web · 3D educativo',
     'settings.badge': 'Preferências', 'settings.title': 'Configurações e acessibilidade', 'settings.language': 'Idioma',
     'settings.languageHelp': 'O espanhol é o idioma inicial. Sua escolha fica salva neste dispositivo.', 'settings.accessibility': 'Acessibilidade visual',
     'settings.motion': 'Reduzir movimento', 'settings.motionHelp': 'Reduz animações de câmera e transições dinâmicas.',
@@ -77,6 +81,8 @@ const messages = {
     'menu.start': 'Start journey', 'menu.continue': 'Continue exploration', 'menu.people': 'People and journey', 'menu.atlas': 'Atlas of the Americas',
     'menu.journal': 'Exploration journal', 'menu.settings': 'Settings and accessibility', 'menu.about': 'Educational purpose and sources',
     'menu.footer': 'Content built with respect for cultural plurality and priority for Indigenous sources and perspectives.',
+    'menu.featuredKicker': 'Opening journey · Mexico-Tenochtitlan', 'menu.featuredText': 'Memory, water, city, and living knowledge.',
+    'menu.prototype': 'Prototype', 'menu.educational3d': 'Web · educational 3D',
     'settings.badge': 'Preferences', 'settings.title': 'Settings and accessibility', 'settings.language': 'Language',
     'settings.languageHelp': 'Spanish is the initial language. Your choice is saved on this device.', 'settings.accessibility': 'Visual accessibility',
     'settings.motion': 'Reduce motion', 'settings.motionHelp': 'Reduces camera animations and dynamic transitions.',
@@ -110,4 +116,14 @@ export const SUPPORTED_LANGUAGES: Language[] = ['es', 'pt-BR', 'en'];
 
 export function getLanguage(): Language { return GameState.getInstance().settings.language; }
 export function t(key: TranslationKey, language: Language = getLanguage()): string { return messages[language][key] ?? messages.es[key]; }
-export function applyDocumentLanguage(language: Language): void { document.documentElement.lang = language; }
+export function applyDocumentLanguage(language: Language): void {
+  document.documentElement.lang = language;
+  document.getElementById('game-canvas-container')?.setAttribute(
+    'aria-label',
+    language === 'es' ? 'Escenario 3D interactivo de ANCESTRIA' : language === 'pt-BR' ? 'Cenário 3D interativo de ANCESTRIA' : 'Interactive ANCESTRIA 3D scene'
+  );
+  document.getElementById('ui-root')?.setAttribute(
+    'aria-label',
+    language === 'es' ? 'Interfaz del juego e información educativa' : language === 'pt-BR' ? 'Interface do jogo e informações educativas' : 'Game interface and educational information'
+  );
+}

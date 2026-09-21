@@ -15,6 +15,8 @@ export class GameEngine {
   private clock: THREE.Clock;
   private isRunning: boolean = false;
   private animationFrameId: number | null = null;
+  private readonly boundResize = () => this.onWindowResize();
+  private resizeObserver: ResizeObserver | null = null;
 
   // Parâmetros de câmera suave isométrica 2.5D
   private cameraOffset = new THREE.Vector3(0, 11, 12);
@@ -35,12 +37,14 @@ export class GameEngine {
     this.scene.fog = new THREE.FogExp2(0x9fc8dc, 0.012);
 
     // 2. Câmera com ângulo isométrico acolhedor (2.5D)
-    const aspect = container.clientWidth / (container.clientHeight || 1);
+    const initialWidth = Math.max(container.clientWidth || window.innerWidth || 1, 1);
+    const initialHeight = Math.max(container.clientHeight || window.innerHeight || 1, 1);
+    const aspect = initialWidth / initialHeight;
     this.camera = new THREE.PerspectiveCamera(45, aspect, 0.5, 120);
 
     // 3. Renderizador WebGL otimizado
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-    this.renderer.setSize(container.clientWidth, container.clientHeight);
+    this.renderer.setSize(initialWidth, initialHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -59,7 +63,9 @@ export class GameEngine {
     else this.worldRenderer.buildAndesEnvironment(this.playerController, onTriggerNpc, onTriggerObject);
 
     // 7. Event listeners
-    window.addEventListener('resize', this.onWindowResize.bind(this));
+    window.addEventListener('resize', this.boundResize);
+    this.resizeObserver = new ResizeObserver(this.boundResize);
+    this.resizeObserver.observe(this.container);
   }
 
   private setupLighting(): void {
@@ -115,6 +121,9 @@ export class GameEngine {
 
     // Câmera segue o jogador suavemente
     const playerPos = this.playerController.group.position;
+    if (![playerPos.x, playerPos.y, playerPos.z].every(Number.isFinite)) {
+      playerPos.set(0, 0.7, 12);
+    }
     const targetCamX = playerPos.x + this.cameraOffset.x;
     const targetCamY = playerPos.y + this.cameraOffset.y;
     const targetCamZ = playerPos.z + this.cameraOffset.z;
@@ -122,6 +131,10 @@ export class GameEngine {
     const isReducedMotion = GameState.getInstance().settings.reduceMotion;
     const lerpFactor = isReducedMotion ? 0.3 : 0.08;
 
+    if (![targetCamX, targetCamY, targetCamZ].every(Number.isFinite)) {
+      this.animationFrameId = requestAnimationFrame(this.loop);
+      return;
+    }
     this.camera.position.x += (targetCamX - this.camera.position.x) * lerpFactor;
     this.camera.position.y += (targetCamY - this.camera.position.y) * lerpFactor;
     this.camera.position.z += (targetCamZ - this.camera.position.z) * lerpFactor;
@@ -141,14 +154,24 @@ export class GameEngine {
     if (!this.container) return;
     const width = this.container.clientWidth || window.innerWidth;
     const height = this.container.clientHeight || window.innerHeight;
+    if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) return;
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(width, height);
   }
 
+  public forceRefreshView(): void {
+    requestAnimationFrame(() => {
+      this.onWindowResize();
+      this.camera.updateMatrixWorld();
+      this.renderer.render(this.scene, this.camera);
+    });
+  }
+
   public destroy(): void {
     this.stop();
-    window.removeEventListener('resize', this.onWindowResize.bind(this));
+    window.removeEventListener('resize', this.boundResize);
+    this.resizeObserver?.disconnect();
     if (this.renderer.domElement.parentElement) {
       this.renderer.domElement.parentElement.removeChild(this.renderer.domElement);
     }

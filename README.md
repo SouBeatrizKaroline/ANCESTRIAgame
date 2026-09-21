@@ -24,6 +24,12 @@ Juego educativo web de exploración 2.5D/3D sobre historias, tecnologías, memor
 
 Los pueblos mayas y futuros recorridos se incorporarán como experiencias independientes, con fuentes, voces y contextos propios.
 
+## Catálogo sociolingüístico del Atlas
+
+El Atlas del juego incluye fichas trilingües iniciales de 13 pueblos o formaciones históricas: Mexica, pueblos quechuas, pueblos zapotecos, Incas/Tawantinsuyu, Yanomami, pueblos guaraníes, Warao, Wayuu, Tupinambá, Xukuru do Ororubá, Bribri, Rarámuri y pueblos aymaras.
+
+Las fichas diferencian pueblos contemporáneos de formaciones políticas históricas. No convierten automáticamente cada entrada en un recorrido jugable ni sustituyen una investigación comunitaria específica.
+
 ## Idiomas e internacionalización
 
 - **Español**: idioma inicial y referencia editorial.
@@ -47,6 +53,7 @@ Las voces indígenas actuales no se proyectan sobre el siglo XV a menos que la p
 - [INAH — sistema chinampero](https://www.inah.gob.mx/boletines/el-sistema-chinampero-de-la-cuenca-de-mexico-en-la-nueva-edicion-de-arqueologia-mexicana)
 - [Museo del Templo Mayor — agricultura](https://www.templomayor.inah.gob.mx/salas-del-museo/sala-7-agricultura)
 - [UNESCO — Xochimilco](https://whc.unesco.org/en/list/412)
+- [UNICEF / FUNPROEIB Andes — Atlas sociolingüístico de pueblos indígenas en América Latina, tomo 1](https://acervo.socioambiental.org/sites/default/files/documents/a2l00009.pdf)
 
 ### Recorrido andino
 
