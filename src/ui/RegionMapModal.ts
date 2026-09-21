@@ -29,11 +29,13 @@ const REGION_COPY: Record<string, Record<RegionId, { name: string; subtitle: str
 export class RegionMapModal {
   private container: HTMLElement;
   private onSelectRegion: (regionId: RegionId) => void;
+  private onDismiss: () => void;
   private activeView: 'territories' | 'peoples' = 'territories';
 
-  constructor(container: HTMLElement, onSelectRegion: (regionId: RegionId) => void) {
+  constructor(container: HTMLElement, onSelectRegion: (regionId: RegionId) => void, onDismiss: () => void = () => {}) {
     this.container = container;
     this.onSelectRegion = onSelectRegion;
+    this.onDismiss = onDismiss;
   }
 
   public show(): void {
@@ -128,6 +130,7 @@ export class RegionMapModal {
     closeBtn?.addEventListener('click', () => {
       AudioManager.getInstance().playClick();
       this.close();
+      this.onDismiss();
     });
 
     const enterBtns = this.container.querySelectorAll('.btn-enter-region');

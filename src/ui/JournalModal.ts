@@ -7,6 +7,7 @@ import { getLanguage, t } from '../i18n';
 
 export class JournalModal {
   private container: HTMLElement;
+  private onDismiss: () => void;
   private currentCategory: DiscoveryCategory | 'Todas' = 'Todas';
   private searchQuery: string = '';
 
@@ -20,8 +21,9 @@ export class JournalModal {
     'Idiomas'
   ];
 
-  constructor(container: HTMLElement) {
+  constructor(container: HTMLElement, onDismiss: () => void = () => {}) {
     this.container = container;
+    this.onDismiss = onDismiss;
   }
 
   private categoryLabel(category: DiscoveryCategory | 'Todas'): string {
@@ -156,6 +158,7 @@ export class JournalModal {
     closeBtn?.addEventListener('click', () => {
       AudioManager.getInstance().playClick();
       this.close();
+      this.onDismiss();
     });
 
     const searchInput = this.container.querySelector('#journal-search') as HTMLInputElement;

@@ -37,6 +37,7 @@ export class UIManager {
   private onVirtualMoveCallback: (dx: number, dz: number) => void;
   private onInteractCallback: () => void;
   private onJumpCallback: () => void;
+  private modalOrigin: 'menu' | 'game' = 'menu';
 
   constructor(
     uiRoot: HTMLElement,
@@ -75,9 +76,12 @@ export class UIManager {
     });
     this.mexicaDialogueModal = new MexicaDialogueModal(this.modalContainer);
 
-    this.journalModal = new JournalModal(this.modalContainer);
-    this.settingsModal = new SettingsModal(this.modalContainer);
-    this.aboutModal = new AboutModal(this.modalContainer);
+    const restoreModalOrigin = () => {
+      if (this.modalOrigin === 'menu') this.mainMenu.show();
+    };
+    this.journalModal = new JournalModal(this.modalContainer, restoreModalOrigin);
+    this.settingsModal = new SettingsModal(this.modalContainer, restoreModalOrigin);
+    this.aboutModal = new AboutModal(this.modalContainer, restoreModalOrigin);
     this.mexicaJourneyModal = new MexicaJourneyModal(this.modalContainer, () => this.cultureSelectionModal.show());
     this.andeanJourneyModal = new AndeanJourneyModal(this.modalContainer, () => this.cultureSelectionModal.show());
     this.cultureSelectionModal = new CultureSelectionModal(this.modalContainer, (cultureId) => {
@@ -87,12 +91,13 @@ export class UIManager {
 
     this.regionMapModal = new RegionMapModal(this.modalContainer, (regionId) => {
       this.showToast(`Territorio ${regionId.toUpperCase()} seleccionado.`, 'info');
-    });
+      restoreModalOrigin();
+    }, restoreModalOrigin);
 
     this.hud = new HUD(this.hudContainer, {
-      onOpenJournal: () => this.journalModal.show(),
-      onOpenAtlas: () => this.regionMapModal.show(),
-      onOpenSettings: () => this.settingsModal.show(),
+      onOpenJournal: () => { this.modalOrigin = 'game'; this.journalModal.show(); },
+      onOpenAtlas: () => { this.modalOrigin = 'game'; this.regionMapModal.show(); },
+      onOpenSettings: () => { this.modalOrigin = 'game'; this.settingsModal.show(); },
       onOpenMainMenu: () => this.mainMenu.show(),
       onInteract: () => this.onInteractCallback(),
       onJump: () => this.onJumpCallback(),
@@ -103,10 +108,10 @@ export class UIManager {
       onPlayGame: () => {
         this.cultureSelectionModal.show();
       },
-      onOpenAtlas: () => this.regionMapModal.show(),
-      onOpenJournal: () => this.journalModal.show(),
-      onOpenSettings: () => this.settingsModal.show(),
-      onOpenAbout: () => this.aboutModal.show()
+      onOpenAtlas: () => { this.modalOrigin = 'menu'; this.regionMapModal.show(); },
+      onOpenJournal: () => { this.modalOrigin = 'menu'; this.journalModal.show(); },
+      onOpenSettings: () => { this.modalOrigin = 'menu'; this.settingsModal.show(); },
+      onOpenAbout: () => { this.modalOrigin = 'menu'; this.aboutModal.show(); }
     });
   }
 

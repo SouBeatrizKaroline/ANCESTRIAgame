@@ -5,9 +5,11 @@ import { Language } from '../data/types';
 
 export class SettingsModal {
   private container: HTMLElement;
+  private onDismiss: () => void;
 
-  constructor(container: HTMLElement) {
+  constructor(container: HTMLElement, onDismiss: () => void = () => {}) {
     this.container = container;
+    this.onDismiss = onDismiss;
   }
 
   public show(): void {
@@ -146,6 +148,7 @@ export class SettingsModal {
     this.container.querySelector('#btn-close-settings')?.addEventListener('click', () => {
       AudioManager.getInstance().playClick();
       this.close();
+      this.onDismiss();
     });
 
     const reduceMotion = this.container.querySelector('#setting-reduce-motion') as HTMLInputElement;

@@ -3,9 +3,11 @@ import { HISTORICAL_SOURCES } from '../data/references/historicalSources';
 
 export class AboutModal {
   private container: HTMLElement;
+  private onDismiss: () => void;
 
-  constructor(container: HTMLElement) {
+  constructor(container: HTMLElement, onDismiss: () => void = () => {}) {
     this.container = container;
+    this.onDismiss = onDismiss;
   }
 
   public show(): void {
@@ -82,6 +84,7 @@ export class AboutModal {
     this.container.querySelector('#btn-close-about')?.addEventListener('click', () => {
       AudioManager.getInstance().playClick();
       this.close();
+      this.onDismiss();
     });
   }
 
