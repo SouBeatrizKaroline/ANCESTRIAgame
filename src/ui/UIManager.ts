@@ -12,12 +12,15 @@ import { MexicaJourneyModal } from './MexicaJourneyModal';
 import { AndeanJourneyModal } from './AndeanJourneyModal';
 import { MexicaDialogueModal } from './MexicaDialogueModal';
 import { PeopleJourneyModal } from './PeopleJourneyModal';
+import { PrototypeCompleteModal } from './PrototypeCompleteModal';
 import { TerracesMinigame } from './Minigames/TerracesMinigame';
 import { QuipuMinigame } from './Minigames/QuipuMinigame';
 import { StoneworkMinigame } from './Minigames/StoneworkMinigame';
 import { ANDES_DISCOVERIES } from '../data/discoveries/andesDiscoveries';
 import { PEOPLE_CATALOG } from '../data/peopleCatalog';
 import { getLanguage } from '../i18n';
+import { CultureId } from '../data/types';
+import { getPrototypeCompletion } from '../data/journeyProgress';
 
 export class UIManager {
   private uiRoot: HTMLElement;
@@ -37,6 +40,7 @@ export class UIManager {
   public andeanJourneyModal!: AndeanJourneyModal;
   public mexicaDialogueModal!: MexicaDialogueModal;
   public peopleJourneyModal!: PeopleJourneyModal;
+  public prototypeCompleteModal!: PrototypeCompleteModal;
 
   private onVirtualMoveCallback: (dx: number, dz: number) => void;
   private onInteractCallback: () => void;
@@ -78,7 +82,7 @@ export class UIManager {
     this.dialogueModal = new DialogueModal(this.modalContainer, (minigameId) => {
       this.openMinigame(minigameId);
     });
-    this.mexicaDialogueModal = new MexicaDialogueModal(this.modalContainer);
+    this.mexicaDialogueModal = new MexicaDialogueModal(this.modalContainer, () => this.checkPrototypeCompletion('mexica'));
 
     const restoreModalOrigin = () => {
       if (this.modalOrigin === 'menu') this.mainMenu.show();
@@ -89,6 +93,14 @@ export class UIManager {
     this.mexicaJourneyModal = new MexicaJourneyModal(this.modalContainer, () => this.cultureSelectionModal.show());
     this.andeanJourneyModal = new AndeanJourneyModal(this.modalContainer, () => this.cultureSelectionModal.show());
     this.peopleJourneyModal = new PeopleJourneyModal(this.modalContainer, () => this.cultureSelectionModal.show());
+    const openEducation = (cultureId: CultureId) => {
+      if (cultureId === 'mexica') this.mexicaJourneyModal.show();
+      else if (cultureId === 'inca') this.andeanJourneyModal.show();
+      else this.peopleJourneyModal.show(cultureId);
+    };
+    this.prototypeCompleteModal = new PrototypeCompleteModal(this.modalContainer, () => {}, () => this.mainMenu.show(), openEducation, (cultureId) => {
+      GameState.getInstance().selectCulture(cultureId); this.hud.render(); onStartGame(cultureId);
+    });
     this.cultureSelectionModal = new CultureSelectionModal(this.modalContainer, (cultureId) => {
       this.hud.render();
       onStartGame(cultureId);
@@ -146,6 +158,7 @@ export class UIManager {
         if (first) { localStorage.setItem(key, '1'); GameState.getInstance().addKnowledgeFragments(10); }
         const suffix = first ? (lang === 'es' ? ' (+10 fragmentos)' : lang === 'pt-BR' ? ' (+10 fragmentos)' : ' (+10 fragments)') : '';
         this.showToast(`${profile.name[lang]} — ${profile.summary[lang]}${suffix}`, first ? 'success' : 'info');
+        this.checkPrototypeCompletion(cultureId as CultureId);
       }
       return;
     }
@@ -171,6 +184,7 @@ export class UIManager {
         const key = `ancestria_find_${objectId}`;
         if (!localStorage.getItem(key)) { localStorage.setItem(key, '1'); state.addKnowledgeFragments(10); }
         this.showToast(`${text} (+10 ${lang === 'es' ? 'fragmentos la primera vez' : lang === 'pt-BR' ? 'fragmentos na primeira vez' : 'fragments the first time'})`, 'success');
+        this.checkPrototypeCompletion(match[1] as CultureId);
       }
       return;
     }
@@ -184,6 +198,7 @@ export class UIManager {
       const key = `ancestria_find_${objectId}`;
       if (!localStorage.getItem(key)) { localStorage.setItem(key, '1'); state.addKnowledgeFragments(10); }
       this.showToast(`${mexicaFinds[objectId]} (+10 fragmentos la primera vez)`, 'success');
+      this.checkPrototypeCompletion('mexica');
       return;
     }
 
@@ -241,6 +256,15 @@ export class UIManager {
     }, 3500);
   }
 
+  private checkPrototypeCompletion(cultureId: CultureId): void {
+    const state = GameState.getInstance();
+    const progress = getPrototypeCompletion(cultureId, state.unlockedDiscoveryIds);
+    const noticeKey = `ancestria_prototype_complete_prompt_${cultureId}`;
+    if (progress.completed < progress.total || localStorage.getItem(noticeKey)) return;
+    localStorage.setItem(noticeKey, '1');
+    window.setTimeout(() => this.prototypeCompleteModal.show(cultureId), 180);
+  }
+
   private setupGlobalStateListeners(): void {
     const state = GameState.getInstance();
 
@@ -249,6 +273,7 @@ export class UIManager {
       const disc = ANDES_DISCOVERIES.find((d) => d.id === discoveryId);
       const name = disc ? disc.name : 'Nuevo saber';
       this.showToast(`Nuevo descubrimiento registrado: ${name} (+20 fragmentos)`, 'success');
+      this.checkPrototypeCompletion('inca');
     });
 
     state.on('mission_completed', (mission) => {

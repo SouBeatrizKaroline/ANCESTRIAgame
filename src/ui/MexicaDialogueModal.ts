@@ -35,7 +35,7 @@ const dialogues = {
 } as const;
 
 export class MexicaDialogueModal {
-  constructor(private container: HTMLElement) {}
+  constructor(private container: HTMLElement, private onProgress: () => void = () => {}) {}
   public show(npcId: keyof typeof dialogues): void {
     const node = dialogues[npcId];
     const options = [...node.options].sort(() => Math.random() - .5);
@@ -47,7 +47,7 @@ export class MexicaDialogueModal {
       if (body) body.innerHTML = `<p class="dialogue-text">${option.response}</p><aside class="dialogue-source-note">${option.correct ? '✓ Respuesta contextualizada' : 'Revisa el contexto y vuelve a conversar si quieres intentarlo de nuevo.'}</aside>`;
       if (option.correct) { const key = `ancestria_dialogue_${npcId}`; if (!localStorage.getItem(key)) { localStorage.setItem(key, '1'); GameState.getInstance().addKnowledgeFragments(10); } }
       const choices = this.container.querySelector('#mexica-dialogue-choices'); if (choices) choices.innerHTML = `<button class="btn-dialogue-choice" id="finish-mexica-dialogue"><span class="choice-arrow">✓</span><span>Continuar la exploración</span></button>`;
-      this.container.querySelector('#finish-mexica-dialogue')?.addEventListener('click', () => this.close());
+      this.container.querySelector('#finish-mexica-dialogue')?.addEventListener('click', () => { this.close(); if(option.correct)this.onProgress(); });
     }));
   }
   public close(): void { this.container.innerHTML = ''; }

@@ -42,6 +42,20 @@ export function getJourneyCompletion(cultureId: CultureId, discoveries: string[]
   return { completed: objects + dialogue + genericChapters(cultureId), total: 9 };
 }
 
+export function getPrototypeCompletion(cultureId: CultureId, discoveries: string[] = []): { completed: number; total: number } {
+  if (cultureId === 'mexica') {
+    const finds = ['mexica_chinampas', 'mexica_causeway', 'mexica_templo'].filter((id) => has(`ancestria_find_${id}`)).length;
+    const dialogues = ['npc_mexica_chinampa', 'npc_mexica_market', 'npc_mexica_language'].filter((id) => has(`ancestria_dialogue_${id}`)).length;
+    return { completed: finds + dialogues, total: 6 };
+  }
+  if (cultureId === 'inca') {
+    return { completed: ['disc_intihuatana', 'disc_qullqa', 'disc_andenes', 'disc_qeswachaka'].filter((id) => discoveries.includes(id)).length, total: 4 };
+  }
+  const objects = [0, 1, 2].filter((i) => has(`ancestria_find_people_${cultureId}_${i}`)).length;
+  const dialogue = has(`ancestria_dialogue_npc_people_${cultureId}`) ? 1 : 0;
+  return { completed: objects + dialogue, total: 4 };
+}
+
 export function getJourneyProgress(cultureId: CultureId, discoveries: string[] = [], selected?: CultureId): JourneyProgress {
   const index = JOURNEY_ORDER.indexOf(cultureId);
   const completion = getJourneyCompletion(cultureId, discoveries);
@@ -59,4 +73,3 @@ export function getJourneyProgress(cultureId: CultureId, discoveries: string[] =
 export function journeyName(cultureId: CultureId, language: Language): string {
   return PEOPLE_CATALOG.find((item) => item.id === cultureId)?.name[language] || cultureId;
 }
-

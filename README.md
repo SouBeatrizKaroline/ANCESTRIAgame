@@ -12,6 +12,7 @@ Juego educativo web de exploración 2.5D/3D sobre historias, tecnologías, memor
 - **Atlas de las Américas** es una biblioteca de consulta libre. Mantiene visibles las 13 fichas sociolingüísticas en tarjetas compactas y abre cada pueblo en una ficha de lectura propia. No repite botones de juego, barras de progreso ni bloqueos.
 - Un recorrido ya abierto o completado puede volver a jugarse en cualquier momento.
 - Cada descubrimiento, conversación o capítulo otorga fragmentos solamente la primera vez. Si un recorrido quedó incompleto, las memorias pendientes todavía pueden completarse y puntuar una vez.
+- Al completar todas las interacciones esenciales de un prototipo 3D, aparece un cierre explícito con opciones para continuar explorando, completar las memorias educativas pendientes, avanzar al siguiente recorrido cuando corresponda o salir al menú.
 - El orden de liberación es una decisión curatorial de navegación y no expresa jerarquía, evolución ni homogeneidad cultural entre los pueblos.
 
 Orden actual: Mexica → Incas/Tawantinsuyu → pueblos quechuas → pueblos aymaras → pueblos zapotecos → Rarámuri → Bribri → Wayuu → Warao → Yanomami → pueblos guaraníes → Tupinambá → Xukuru do Ororubá.
