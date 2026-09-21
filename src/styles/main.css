@@ -1022,14 +1022,15 @@ html, body {
 .completion-symbol { display:block; color:#f4c261; font-size:2.2rem; margin-bottom:8px; }
 .journey-overview-window{overflow:hidden}
 .journey-overview-window .mexica-journey-header p{margin:7px 0 0;color:#aebfbd;font-size:.9rem}
-.journey-overview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:26px 30px}
-.journey-chapter-card{position:relative;display:flex;min-height:210px;flex-direction:column;align-items:flex-start;text-align:left;padding:22px 20px;border:1px solid rgba(244,162,97,.34);border-radius:18px;background:linear-gradient(145deg,rgba(45,48,55,.96),rgba(24,35,38,.98));color:#eef5f4;cursor:pointer;transition:.2s ease}
+.journey-overview-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;padding:22px 24px}
+.journey-chapter-card{position:relative;display:flex;min-height:210px;flex-direction:column;align-items:flex-start;text-align:left;padding:18px 16px;border:1px solid rgba(244,162,97,.34);border-radius:18px;background:linear-gradient(145deg,rgba(45,48,55,.96),rgba(24,35,38,.98));color:#eef5f4;cursor:pointer;transition:.2s ease}
 .journey-chapter-card:hover{transform:translateY(-4px);border-color:#f4a261;box-shadow:0 14px 28px rgba(0,0,0,.28)}
 .journey-chapter-card.completed{border-color:rgba(42,157,143,.7);background:linear-gradient(145deg,rgba(35,74,69,.95),rgba(23,43,43,.98))}
 .journey-number{font:700 2rem var(--font-display);color:#f4a261;opacity:.9}
 .journey-chapter-card strong{margin:14px 0 10px;font:700 1.12rem/1.25 var(--font-display)}
 .journey-chapter-card small{margin-top:auto;color:#f0b66e;font-weight:700}
 .journey-overview-footer{padding:14px 30px 18px;border-top:1px solid rgba(255,255,255,.08);color:#91a9a6;text-align:center;font-size:.8rem;letter-spacing:.04em}
+@media(max-width:1050px) and (min-width:761px){.journey-overview-grid{grid-template-columns:repeat(3,1fr)}.journey-chapter-card{min-height:170px}}
 @media(max-width:760px){ .mexica-journey-body{grid-template-columns:1fr;padding:20px}.mexica-journey-header{padding:20px}.mexica-sources{padding:16px 20px 22px}.mexica-complete{padding:36px 24px} }
 @media(max-width:760px){.journey-overview-window{overflow:auto}.journey-overview-grid{grid-template-columns:1fr;padding:16px 20px}.journey-chapter-card{min-height:150px}}
 @media (max-height:720px) and (min-width:761px) {

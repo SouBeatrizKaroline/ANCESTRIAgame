@@ -27,6 +27,22 @@ const chapters = [
     question: '¿Cómo presenta ANCESTRIA este pueblo?',
     options: ['Mexica como nombre principal, explicando otros términos', 'Azteca como único nombre válido', 'Como una cultura idéntica a todos los pueblos mesoamericanos'],
     correct: 0
+  },
+  {
+    eyebrow: '04 · MERCADO Y RELACIONES',
+    title: 'Tlatelolco: intercambio en una cuenca diversa',
+    text: 'El gran mercado de Tlatelolco reunió productos, comerciantes y saberes procedentes de numerosos territorios. Hablar de intercambio también exige reconocer relaciones políticas desiguales, tributos y alianzas entre distintos pueblos de la Cuenca de México.',
+    question: '¿Qué mirada evita presentar el mercado como una escena aislada?',
+    options: ['Relacionarlo con redes comerciales, alianzas, tributos y pueblos diversos', 'Afirmar que todos los productos eran locales', 'Describir a toda Mesoamérica como un único pueblo'],
+    correct: 0
+  },
+  {
+    eyebrow: '05 · LENGUA Y CONTINUIDAD',
+    title: 'Náhuatl: memoria y presencia contemporánea',
+    text: 'El náhuatl no pertenece solamente al pasado. Sus variantes continúan vivas en comunidades actuales, en la creación literaria y en iniciativas de fortalecimiento lingüístico. Las voces contemporáneas se citan desde su propio presente.',
+    question: '¿Cómo debe presentarse el náhuatl en ANCESTRIA?',
+    options: ['Como una lengua viva y diversa, con hablantes y creación contemporánea', 'Como una lengua desaparecida en el siglo XVI', 'Como un idioma idéntico en todas las comunidades'],
+    correct: 0
   }
 ] as const;
 
@@ -42,7 +58,7 @@ export class MexicaJourneyModal {
   }
 
   private renderOverview(saved: number): void {
-    this.container.innerHTML = `<div class="mexica-journey-overlay"><article class="mexica-journey-window journey-overview-window"><header class="mexica-journey-header"><div><span class="badge">RECORRIDO MEXICA</span><h2>Tres memorias para explorar</h2><p>Elige un capítulo. Tu progreso queda guardado en este dispositivo.</p></div><button class="btn-close" id="mexica-close" aria-label="Cerrar">&times;</button></header><div class="journey-overview-grid">${chapters.map((c, i) => `<button class="journey-chapter-card ${i < saved ? 'completed' : ''}" data-chapter="${i}"><span class="journey-number">0${i + 1}</span><span class="culture-status">${c.eyebrow.split('·')[1]}</span><strong>${c.title}</strong><small>${i < saved ? '✓ Memoria recorrida' : i === Math.min(saved, chapters.length - 1) ? 'Continuar aquí →' : 'Explorar capítulo →'}</small></button>`).join('')}</div><footer class="journey-overview-footer">Territorio lacustre · Chinampas · Nombre y memoria</footer></article></div>`;
+    this.container.innerHTML = `<div class="mexica-journey-overlay"><article class="mexica-journey-window journey-overview-window"><header class="mexica-journey-header"><div><span class="badge">RECORRIDO MEXICA</span><h2>Cinco memorias para explorar</h2><p>Elige un capítulo. Tu progreso queda guardado en este dispositivo.</p></div><button class="btn-close" id="mexica-close" aria-label="Cerrar">&times;</button></header><div class="journey-overview-grid">${chapters.map((c, i) => `<button class="journey-chapter-card ${i < saved ? 'completed' : ''}" data-chapter="${i}"><span class="journey-number">0${i + 1}</span><span class="culture-status">${c.eyebrow.split('·')[1]}</span><strong>${c.title}</strong><small>${i < saved ? '✓ Memoria recorrida' : i === Math.min(saved, chapters.length - 1) ? 'Continuar aquí →' : 'Explorar capítulo →'}</small></button>`).join('')}</div><footer class="journey-overview-footer">Territorio · Chinampas · Nombres · Intercambio · Lengua viva</footer></article></div>`;
     this.container.querySelector('#mexica-close')?.addEventListener('click', () => { this.close(); this.onBack(); });
     this.container.querySelectorAll<HTMLButtonElement>('[data-chapter]').forEach((button) => button.addEventListener('click', () => { this.chapterIndex = Number(button.dataset.chapter); AudioManager.getInstance().playClick(); this.render(); }));
   }
@@ -101,7 +117,7 @@ export class MexicaJourneyModal {
           return;
         }
         localStorage.setItem(PROGRESS_KEY, String(chapters.length));
-        GameState.getInstance().addKnowledgeFragments(30);
+        if (!localStorage.getItem(`${PROGRESS_KEY}_rewarded`)) { GameState.getInstance().addKnowledgeFragments(30); localStorage.setItem(`${PROGRESS_KEY}_rewarded`, '1'); }
         this.renderCompletion();
       });
     });
