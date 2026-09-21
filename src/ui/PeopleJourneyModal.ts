@@ -2,6 +2,7 @@ import { AudioManager } from '../engine/AudioManager';
 import { PEOPLE_CATALOG, PeopleCatalogEntry, ATLAS_SOURCE_URL } from '../data/peopleCatalog';
 import { CultureId } from '../data/types';
 import { getLanguage } from '../i18n';
+import { GameState } from '../state/GameState';
 
 type Chapter = { eyebrow: string; title: string; text: string; question: string; options: string[]; correct: number };
 
@@ -14,7 +15,10 @@ export class PeopleJourneyModal {
   public show(cultureId: CultureId): void { this.cultureId = cultureId; this.renderOverview(); }
   private profile(): PeopleCatalogEntry { return PEOPLE_CATALOG.find((item) => item.id === this.cultureId)!; }
   private key(): string { return `ancestria_people_journey_${this.cultureId}_v1`; }
-  private saved(): number { return Math.min(Number(localStorage.getItem(this.key()) || 0), 5); }
+  private completed(): number[] {
+    const legacy = Math.min(Number(localStorage.getItem(this.key()) || 0), 5);
+    return [0,1,2,3,4].filter((i) => i < legacy || localStorage.getItem(`${this.key()}_chapter_${i}`) !== null);
+  }
 
   private chapters(): Chapter[] {
     const p = this.profile(), lang = getLanguage(), name = p.name[lang], territory = p.territory[lang], languages = p.languages[lang], summary = p.summary[lang];
@@ -44,8 +48,8 @@ export class PeopleJourneyModal {
   private labels() { const l=getLanguage(); return l==='es'?{badge:'RECORRIDO EDUCATIVO',title:'Cinco memorias para explorar',intro:'Elige un capítulo. Tu progreso queda guardado en este dispositivo.',done:'✓ Memoria recorrida',go:'Explorar capítulo →',activity:'ACTIVIDAD DE MEMORIA',right:'Respuesta contextualizada.',wrong:'Revisa el contexto e inténtalo de nuevo.',back:'Volver a los recorridos',sources:'Fuente panorámica del recorrido'}:l==='pt-BR'?{badge:'PERCURSO EDUCATIVO',title:'Cinco memórias para explorar',intro:'Escolha um capítulo. Seu progresso fica salvo neste dispositivo.',done:'✓ Memória percorrida',go:'Explorar capítulo →',activity:'ATIVIDADE DE MEMÓRIA',right:'Resposta contextualizada.',wrong:'Revise o contexto e tente novamente.',back:'Voltar aos percursos',sources:'Fonte panorâmica do percurso'}:{badge:'LEARNING JOURNEY',title:'Five memories to explore',intro:'Choose a chapter. Progress is saved on this device.',done:'✓ Memory explored',go:'Explore chapter →',activity:'MEMORY ACTIVITY',right:'Contextualized answer.',wrong:'Review the context and try again.',back:'Back to journeys',sources:'Journey overview source'}; }
 
   private renderOverview(): void {
-    const chapters=this.chapters(), saved=this.saved(), labels=this.labels(), p=this.profile(), lang=getLanguage();
-    this.container.innerHTML=`<div class="mexica-journey-overlay"><article class="mexica-journey-window journey-overview-window"><header class="mexica-journey-header"><div><span class="badge">${labels.badge} · ${p.name[lang]}</span><h2>${labels.title}</h2><p>${labels.intro}</p></div><button class="btn-close" id="people-journey-close">&times;</button></header><div class="journey-overview-grid">${chapters.map((c,i)=>`<button class="journey-chapter-card ${i<saved?'completed':''}" data-people-chapter="${i}"><span class="journey-number">0${i+1}</span><span class="culture-status">${c.eyebrow.split('·')[1]}</span><strong>${c.title}</strong><small>${i<saved?labels.done:labels.go}</small></button>`).join('')}</div><footer class="journey-overview-footer">${p.territory[lang]} · ${p.languages[lang]}</footer></article></div>`;
+    const chapters=this.chapters(), completed=this.completed(), labels=this.labels(), p=this.profile(), lang=getLanguage();
+    this.container.innerHTML=`<div class="mexica-journey-overlay"><article class="mexica-journey-window journey-overview-window"><header class="mexica-journey-header"><div><span class="badge">${labels.badge} · ${p.name[lang]}</span><h2>${labels.title}</h2><p>${labels.intro}</p></div><button class="btn-close" id="people-journey-close">&times;</button></header><div class="journey-overview-grid">${chapters.map((c,i)=>`<button class="journey-chapter-card ${completed.includes(i)?'completed':''}" data-people-chapter="${i}"><span class="journey-number">0${i+1}</span><span class="culture-status">${c.eyebrow.split('·')[1]}</span><strong>${c.title}</strong><small>${completed.includes(i)?labels.done:labels.go}</small></button>`).join('')}</div><footer class="journey-overview-footer">${p.territory[lang]} · ${p.languages[lang]}</footer></article></div>`;
     this.container.querySelector('#people-journey-close')?.addEventListener('click',()=>this.closeBack());
     this.container.querySelectorAll<HTMLButtonElement>('[data-people-chapter]').forEach(btn=>btn.addEventListener('click',()=>{this.chapterIndex=Number(btn.dataset.peopleChapter);this.feedback='';this.renderChapter();}));
   }
@@ -53,7 +57,7 @@ export class PeopleJourneyModal {
     const chapters=this.chapters(), c=chapters[this.chapterIndex], labels=this.labels(), order=[0,1,2].sort(()=>Math.random()-.5), progress=((this.chapterIndex+1)/5)*100;
     this.container.innerHTML=`<div class="mexica-journey-overlay"><article class="mexica-journey-window"><header class="mexica-journey-header"><div><span class="badge">${labels.badge}</span><h2>${c.title}</h2></div><button class="btn-close" id="people-journey-close">&times;</button></header><div class="mexica-progress"><span style="width:${progress}%"></span></div><div class="mexica-journey-body"><section class="mexica-story"><span class="culture-status">${c.eyebrow}</span><p>${c.text}</p><aside class="source-principle">${this.profile().summary[getLanguage()]}</aside></section><section class="mexica-activity"><span class="badge">${labels.activity}</span><h3>${c.question}</h3><div class="mexica-options">${order.map(i=>`<button data-people-option="${i}">${c.options[i]}</button>`).join('')}</div><p class="mexica-feedback">${this.feedback}</p></section></div><footer class="mexica-sources"><span>${labels.sources}:</span><a href="${ATLAS_SOURCE_URL}" target="_blank" rel="noopener noreferrer">Atlas sociolingüístico UNICEF / FUNPROEIB Andes</a></footer></article></div>`;
     this.container.querySelector('#people-journey-close')?.addEventListener('click',()=>this.renderOverview());
-    this.container.querySelectorAll<HTMLButtonElement>('[data-people-option]').forEach(btn=>btn.addEventListener('click',()=>{const correct=Number(btn.dataset.peopleOption)===c.correct;AudioManager.getInstance().playInteract();this.feedback=correct?`✓ ${labels.right}`:labels.wrong;if(correct){const saved=Math.max(this.saved(),this.chapterIndex+1);localStorage.setItem(this.key(),String(saved));if(this.chapterIndex<4){this.chapterIndex++;this.feedback='';this.renderChapter();}else this.renderOverview();}else this.renderChapter();}));
+    this.container.querySelectorAll<HTMLButtonElement>('[data-people-option]').forEach(btn=>btn.addEventListener('click',()=>{const correct=Number(btn.dataset.peopleOption)===c.correct;AudioManager.getInstance().playInteract();this.feedback=correct?`✓ ${labels.right}`:labels.wrong;if(correct){const chapterKey=`${this.key()}_chapter_${this.chapterIndex}`;if(!localStorage.getItem(chapterKey)){localStorage.setItem(chapterKey,'1');GameState.getInstance().addKnowledgeFragments(10);}if(this.chapterIndex<4){this.chapterIndex++;this.feedback='';this.renderChapter();}else this.renderOverview();}else this.renderChapter();}));
   }
   private closeBack():void{this.container.innerHTML='';this.onBack();}
 }

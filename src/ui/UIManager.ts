@@ -141,7 +141,11 @@ export class UIManager {
       const profile = PEOPLE_CATALOG.find((item) => item.id === cultureId);
       if (profile) {
         const lang = getLanguage();
-        this.showToast(`${profile.name[lang]} — ${profile.summary[lang]}`, 'info');
+        const key = `ancestria_dialogue_${npcId}`;
+        const first = !localStorage.getItem(key);
+        if (first) { localStorage.setItem(key, '1'); GameState.getInstance().addKnowledgeFragments(10); }
+        const suffix = first ? (lang === 'es' ? ' (+10 fragmentos)' : lang === 'pt-BR' ? ' (+10 fragmentos)' : ' (+10 fragments)') : '';
+        this.showToast(`${profile.name[lang]} — ${profile.summary[lang]}${suffix}`, first ? 'success' : 'info');
       }
       return;
     }

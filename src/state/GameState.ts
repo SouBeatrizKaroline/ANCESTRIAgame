@@ -221,7 +221,12 @@ export class GameState {
   }
 
   public resetProgress(): void {
-    localStorage.removeItem(SAVE_KEY);
+    const progressKeys: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && (key.startsWith('ancestria_') || key === SAVE_KEY)) progressKeys.push(key);
+    }
+    progressKeys.forEach((key) => localStorage.removeItem(key));
     this.knowledgeFragments = 0;
     this.unlockedRegionIds = ['mesoamerica'];
     this.completedMissionIds = [];

@@ -20,6 +20,11 @@ export class SettingsModal {
   private render(): void {
     const state = GameState.getInstance();
     const s = state.settings;
+    const extra = s.language === 'es'
+      ? { textHelp:'Ajusta la escala de las descripciones, los diálogos y el diario.', subtitlesHelp:'Muestra diálogos, descripciones y avisos sin depender del audio.', sfxHelp:'Pasos, clics, interacciones con objetos y celebraciones.', musicHelp:'Melodías suaves y sonidos ambientales.' }
+      : s.language === 'pt-BR'
+        ? { textHelp:'Ajusta a escala das descrições, dos diálogos e do diário.', subtitlesHelp:'Mostra diálogos, descrições e avisos sem depender do áudio.', sfxHelp:'Passos, cliques, interações com objetos e celebrações.', musicHelp:'Melodias suaves e sons ambientes.' }
+        : { textHelp:'Adjusts the scale of descriptions, dialogue, and the journal.', subtitlesHelp:'Shows dialogue, descriptions, and notices without relying on audio.', sfxHelp:'Footsteps, clicks, object interactions, and celebrations.', musicHelp:'Gentle melodies and ambient sounds.' };
 
     this.container.innerHTML = `
       <div class="settings-modal-overlay">
@@ -73,7 +78,7 @@ export class SettingsModal {
               <div class="setting-row">
                 <div class="setting-info">
                   <strong>${t('settings.textSize')}</strong>
-                  <small>Ajusta la escala de las descripciones, los diálogos y el diario.</small>
+                  <small>${extra.textHelp}</small>
                 </div>
                 <select id="setting-font-size" class="select-input">
                   <option value="normal" ${s.fontSize === 'normal' ? 'selected' : ''}>${t('size.normal')}</option>
@@ -85,7 +90,7 @@ export class SettingsModal {
               <div class="setting-row">
                 <div class="setting-info">
                   <strong>${t('settings.subtitles')}</strong>
-                  <small>Muestra diálogos, descripciones y avisos sin depender del audio.</small>
+                  <small>${extra.subtitlesHelp}</small>
                 </div>
                 <label class="toggle-switch">
                   <input type="checkbox" id="setting-subtitles" ${s.subtitles ? 'checked' : ''} />
@@ -101,7 +106,7 @@ export class SettingsModal {
               <div class="setting-row">
                 <div class="setting-info">
                   <strong>${t('settings.sfx')} (SFX)</strong>
-                  <small>Pasos, clics, interacciones con objetos y celebraciones.</small>
+                  <small>${extra.sfxHelp}</small>
                 </div>
                 <div class="range-wrapper">
                   <input type="range" id="setting-sfx-volume" min="0" max="1" step="0.05" value="${s.soundVolume}" />
@@ -112,7 +117,7 @@ export class SettingsModal {
               <div class="setting-row">
                 <div class="setting-info">
                   <strong>${t('settings.music')}</strong>
-                  <small>Melodías pentatónicas suaves de quena y sonidos naturales.</small>
+                  <small>${extra.musicHelp}</small>
                 </div>
                 <div class="range-wrapper">
                   <input type="range" id="setting-music-volume" min="0" max="1" step="0.05" value="${s.musicVolume}" />

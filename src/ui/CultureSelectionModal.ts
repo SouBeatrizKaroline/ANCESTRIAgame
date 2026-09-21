@@ -1,49 +1,49 @@
 import { GameState } from '../state/GameState';
 import { CultureId } from '../data/types';
-import { t } from '../i18n';
+import { t, getLanguage } from '../i18n';
 import { AudioManager } from '../engine/AudioManager';
-import { getLanguage } from '../i18n';
 import { PEOPLE_CATALOG } from '../data/peopleCatalog';
+import { getJourneyProgress, JOURNEY_ORDER, journeyName } from '../data/journeyProgress';
 
 export class CultureSelectionModal {
   constructor(private container: HTMLElement, private onStart: (cultureId: CultureId) => void, private onExploreMexica: () => void, private onExploreAndean: () => void, private onExplorePeople: (cultureId: CultureId) => void, private onBack: () => void) {}
 
   public show(): void {
     const lang = getLanguage();
-    const playLabel = lang === 'es' ? 'Explorar prototipo 3D' : lang === 'pt-BR' ? 'Explorar protótipo 3D' : 'Explore 3D prototype';
-    const sourceNote = lang === 'es' ? 'Prototipo exploratorio basado en una ficha sociolingüística; no pretende reconstruir una comunidad específica.' : lang === 'pt-BR' ? 'Protótipo exploratório baseado em uma ficha sociolinguística; não pretende reconstruir uma comunidade específica.' : 'Exploratory prototype based on a sociolinguistic profile; it does not claim to reconstruct a specific community.';
-    this.container.innerHTML = `
-      <div class="settings-modal-overlay"><div class="settings-window culture-selection-window">
-        <div class="settings-header"><div><span class="badge">${t('people.badge')}</span><h2>${t('people.title')}</h2></div>
-        <button class="btn-close" id="culture-close" aria-label="${t('settings.close')}">&times;</button></div>
-        <div class="settings-body"><p class="culture-intro">${t('people.intro')}</p>
-          <div class="culture-grid">
-            <article class="culture-card culture-card-active"><span class="culture-status">01 · ${t('people.mexicaStatus')}</span><h3>${t('people.mexica')}</h3>
-              <p>${t('people.mexicaDesc')}</p><p class="culture-name-note">${t('people.note')}</p>
-              <button class="btn-menu-primary" id="culture-start-mexica">${t('people.mexicaStart')}</button>
-              <button class="btn-menu-option culture-learn" id="culture-preview-mexica">${t('people.mexicaExplore')}</button>
-              </article>
-            <article class="culture-card culture-card-active"><span class="culture-status">02 · ${t('people.incaStatus')}</span><h3>${t('people.inca')}</h3><p>${t('people.incaDesc')}</p>
-              <button class="btn-menu-primary" id="culture-start-inca">${t('people.incaStart')}</button><button class="btn-menu-option culture-learn" id="culture-preview-inca">${t('people.mexicaExplore')}</button></article>
-            ${PEOPLE_CATALOG.filter((item) => item.id !== 'mexica' && item.id !== 'inca').map((item, index) => `<article class="culture-card culture-card-active"><span class="culture-status">${String(index + 3).padStart(2,'0')} · ${playLabel}</span><h3>${item.name[lang]}</h3><p>${item.summary[lang]}</p><p class="culture-name-note">${sourceNote}</p><button class="btn-menu-primary culture-start-generic" data-culture-id="${item.id}">${playLabel}</button><button class="btn-menu-option culture-learn culture-journey-generic" data-culture-id="${item.id}">${t('people.mexicaExplore')}</button></article>`).join('')}
-          </div><button class="btn-menu-option culture-back" id="culture-back">${t('people.back')}</button>
-        </div></div></div>`;
-    this.container.querySelector('#culture-preview-mexica')?.addEventListener('click', () => {
-      AudioManager.getInstance().playClick(); this.close(); this.onExploreMexica();
-    });
-    this.container.querySelector('#culture-start-mexica')?.addEventListener('click', () => {
-      GameState.getInstance().selectCulture('mexica'); AudioManager.getInstance().playClick(); this.close(); this.onStart('mexica');
-    });
-    this.container.querySelector('#culture-start-inca')?.addEventListener('click', () => {
-      GameState.getInstance().selectCulture('inca'); AudioManager.getInstance().playClick(); this.close(); this.onStart('inca');
-    });
-    this.container.querySelector('#culture-preview-inca')?.addEventListener('click', () => { AudioManager.getInstance().playClick(); this.close(); this.onExploreAndean(); });
-    this.container.querySelectorAll<HTMLButtonElement>('.culture-start-generic').forEach((button) => button.addEventListener('click', () => {
-      const cultureId = button.dataset.cultureId as CultureId;
-      GameState.getInstance().selectCulture(cultureId); AudioManager.getInstance().playClick(); this.close(); this.onStart(cultureId);
+    const state = GameState.getInstance();
+    const copy = lang === 'es'
+      ? { intro:'Avanza recorrido por recorrido. Completar las memorias de un pueblo abre el siguiente; lo ya recorrido siempre puede volver a jugarse sin repetir recompensas.', order:'El orden es una ruta educativa curatorial, no una jerarquía entre pueblos.', available:'Disponible', progress:'En curso', complete:'Completado', locked:'Bloqueado', memories:'memorias', play:'Explorar prototipo 3D', replay:'Volver a explorar', learn:'Abrir recorrido educativo', continue:'Continuar recorrido', requires:'Completa primero' }
+      : lang === 'pt-BR'
+        ? { intro:'Avance percurso por percurso. Completar as memórias de um povo libera o seguinte; o que já foi percorrido pode ser jogado novamente sem repetir recompensas.', order:'A ordem é uma rota educativa curatorial, não uma hierarquia entre povos.', available:'Disponível', progress:'Em andamento', complete:'Concluído', locked:'Bloqueado', memories:'memórias', play:'Explorar protótipo 3D', replay:'Explorar novamente', learn:'Abrir percurso educativo', continue:'Continuar percurso', requires:'Conclua primeiro' }
+        : { intro:'Advance one journey at a time. Completing one people’s memories unlocks the next; completed journeys remain replayable without duplicate rewards.', order:'The order is a curated learning route, not a hierarchy among peoples.', available:'Available', progress:'In progress', complete:'Completed', locked:'Locked', memories:'memories', play:'Explore 3D prototype', replay:'Explore again', learn:'Open learning journey', continue:'Continue journey', requires:'Complete first' };
+
+    const cards = JOURNEY_ORDER.map((cultureId, index) => {
+      const profile = PEOPLE_CATALOG.find((item) => item.id === cultureId)!;
+      const progress = getJourneyProgress(cultureId, state.unlockedDiscoveryIds, state.selectedCultureId);
+      const statusLabel = progress.status === 'completed' ? copy.complete : progress.status === 'in_progress' ? copy.progress : progress.status === 'locked' ? copy.locked : copy.available;
+      const primary = progress.status === 'completed' ? copy.replay : progress.status === 'in_progress' ? copy.continue : copy.play;
+      const prerequisite = progress.prerequisite ? journeyName(progress.prerequisite, lang) : '';
+      return `<article class="culture-card ${progress.unlocked ? 'culture-card-active' : 'culture-card-locked'}">
+        <div class="journey-card-heading"><span class="culture-status">${String(index + 1).padStart(2,'0')} · ${statusLabel}</span><strong>${progress.completed}/${progress.total}</strong></div>
+        <h3>${profile.name[lang]}</h3><p>${profile.summary[lang]}</p>
+        <div class="journey-meter" aria-label="${progress.completed}/${progress.total} ${copy.memories}"><span style="width:${(progress.completed/progress.total)*100}%"></span></div>
+        ${progress.unlocked
+          ? `<button class="btn-menu-primary culture-start-any" data-culture-id="${cultureId}">${primary}</button><button class="btn-menu-option culture-learn culture-journey-any" data-culture-id="${cultureId}">${copy.learn}</button>`
+          : `<button class="btn-menu-option journey-locked-button" disabled>🔒 ${copy.requires}: ${prerequisite}</button>`}
+      </article>`;
+    }).join('');
+
+    this.container.innerHTML = `<div class="settings-modal-overlay"><div class="settings-window culture-selection-window">
+      <div class="settings-header"><div><span class="badge">${t('people.badge')}</span><h2>${t('people.title')}</h2></div><button class="btn-close" id="culture-close" aria-label="${t('settings.close')}">&times;</button></div>
+      <div class="settings-body"><p class="culture-intro">${copy.intro}</p><p class="journey-order-note">${copy.order}</p><div class="culture-grid">${cards}</div><button class="btn-menu-option culture-back" id="culture-back">${t('people.back')}</button></div>
+    </div></div>`;
+
+    this.container.querySelectorAll<HTMLButtonElement>('.culture-start-any').forEach((button) => button.addEventListener('click', () => {
+      const id = button.dataset.cultureId as CultureId; GameState.getInstance().selectCulture(id); AudioManager.getInstance().playClick(); this.close(); this.onStart(id);
     }));
-    this.container.querySelectorAll<HTMLButtonElement>('.culture-journey-generic').forEach((button) => button.addEventListener('click', () => {
-      const cultureId = button.dataset.cultureId as CultureId; AudioManager.getInstance().playClick(); this.close(); this.onExplorePeople(cultureId);
+    this.container.querySelectorAll<HTMLButtonElement>('.culture-journey-any').forEach((button) => button.addEventListener('click', () => {
+      const id = button.dataset.cultureId as CultureId; AudioManager.getInstance().playClick(); this.close();
+      if (id === 'mexica') this.onExploreMexica(); else if (id === 'inca') this.onExploreAndean(); else this.onExplorePeople(id);
     }));
     this.container.querySelector('#culture-close')?.addEventListener('click', () => { this.close(); this.onBack(); });
     this.container.querySelector('#culture-back')?.addEventListener('click', () => { this.close(); this.onBack(); });

@@ -6,6 +6,16 @@ Juego educativo web de exploración 2.5D/3D sobre historias, tecnologías, memor
 
 > El español es el idioma principal y predeterminado. La interfaz también puede utilizarse en portugués e inglés desde Configuración y accesibilidad.
 
+## Exploración y Atlas: funciones diferentes
+
+- **Exploración** es el modo jugable. Los recorridos se liberan de uno en uno, comenzando siempre por Mexica. Completar las memorias de un recorrido abre el siguiente.
+- **Atlas de las Américas** es una biblioteca de consulta. Mantiene visibles las 13 fichas sociolingüísticas incluso cuando su recorrido jugable todavía está bloqueado.
+- Un recorrido ya abierto o completado puede volver a jugarse en cualquier momento.
+- Cada descubrimiento, conversación o capítulo otorga fragmentos solamente la primera vez. Si un recorrido quedó incompleto, las memorias pendientes todavía pueden completarse y puntuar una vez.
+- El orden de liberación es una decisión curatorial de navegación y no expresa jerarquía, evolución ni homogeneidad cultural entre los pueblos.
+
+Orden actual: Mexica → Incas/Tawantinsuyu → pueblos quechuas → pueblos aymaras → pueblos zapotecos → Rarámuri → Bribri → Wayuu → Warao → Yanomami → pueblos guaraníes → Tupinambá → Xukuru do Ororubá.
+
 ## Experiencias disponibles
 
 ### Mexica — primera opción
@@ -13,13 +23,13 @@ Juego educativo web de exploración 2.5D/3D sobre historias, tecnologías, memor
 - Prototipo 3D de un paisaje inspirado en Mexico-Tenochtitlan, con lago, canales, calzadas, chinampas, viviendas y recinto ceremonial.
 - Puntos interactivos sobre el manejo del agua, las chinampas y la organización lacustre.
 - Tres habitantes educativos dentro del escenario — chinampa, intercambio de Tlatelolco y memoria/lengua nahua — con diálogos, preguntas aleatorias, respuestas explicativas y fuentes. Son síntesis educativas identificadas, no personas históricas inventadas.
-- Recorrido educativo en tres capítulos sobre territorio, prácticas chinamperas y el uso contextualizado de los nombres Mexica, tenochca y “azteca”.
+- Recorrido educativo en cinco capítulos sobre territorio, prácticas chinamperas y el uso contextualizado de los nombres Mexica, tenochca y “azteca”.
 - “Mexica” se utiliza como nombre principal; “azteca” se explica como el término internacionalmente más difundido sin borrar el nombre propio.
 
 ### Pueblos andinos / Tawantinsuyu
 
 - Prototipo 3D del valle andino con Qhapaq Ñan, andenes, canales, qullqas, puente de fibra vegetal, personajes, diálogos y minijuegos.
-- Recorrido educativo en tres capítulos sobre caminos y territorios, agricultura de altura y khipus.
+- Recorrido educativo en cinco capítulos sobre caminos y territorios, agricultura de altura y khipus.
 - El Tawantinsuyu no se presenta como sinónimo de todos los pueblos andinos: se distinguen comunidades, territorios, épocas y continuidades contemporáneas.
 
 Los pueblos mayas y futuros recorridos se incorporarán como experiencias independientes, con fuentes, voces y contextos propios.
@@ -121,6 +131,7 @@ Compilación: `npm run build`.
 - [x] Recorridos educativos Mexica y andino.
 - [x] Mapa y diario responsivos.
 - [x] Interacciones Mexica, colisiones principales y salto.
+- [x] Progresión secuencial de 13 recorridos, repetición sin duplicar recompensas y continuidad de recorridos iniciados.
 - [ ] Revisión comunitaria directa con organizaciones y especialistas indígenas antes de considerar definitivo cualquier recorrido.
 - [ ] Recorridos independientes para pueblos mayas, amazónicos y otros pueblos originarios.
 

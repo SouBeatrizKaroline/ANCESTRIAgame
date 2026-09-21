@@ -385,6 +385,10 @@ html, body {
 .people-language{margin-top:auto;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);color:#9fb3b7;font-size:.76rem;line-height:1.4}
 .people-catalog-card .btn-primary{width:100%;margin-top:12px}
 .people-catalog-card .culture-learn{width:100%;margin-top:7px}
+.people-card-locked{opacity:.76;border-style:dashed}
+.journey-card-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}.journey-card-heading>strong{color:var(--color-gold);font-size:.78rem}
+.journey-meter{height:6px;margin:10px 0 14px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.1)}.journey-meter span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--color-orange),var(--color-gold));transition:width .3s ease}
+.culture-card-locked{opacity:.68;border-style:dashed}.journey-locked-button{width:100%;margin-top:auto;cursor:not-allowed;opacity:.8}.journey-order-note{margin:-4px 0 16px;padding:8px 12px;border-left:3px solid var(--color-gold);color:#aeb9c4;font-size:.78rem}
 .atlas-source-link{display:block;margin:18px 0 2px;padding:12px;text-align:center;color:#f1bd78;border:1px solid rgba(244,162,97,.25);border-radius:12px;background:rgba(10,15,29,.4)}
 @media (max-width:720px){.region-cards-grid{grid-template-columns:1fr}.atlas-map-visual{padding:14px}.region-card{min-height:240px}.atlas-header{padding:18px}}
 @media(max-width:900px){.people-catalog-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -1158,6 +1162,24 @@ html, body {
 .btn-danger::before { content:'↺'; font-size:1.08rem; }
 .btn-danger:hover { background:rgba(185,28,28,.3); border-color:#f87171; transform:translateY(-1px); }
 @media (max-width:640px){ .settings-body{padding:16px}.settings-section{padding:14px}.setting-row{gap:14px}.setting-info{min-width:0}.select-input{min-width:125px}.range-wrapper{min-width:130px}.range-wrapper input[type='range']{width:90px} }
+
+@media (max-width:640px) {
+  .settings-modal-overlay{align-items:stretch;padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
+  .settings-window{align-self:center;max-height:calc(100dvh - 16px);border-radius:18px}
+  .settings-header{position:relative;z-index:2;flex:0 0 auto;align-items:center;padding:18px 20px;background:#292a46}
+  .settings-header h2{max-width:calc(100vw - 105px);font-size:clamp(1.45rem,7vw,2rem);line-height:1.05;overflow-wrap:anywhere}
+  .settings-header .btn-close{width:44px;height:44px;flex:0 0 44px}
+  .settings-body{min-height:0;padding:14px;overscroll-behavior:contain}
+  .settings-section{margin-bottom:14px;padding:14px;border-radius:14px}
+  .setting-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:14px 0}
+  .setting-info small{display:block;line-height:1.45}
+  .setting-row>.select-input,.setting-row>.range-wrapper{grid-column:1 / -1;width:100%;min-width:0}
+  .select-input{min-height:46px;font-size:1rem}
+  .range-wrapper{justify-content:space-between;gap:14px}
+  .range-wrapper input[type='range']{width:100%;min-width:0}
+  .toggle-switch{width:48px;height:28px;flex:0 0 48px}
+  .btn-danger{width:100%;min-height:46px;justify-content:center}
+}
 
 .setting-row {
   display: flex;

@@ -4,6 +4,7 @@ import { ALL_REGIONS } from '../data/regions';
 import { CultureId, RegionId } from '../data/types';
 import { getLanguage, t } from '../i18n';
 import { ATLAS_SOURCE_URL, PEOPLE_CATALOG } from '../data/peopleCatalog';
+import { getJourneyProgress, JOURNEY_ORDER, journeyName } from '../data/journeyProgress';
 
 const REGION_COPY: Record<string, Record<RegionId, { name: string; subtitle: string; period: string; description: string }>> = {
   es: {
@@ -53,10 +54,10 @@ export class RegionMapModal {
     const regions = Object.values(ALL_REGIONS);
     const lang = getLanguage();
     const labels = lang === 'es'
-      ? { territories:'Territorios', peoples:'13 pueblos y formaciones', living:'Pueblo contemporáneo', historical:'Formación histórica', language:'Lenguas', source:'Fuente panorámica', play:'Explorar prototipo 3D', learn:'Abrir recorrido educativo', caution:'Estas fichas son puntos de partida. Cada recorrido jugable requiere fuentes indígenas propias, actuales y específicas.' }
+      ? { territories:'Exploración', peoples:'Atlas: 13 pueblos y formaciones', living:'Pueblo contemporáneo', historical:'Formación histórica', language:'Lenguas', source:'Fuente panorámica', play:'Explorar prototipo 3D', learn:'Abrir recorrido educativo', caution:'El Atlas es una biblioteca de consulta: todas las fichas permanecen visibles. La exploración jugable avanza de una en una y requiere fuentes indígenas propias, actuales y específicas.', locked:'Recorrido todavía bloqueado', requires:'Completa primero', progress:'Progreso' }
       : lang === 'pt-BR'
-        ? { territories:'Territórios', peoples:'13 povos e formações', living:'Povo contemporâneo', historical:'Formação histórica', language:'Línguas', source:'Fonte panorâmica', play:'Explorar protótipo 3D', learn:'Abrir percurso educativo', caution:'Estas fichas são pontos de partida. Cada percurso jogável exige fontes indígenas próprias, atuais e específicas.' }
-        : { territories:'Territories', peoples:'13 peoples and formations', living:'Contemporary people', historical:'Historical formation', language:'Languages', source:'Overview source', play:'Explore 3D prototype', learn:'Open learning journey', caution:'These profiles are starting points. Every playable journey requires current, specific Indigenous sources of its own.' };
+        ? { territories:'Exploração', peoples:'Atlas: 13 povos e formações', living:'Povo contemporâneo', historical:'Formação histórica', language:'Línguas', source:'Fonte panorâmica', play:'Explorar protótipo 3D', learn:'Abrir percurso educativo', caution:'O Atlas é uma biblioteca de consulta: todas as fichas permanecem visíveis. A exploração jogável avança uma por vez e exige fontes indígenas próprias, atuais e específicas.', locked:'Percurso ainda bloqueado', requires:'Conclua primeiro', progress:'Progresso' }
+        : { territories:'Exploration', peoples:'Atlas: 13 peoples and formations', living:'Contemporary people', historical:'Historical formation', language:'Languages', source:'Overview source', play:'Explore 3D prototype', learn:'Open learning journey', caution:'The Atlas is a reference library: every profile remains visible. Playable exploration advances one journey at a time and requires current, specific Indigenous sources.', locked:'Journey still locked', requires:'Complete first', progress:'Progress' };
 
     this.container.innerHTML = `
       <div class="atlas-modal-overlay">
@@ -80,7 +81,8 @@ export class RegionMapModal {
                 .map((r) => {
                   const copy = REGION_COPY[getLanguage()][r.id];
                   const isUnlocked = state.unlockedRegionIds.includes(r.id);
-                  const isAvailable = r.status === 'disponivel';
+                  const journey = r.id === 'andes' ? getJourneyProgress('inca', state.unlockedDiscoveryIds, state.selectedCultureId) : null;
+                  const isAvailable = r.status === 'disponivel' && (!journey || journey.unlocked);
                   const canUnlock = fragments >= r.unlockRequirementFragments;
 
                   return `
@@ -109,7 +111,7 @@ export class RegionMapModal {
                           ${t('atlas.explore')} &rarr;
                         </button>
                       `
-                          : `
+                          : r.status === 'disponivel' && journey ? `<button class="btn-secondary btn-locked-region" disabled>🔒 ${labels.requires}: ${journeyName('mexica', lang)}</button>` : `
                         <button class="btn-secondary btn-locked-region" disabled>
                           ${canUnlock ? t('atlas.soon') : `${t('atlas.requires')} ${r.unlockRequirementFragments} ${t('hud.fragments').toLowerCase()}`}
                         </button>
@@ -120,7 +122,10 @@ export class RegionMapModal {
                 `;
                 })
                 .join('')}
-            </div>` : `<p class="people-catalog-caution">${labels.caution}</p><div class="people-catalog-grid">${PEOPLE_CATALOG.map((person) => `<article class="people-catalog-card"><div class="people-card-top"><span class="region-status-badge">${person.kind === 'living' ? labels.living : labels.historical}</span><span>${person.kind === 'living' ? '●' : '◆'}</span></div><h3>${person.name[lang]}</h3><p class="people-territory">📍 ${person.territory[lang]}</p><p>${person.summary[lang]}</p><div class="people-language"><strong>${labels.language}:</strong> ${person.languages[lang]}</div><button class="btn-primary btn-enter-culture" data-culture-id="${person.id}">${labels.play} →</button><button class="btn-menu-option culture-learn btn-learn-culture" data-culture-id="${person.id}">${labels.learn}</button></article>`).join('')}</div><a class="atlas-source-link" href="${ATLAS_SOURCE_URL}" target="_blank" rel="noopener noreferrer">${labels.source}: Atlas sociolingüístico UNICEF / FUNPROEIB Andes ↗</a>`}
+            </div>` : `<p class="people-catalog-caution">${labels.caution}</p><div class="people-catalog-grid">${JOURNEY_ORDER.map((cultureId) => {
+              const person=PEOPLE_CATALOG.find((item)=>item.id===cultureId)!; const progress=getJourneyProgress(cultureId,state.unlockedDiscoveryIds,state.selectedCultureId); const prerequisite=progress.prerequisite?journeyName(progress.prerequisite,lang):'';
+              return `<article class="people-catalog-card ${progress.unlocked?'':'people-card-locked'}"><div class="people-card-top"><span class="region-status-badge">${person.kind === 'living' ? labels.living : labels.historical}</span><span>${progress.completed}/${progress.total}</span></div><h3>${person.name[lang]}</h3><p class="people-territory">📍 ${person.territory[lang]}</p><p>${person.summary[lang]}</p><div class="people-language"><strong>${labels.language}:</strong> ${person.languages[lang]}</div><div class="journey-meter"><span style="width:${(progress.completed/progress.total)*100}%"></span></div>${progress.unlocked?`<button class="btn-primary btn-enter-culture" data-culture-id="${person.id}">${labels.play} →</button><button class="btn-menu-option culture-learn btn-learn-culture" data-culture-id="${person.id}">${labels.learn}</button>`:`<button class="btn-menu-option journey-locked-button" disabled>🔒 ${labels.requires}: ${prerequisite}</button>`}</article>`;
+            }).join('')}</div><a class="atlas-source-link" href="${ATLAS_SOURCE_URL}" target="_blank" rel="noopener noreferrer">${labels.source}: Atlas sociolingüístico UNICEF / FUNPROEIB Andes ↗</a>`}
           </div>
         </div>
       </div>
