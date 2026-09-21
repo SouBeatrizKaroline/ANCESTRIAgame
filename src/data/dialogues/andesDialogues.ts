@@ -22,7 +22,7 @@ export const ANDES_NPCS: NPC[] = [
     position: { x: -8, y: 1.4, z: 2 },
     rotationY: Math.PI / 4,
     visualColor: '#81b29a',
-    clothingDescription: 'Túnica verde e lliclla bordada com flores de quinoa, segurando um feixe de espigas coloridas.',
+    clothingDescription: 'Túnica verde y lliclla bordada con flores de quinua, sosteniendo una selección de mazorcas.',
     dialogueRootId: 'dia_sumaq_intro'
   },
   {
@@ -34,7 +34,7 @@ export const ANDES_NPCS: NPC[] = [
     position: { x: 8, y: 1.8, z: -4 },
     rotationY: -Math.PI / 3,
     visualColor: '#f2cc8f',
-    clothingDescription: 'Manto ocre com gola tecida e quipus de várias cores atados nos braços.',
+    clothingDescription: 'Manto ocre con cuello tejido y quipus de diversos colores en sus brazos.',
     dialogueRootId: 'dia_tupaq_intro'
   },
   {
@@ -46,7 +46,7 @@ export const ANDES_NPCS: NPC[] = [
     position: { x: -4, y: 2.2, z: -8 },
     rotationY: Math.PI / 2,
     visualColor: '#3d405b',
-    clothingDescription: 'Avental reforçado de couro cru, segurando martelo de hematita polida.',
+    clothingDescription: 'Delantal reforzado de cuero crudo, sosteniendo percutor lítico de hematita pulida.',
     dialogueRootId: 'dia_wayra_intro'
   }
 ];
@@ -57,7 +57,7 @@ export const ANDES_DIALOGUES: Record<string, DialogueNode> = {
     npcId: 'npc_kuntur',
     speakerName: 'Kuntur (chasqui)',
     role: 'Mensajero del Qhapaq Ñan',
-    text: '¡Allillanchu, viajante! Bienvenido a los caminos del Tawantinsuyu. Soy Kuntur, un chasqui. Recorro valles y montañas llevando mensajes entre distintos territorios andinos.',
+    text: '¡Allillanchu, viajero! Bienvenido a las rutas del Tawantinsuyu. Soy Kuntur, un chasqui. Recorro senderos de cordillera y valle llevando encargos y quipus oficiales entre comunidades.',
     choices: [
       {
         text: '¿Cómo recorrían con tanta rapidez montañas tan altas?',
@@ -65,7 +65,7 @@ export const ANDES_DIALOGUES: Record<string, DialogueNode> = {
       },
       {
         text: '¿Qué llevas en esa bolsa?',
-        response: 'Llevo quipus y avisos entre autoridades de diferentes territorios. Los nudos, colores y formas de las cuerdas registran información.',
+        response: 'Llevo quipus con mensajes codificados en nudos y colores, además de provisiones urgentes entre gobernadores provinciales.',
         unlockDiscoveryId: 'disc_qhapaq_nan',
         giveFragments: 25
       },
@@ -81,17 +81,17 @@ export const ANDES_DIALOGUES: Record<string, DialogueNode> = {
     npcId: 'npc_sumaq',
     speakerName: 'Sumaq',
     role: 'Maestra de andenes y cultivos',
-    text: 'Bienvenido a los andenes. Generaciones de pueblos andinos desarrollaron formas de cultivar en distintas alturas y condiciones climáticas.',
+    text: 'Bienvenido a los andenes. Generaciones de pueblos andinos desarrollaron formas de cultivar en distintas alturas y condiciones climáticas extremas.',
     choices: [
       {
         text: '¿Por qué cultivar en terrazas y no solamente en el fondo del valle?',
-        response: 'Las terrazas amplían el área de cultivo, ayudan a manejar el agua y crean condiciones diferentes según la altura. Sus muros también pueden conservar parte del calor del día.',
+        response: 'Las terrazas amplían el área de cultivo, manejan el agua de deshielo y crean condiciones térmicas diferentes según la altura. Sus muros conservan el calor del día para la noche.',
         unlockDiscoveryId: 'disc_andenes',
         giveFragments: 25
       },
       {
         text: 'Quiero poner a prueba lo que aprendí sobre los cultivos.',
-        response: 'Cada cultivo necesita condiciones específicas. Observa la altura y el clima antes de organizar las plantas.'
+        response: 'Cada cultivo necesita condiciones específicas: coca en los pisos bajos cálidos, maíz en los valles templados, y papas y quinua en las punas frías.'
       }
     ],
     triggerMinigameId: 'terraces'
@@ -102,17 +102,17 @@ export const ANDES_DIALOGUES: Record<string, DialogueNode> = {
     npcId: 'npc_tupaq',
     speakerName: 'Tupaq',
     role: 'Quipucamayoc de los almacenes qullqa',
-    text: 'Saludos. Las qullqas conservan alimentos obtenidos mediante trabajos comunitarios. Los quipus permiten registrar cantidades y categorías mediante cuerdas, colores y nudos.',
+    text: 'Saludos. Las qullqas conservan alimentos obtenidos mediante trabajos comunitarios de la Minka. Los quipus permiten registrar cantidades y categorías mediante cuerdas, colores y nudos.',
     choices: [
       {
         text: '¿Cómo pueden las cuerdas y los nudos registrar cantidades?',
-        response: 'En muchos quipus, la posición de los nudos representa unidades, decenas y centenas. Los colores y la estructura ayudan a distinguir categorías.',
+        response: 'En nuestros quipus, la posición de los nudos representa unidades, decenas y centenas en sistema decimal. Los colores y tipos de fibra distinguen los productos registrados.',
         unlockDiscoveryId: 'disc_quipu',
         giveFragments: 25
       },
       {
         text: '¿Puedes enseñarme a interpretar un quipu de suministros?',
-        response: 'Observa los nudos y sus posiciones. Después calcula el valor registrado en el cordón.'
+        response: 'Observa los nudos y sus posiciones en el cordón amarillo del maíz y calcula la suma total almacenada.'
       }
     ],
     triggerMinigameId: 'quipu'
@@ -123,17 +123,17 @@ export const ANDES_DIALOGUES: Record<string, DialogueNode> = {
     npcId: 'npc_wayra',
     speakerName: 'Wayra',
     role: 'Maestro cantero y constructor',
-    text: 'La piedra forma parte del territorio y exige atención. La cantería andina creó muros de bloques cuidadosamente ajustados, capaces de responder a movimientos sísmicos.',
+    text: 'La piedra forma parte viva del territorio. La cantería andina creó muros de bloques cuidadosamente ajustados, capaces de responder y resistir movimientos sísmicos.',
     choices: [
       {
-        text: '¿Cómo resisten estos muros los movimientos sísmicos?',
-        response: 'La forma de los bloques, sus uniones y la inclinación de ciertos elementos distribuyen el movimiento. Las técnicas varían según el lugar y la construcción.',
+        text: '¿Cómo resisten estos muros los movimientos sísmicos sin cemento?',
+        response: 'La forma de los bloques almohadillados, sus juntas poligonales y la inclinación de los muros distribuyen la energía. Cuando la tierra tiembla, las piedras vibran y se asientan en su lugar.',
         unlockDiscoveryId: 'disc_cantaria',
         giveFragments: 25
       },
       {
         text: '¿Puedo practicar el ajuste de una piedra poligonal?',
-        response: 'Observa los ángulos y usa el pulido abrasivo para aproximar la pieza al espacio del muro.'
+        response: 'Toma el percutor lítico de hematita y el abrasivo de arena húmeda. Ajusta la piedra central con las piezas de apoyo con precisión milimétrica.'
       }
     ],
     triggerMinigameId: 'stonework'

@@ -7,14 +7,13 @@ export const ANDES_MISSIONS: Mission[] = [
     type: 'principal',
     regionId: 'andes',
     cultureId: 'inca',
-    summary: 'Conoce tres dimensiones de la vida andina — comunicación, agricultura vertical y registro — y documenta lo aprendido en ANCESTRIA.',
+    summary: 'Conoce tres dimensiones de la vida andina — comunicación, agricultura vertical y registro numérico — y documenta lo aprendido en ANCESTRIA.',
     rewardFragments: 100,
-    historicalContext: 'El Tawantinsuyu articuló caminos, terrazas ecológicas y quipus a lo largo de miles de kilómetros de cordillera.',
+    historicalContext: 'El Tawantinsuyu articuló caminos, terrazas ecológicas y quipus a lo largo de miles de kilómetros de cordillera sin usar vehículos de ruedas ni escritura alfabética.',
     isActive: true,
     isCompleted: false,
     steps: [
-      {
-        id: 'step_talk_kuntur',
+      {\n        id: 'step_talk_kuntur',
         description: 'Habla con Kuntur, el chasqui, al inicio de los caminos de piedra.',
         isCompleted: false,
         targetEntityId: 'npc_kuntur'
@@ -52,15 +51,15 @@ export const ANDES_MISSIONS: Mission[] = [
     type: 'secundaria',
     regionId: 'andes',
     cultureId: 'inca',
-    summary: 'Comprende cómo el drenaje de los andenes reduce la erosión y conserva calor frente a las heladas.',
+    summary: 'Comprende cómo el drenaje de los andenes reduce la erosión y conserva calor frente a las heladas nocturnas.',
     rewardFragments: 50,
-    historicalContext: 'Os andenes não eram simples degraus de terra: eram laboratórios térmicos que chegavam a criar microclimas com até 3°C a 5°C acima da temperatura externa noturna.',
+    historicalContext: 'Los andenes creaban microclimas que llegaban a elevar la temperatura nocturna entre 3°C y 5°C respecto al exterior, según documentó John Murra.',
     isActive: false,
     isCompleted: false,
     steps: [
       {
         id: 'step_sec_andenes_talk',
-        description: 'Pregunta a Sumaq por el drenaje subterráneo de los andenes.',
+        description: 'Pregunta a Sumaq por la técnica de drenaje subterráneo de los andenes.',
         isCompleted: false,
         targetEntityId: 'npc_sumaq'
       },
@@ -79,9 +78,9 @@ export const ANDES_MISSIONS: Mission[] = [
     type: 'secundaria',
     regionId: 'andes',
     cultureId: 'inca',
-    summary: 'Explore o depósito imperial (Qullqa) e compreenda como o sistema decimal era registrado em cordões de lã e algodão.',
+    summary: 'Explora el almacén imperial (qullqa) y comprende cómo el sistema decimal se codificaba en cordones de lana y algodón.',
     rewardFragments: 50,
-    historicalContext: 'Pesquisadores como Gary Urton documentaram que os nós eram amarrados em orientações específicas (S ou Z), combinando cores distintas para representar tributos, censos e produtos agrícolas.',
+    historicalContext: 'Investigaciones de Gary Urton documentaron la orientación de los nudos (S o Z), combinando colores para representar censos y cosechas.',
     isActive: false,
     isCompleted: false,
     steps: [
