@@ -18,7 +18,6 @@ export class GameEngine {
   private readonly boundResize = () => this.onWindowResize();
   private resizeObserver: ResizeObserver | null = null;
 
-  // Parâmetros de câmera suave isométrica 2.5D
   private cameraOffset = new THREE.Vector3(0, 11, 12);
   private cameraLookTarget = new THREE.Vector3();
 
@@ -31,18 +30,15 @@ export class GameEngine {
     this.container = container;
     this.clock = new THREE.Clock();
 
-    // 1. Cena com atmosfera andina límpida
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x9fc8dc); // Céu azul andino claro
+    this.scene.background = new THREE.Color(0x9fc8dc);
     this.scene.fog = new THREE.FogExp2(0x9fc8dc, 0.012);
 
-    // 2. Câmera com ângulo isométrico acolhedor (2.5D)
     const initialWidth = Math.max(container.clientWidth || window.innerWidth || 1, 1);
     const initialHeight = Math.max(container.clientHeight || window.innerHeight || 1, 1);
     const aspect = initialWidth / initialHeight;
     this.camera = new THREE.PerspectiveCamera(45, aspect, 0.5, 120);
 
-    // 3. Renderizador WebGL otimizado
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     this.renderer.setSize(initialWidth, initialHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -50,31 +46,40 @@ export class GameEngine {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.container.appendChild(this.renderer.domElement);
 
-    // 4. Iluminação solar acolhedora e luz difusa
     this.setupLighting();
 
-    // 5. Controlador do Jogador
     this.playerController = new PlayerController(cultureId);
     this.scene.add(this.playerController.group);
 
-    // 6. Construtor do Cenário Andino
     this.worldRenderer = new WorldRenderer(this.scene);
-    if (cultureId === 'mexica') this.worldRenderer.buildMexicaEnvironment(this.playerController, onTriggerNpc, onTriggerObject);
-    else if (cultureId === 'inca') this.worldRenderer.buildAndesEnvironment(this.playerController, onTriggerNpc, onTriggerObject);
-    else this.worldRenderer.buildPeopleAtlasEnvironment(cultureId, this.playerController, onTriggerNpc, onTriggerObject);
+    if (cultureId === 'mexica') {
+      this.worldRenderer.buildMexicaEnvironment(this.playerController, onTriggerNpc, onTriggerObject);
+    } else if (cultureId === 'inca') {
+      this.worldRenderer.buildAndesEnvironment(this.playerController, onTriggerNpc, onTriggerObject);
+    } else {
+      this.worldRenderer.buildPeopleAtlasEnvironment(cultureId, this.playerController, onTriggerNpc, onTriggerObject);
+    }
 
-    // 7. Event listeners
+    this.playerController.ensureSafePosition();
+
+    const playerPos = this.playerController.group.position;
+    this.camera.position.set(
+      playerPos.x + this.cameraOffset.x,
+      playerPos.y + this.cameraOffset.y,
+      playerPos.z + this.cameraOffset.z
+    );
+    this.cameraLookTarget.copy(playerPos);
+    this.camera.lookAt(playerPos.x, playerPos.y + 0.8, playerPos.z);
+
     window.addEventListener('resize', this.boundResize);
     this.resizeObserver = new ResizeObserver(this.boundResize);
     this.resizeObserver.observe(this.container);
   }
 
   private setupLighting(): void {
-    // Luz ambiente suave (rebote do céu e da terra)
     const ambientLight = new THREE.AmbientLight(0xfff3b0, 0.65);
     this.scene.add(ambientLight);
 
-    // Luz solar direta (Inti) projetando sombras límpidas
     const sunLight = new THREE.DirectionalLight(0xfffae0, 1.1);
     sunLight.position.set(18, 30, 20);
     sunLight.castShadow = true;
@@ -88,7 +93,6 @@ export class GameEngine {
     sunLight.shadow.camera.bottom = -25;
     this.scene.add(sunLight);
 
-    // Luz secundária suave para sombras não ficarem pretas
     const fillLight = new THREE.DirectionalLight(0xa0c4ff, 0.35);
     fillLight.position.set(-15, 12, -15);
     this.scene.add(fillLight);
@@ -114,17 +118,14 @@ export class GameEngine {
     const delta = Math.min(this.clock.getDelta(), 0.1);
     const elapsedTime = this.clock.getElapsedTime();
 
-    // Atualiza jogador
     this.playerController.update(delta);
-
-    // Anima elementos ambientais
     this.worldRenderer.animate(elapsedTime);
 
-    // Câmera segue o jogador suavemente
     const playerPos = this.playerController.group.position;
     if (![playerPos.x, playerPos.y, playerPos.z].every(Number.isFinite)) {
-      playerPos.set(0, 0.7, 12);
+      this.playerController.resetToSpawn();
     }
+
     const targetCamX = playerPos.x + this.cameraOffset.x;
     const targetCamY = playerPos.y + this.cameraOffset.y;
     const targetCamZ = playerPos.z + this.cameraOffset.z;
@@ -132,20 +133,18 @@ export class GameEngine {
     const isReducedMotion = GameState.getInstance().settings.reduceMotion;
     const lerpFactor = isReducedMotion ? 0.3 : 0.08;
 
-    if (![targetCamX, targetCamY, targetCamZ].every(Number.isFinite)) {
-      this.animationFrameId = requestAnimationFrame(this.loop);
-      return;
-    }
-    this.camera.position.x += (targetCamX - this.camera.position.x) * lerpFactor;
-    this.camera.position.y += (targetCamY - this.camera.position.y) * lerpFactor;
-    this.camera.position.z += (targetCamZ - this.camera.position.z) * lerpFactor;
+    if ([targetCamX, targetCamY, targetCamZ].every(Number.isFinite)) {
+      this.camera.position.x += (targetCamX - this.camera.position.x) * lerpFactor;
+      this.camera.position.y += (targetCamY - this.camera.position.y) * lerpFactor;
+      this.camera.position.z += (targetCamZ - this.camera.position.z) * lerpFactor;
 
-    this.cameraLookTarget.lerp(playerPos, lerpFactor);
-    this.camera.lookAt(
-      this.cameraLookTarget.x,
-      this.cameraLookTarget.y + 0.8,
-      this.cameraLookTarget.z
-    );
+      this.cameraLookTarget.lerp(playerPos, lerpFactor);
+      this.camera.lookAt(
+        this.cameraLookTarget.x,
+        this.cameraLookTarget.y + 0.8,
+        this.cameraLookTarget.z
+      );
+    }
 
     this.renderer.render(this.scene, this.camera);
     this.animationFrameId = requestAnimationFrame(this.loop);
