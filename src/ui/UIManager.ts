@@ -15,6 +15,8 @@ import { TerracesMinigame } from './Minigames/TerracesMinigame';
 import { QuipuMinigame } from './Minigames/QuipuMinigame';
 import { StoneworkMinigame } from './Minigames/StoneworkMinigame';
 import { ANDES_DISCOVERIES } from '../data/discoveries/andesDiscoveries';
+import { PEOPLE_CATALOG } from '../data/peopleCatalog';
+import { getLanguage } from '../i18n';
 
 export class UIManager {
   private uiRoot: HTMLElement;
@@ -98,6 +100,10 @@ export class UIManager {
       }
       this.showToast(`Territorio ${regionId.toUpperCase()} seleccionado.`, 'info');
       restoreModalOrigin();
+    }, (cultureId) => {
+      GameState.getInstance().selectCulture(cultureId);
+      this.hud.render();
+      onStartGame(cultureId);
     }, restoreModalOrigin);
 
     this.hud = new HUD(this.hudContainer, {
@@ -123,6 +129,15 @@ export class UIManager {
 
   public openNpcDialogue(npcId: string): void {
     if (npcId.startsWith('npc_mexica_')) { this.mexicaDialogueModal.show(npcId as 'npc_mexica_chinampa' | 'npc_mexica_market' | 'npc_mexica_language'); return; }
+    if (npcId.startsWith('npc_people_')) {
+      const cultureId = npcId.replace('npc_people_', '');
+      const profile = PEOPLE_CATALOG.find((item) => item.id === cultureId);
+      if (profile) {
+        const lang = getLanguage();
+        this.showToast(`${profile.name[lang]} — ${profile.summary[lang]}`, 'info');
+      }
+      return;
+    }
     const dialogueIdMap: Record<string, string> = {
       npc_kuntur: 'dia_kuntur_intro',
       npc_sumaq: 'dia_sumaq_intro',
@@ -135,6 +150,19 @@ export class UIManager {
 
   public openObjectInteraction(objectId: string): void {
     const state = GameState.getInstance();
+
+    if (objectId.startsWith('people_')) {
+      const match = objectId.match(/^people_(.+)_(0|1|2)$/);
+      const profile = match ? PEOPLE_CATALOG.find((item) => item.id === match[1]) : undefined;
+      if (profile && match) {
+        const lang = getLanguage();
+        const text = match[2] === '0' ? profile.territory[lang] : match[2] === '1' ? profile.languages[lang] : profile.summary[lang];
+        const key = `ancestria_find_${objectId}`;
+        if (!localStorage.getItem(key)) { localStorage.setItem(key, '1'); state.addKnowledgeFragments(10); }
+        this.showToast(`${text} (+10 ${lang === 'es' ? 'fragmentos la primera vez' : lang === 'pt-BR' ? 'fragmentos na primeira vez' : 'fragments the first time'})`, 'success');
+      }
+      return;
+    }
 
     const mexicaFinds: Record<string, string> = {
       mexica_chinampas: 'Las chinampas combinan suelo construido, canales y manejo continuo del agua. Son una práctica lacustre de larga duración, no una invención aislada de un único pueblo.',

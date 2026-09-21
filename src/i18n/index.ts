@@ -33,7 +33,7 @@ const messages = {
     'people.mexicaPreview': 'Este recorrido está siendo construido con revisión de fuentes y perspectivas indígenas. La experiencia 3D Mexica todavía no está disponible.',
     'people.incaStatus': 'Prototipo 3D disponible', 'people.incaDesc': 'Explora el prototipo actual del Valle Sagrado andino, con misiones, diálogos y minijuegos.', 'people.incaStart': 'Jugar el prototipo andino',
     'people.note': '“Azteca” es el término más difundido internacionalmente; usamos Mexica como nombre propio del pueblo de Mexico-Tenochtitlan.'
-    ,'hud.fragments': 'Fragmentos', 'hud.journal': 'Diario', 'hud.map': 'Mapa', 'hud.settings': 'Configuración', 'hud.home': 'Menú principal',
+    ,'hud.fragments': 'Fragmentos', 'hud.journal': 'Diario', 'hud.map': 'Mapa', 'hud.settings': 'Configuración', 'hud.home': 'Menú principal', 'hud.action': 'Acción', 'hud.jump': 'Saltar',
     'journal.badge': 'Registro cultural', 'journal.title': 'Diario de memorias', 'journal.count': 'Descubrimientos registrados', 'journal.search': 'Buscar saberes, tecnologías y costumbres…',
     'journal.all': 'Todas', 'journal.tech': 'Tecnologías', 'journal.agriculture': 'Agricultura', 'journal.architecture': 'Arquitectura', 'journal.society': 'Sociedad', 'journal.astronomy': 'Astronomía', 'journal.languages': 'Idiomas',
     'journal.locked': 'Descubrimiento por revelar', 'journal.hint': 'Pista', 'journal.read': 'Leer detalles y fuentes', 'journal.empty': 'No se encontraron registros con estos criterios.',
@@ -66,7 +66,7 @@ const messages = {
     ,'people.mexicaStatus': 'Protótipo 3D disponível', 'people.mexicaStart': 'Jogar o protótipo Mexica 3D', 'people.mexicaExplore': 'Abrir percurso educativo',
     'people.mexicaPreview': 'Este percurso está sendo construído com revisão de fontes e perspectivas indígenas. A experiência 3D Mexica ainda não está disponível.',
     'people.incaStatus': 'Protótipo 3D disponível', 'people.incaDesc': 'Explore o protótipo atual do Vale Sagrado andino, com missões, diálogos e minijogos.', 'people.incaStart': 'Jogar o protótipo andino'
-    ,'hud.fragments': 'Fragmentos', 'hud.journal': 'Diário', 'hud.map': 'Mapa', 'hud.settings': 'Configurações', 'hud.home': 'Menu principal',
+    ,'hud.fragments': 'Fragmentos', 'hud.journal': 'Diário', 'hud.map': 'Mapa', 'hud.settings': 'Configurações', 'hud.home': 'Menu principal', 'hud.action': 'Ação', 'hud.jump': 'Pular',
     'journal.badge': 'Registro cultural', 'journal.title': 'Diário de memórias', 'journal.count': 'Descobertas registradas', 'journal.search': 'Pesquisar saberes, tecnologias e costumes…',
     'journal.all': 'Todas', 'journal.tech': 'Tecnologias', 'journal.agriculture': 'Agricultura', 'journal.architecture': 'Arquitetura', 'journal.society': 'Sociedade', 'journal.astronomy': 'Astronomia', 'journal.languages': 'Idiomas',
     'journal.locked': 'Descoberta a revelar', 'journal.hint': 'Pista', 'journal.read': 'Ler detalhes e fontes', 'journal.empty': 'Nenhum registro encontrado para estes critérios.',
@@ -99,7 +99,7 @@ const messages = {
     ,'people.mexicaStatus': '3D prototype available', 'people.mexicaStart': 'Play the Mexica 3D prototype', 'people.mexicaExplore': 'Open the learning journey',
     'people.mexicaPreview': 'This journey is being built with a review of Indigenous sources and perspectives. The Mexica 3D experience is not available yet.',
     'people.incaStatus': '3D prototype available', 'people.incaDesc': 'Explore the current Andean Sacred Valley prototype, with missions, dialogue, and minigames.', 'people.incaStart': 'Play the Andean prototype'
-    ,'hud.fragments': 'Fragments', 'hud.journal': 'Journal', 'hud.map': 'Map', 'hud.settings': 'Settings', 'hud.home': 'Main menu',
+    ,'hud.fragments': 'Fragments', 'hud.journal': 'Journal', 'hud.map': 'Map', 'hud.settings': 'Settings', 'hud.home': 'Main menu', 'hud.action': 'Action', 'hud.jump': 'Jump',
     'journal.badge': 'Cultural record', 'journal.title': 'Memory journal', 'journal.count': 'Discoveries recorded', 'journal.search': 'Search knowledge, technologies, and customs…',
     'journal.all': 'All', 'journal.tech': 'Technologies', 'journal.agriculture': 'Agriculture', 'journal.architecture': 'Architecture', 'journal.society': 'Society', 'journal.astronomy': 'Astronomy', 'journal.languages': 'Languages',
     'journal.locked': 'Discovery yet to be revealed', 'journal.hint': 'Hint', 'journal.read': 'Read details and sources', 'journal.empty': 'No records match these criteria.',

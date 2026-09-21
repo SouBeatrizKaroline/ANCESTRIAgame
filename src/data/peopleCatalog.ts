@@ -1,7 +1,7 @@
-import { Language } from './types';
+import { CultureId, Language } from './types';
 
 type Copy = Record<Language, string>;
-export interface PeopleCatalogEntry { id: string; name: Copy; territory: Copy; languages: Copy; summary: Copy; kind: 'living' | 'historical'; }
+export interface PeopleCatalogEntry { id: CultureId; name: Copy; territory: Copy; languages: Copy; summary: Copy; kind: 'living' | 'historical'; }
 const c = (es: string, pt: string, en: string): Copy => ({ es, 'pt-BR': pt, en });
 
 export const PEOPLE_CATALOG: PeopleCatalogEntry[] = [

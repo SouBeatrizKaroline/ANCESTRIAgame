@@ -5,7 +5,7 @@ import { MEXICA_CULTURE } from './mexica';
 import { AMAZONIA_CULTURE } from './amazonia';
 import { BRASIL_CULTURE } from './brasil';
 
-export const ALL_CULTURES: Record<CultureId, Culture> = {
+export const ALL_CULTURES: Partial<Record<CultureId, Culture>> = {
   inca: INCA_CULTURE,
   maya: MAYA_CULTURE,
   mexica: MEXICA_CULTURE,

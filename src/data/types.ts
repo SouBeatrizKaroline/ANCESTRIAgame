@@ -2,7 +2,9 @@
  * ANCESTRIA - Tipos e Interfaces do Sistema de Dados e Gameplay
  */
 
-export type CultureId = 'inca' | 'maya' | 'mexica' | 'amazonia' | 'indigenas_brasil';
+export type CultureId = 'inca' | 'maya' | 'mexica' | 'amazonia' | 'indigenas_brasil'
+  | 'quechua' | 'zapotec' | 'yanomami' | 'guarani' | 'warao' | 'wayuu'
+  | 'tupinamba' | 'xukuru' | 'bribri' | 'raramuri' | 'aymara';
 export type Language = 'es' | 'pt-BR' | 'en';
 export type RegionId = 'andes' | 'mesoamerica' | 'amazonia' | 'territorios_brasil';
 

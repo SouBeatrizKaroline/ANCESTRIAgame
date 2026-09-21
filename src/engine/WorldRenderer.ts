@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import { ANDES_NPCS } from '../data/dialogues/andesDialogues';
 import { PlayerController, InteractiveZone } from './PlayerController';
 import { t } from '../i18n';
+import { getLanguage } from '../i18n';
+import { CultureId } from '../data/types';
+import { PEOPLE_CATALOG } from '../data/peopleCatalog';
 
 /**
  * WorldRenderer - Constrói o mundo 3D low-poly estilizado dos Andes:
@@ -116,6 +119,45 @@ export class WorldRenderer {
       group.add(body, sash, head, hair, marker); group.position.set(resident.x, 0, resident.z); this.scene.add(group); this.npcMeshes.set(resident.id, group);
       playerController.interactiveZones.push({ id: resident.id, name: resident.name, type: 'npc', position: new THREE.Vector3(resident.x, .7, resident.z), radius: 2.7, promptText: `Conversar con ${resident.name} (${resident.role})`, onInteract: () => onTriggerNpc(resident.id) });
     });
+  }
+
+  public buildPeopleAtlasEnvironment(cultureId: CultureId, playerController: PlayerController, onTriggerNpc: (npcId: string) => void, onTriggerObject: (objectId: string) => void): void {
+    const profile = PEOPLE_CATALOG.find((item) => item.id === cultureId);
+    if (!profile) { this.buildAndesEnvironment(playerController, onTriggerNpc, onTriggerObject); return; }
+    const palettes: Record<string, [number, number, number]> = {
+      quechua:[0x718355,0xd4a373,0x8d6e63], zapotec:[0x557c83,0xd8b384,0x8c5e3c], yanomami:[0x31572c,0x90a955,0x6b4226],
+      guarani:[0x386641,0xa7c957,0x6a994e], warao:[0x287271,0x7ac7c4,0x9c6644], wayuu:[0xc76d2b,0xe9c46a,0x2a9d8f],
+      tupinamba:[0x2d6a4f,0x74c69d,0x99582a], xukuru:[0x606c38,0xdda15e,0x7f5539], bribri:[0x1b4332,0x52b788,0xb08968],
+      raramuri:[0x9c6644,0xe9c46a,0x5f6f52], aymara:[0x577590,0xd9ae61,0x785964]
+    };
+    const [groundColor, accentColor, stoneColor] = palettes[cultureId] || [0x5f6f52,0xd4a373,0x8d6e63];
+    this.scene.background = new THREE.Color(cultureId === 'warao' ? 0x91cbd1 : 0xa8c5d6);
+    this.scene.fog = new THREE.FogExp2(this.scene.background.getHex(), 0.012);
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(58, 58), new THREE.MeshLambertMaterial({ color: groundColor }));
+    ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; this.scene.add(ground);
+    const path = new THREE.Mesh(new THREE.PlaneGeometry(5, 42), new THREE.MeshLambertMaterial({ color: accentColor }));
+    path.rotation.x = -Math.PI / 2; path.position.y = .02; this.scene.add(path);
+    for (let i = 0; i < 14; i++) {
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(.16,.24,1.5,6), new THREE.MeshLambertMaterial({color:0x5b3a29}));
+      const crown = new THREE.Mesh(new THREE.ConeGeometry(.8,1.8,7), new THREE.MeshLambertMaterial({color:groundColor}));
+      const x = (i % 2 ? -1 : 1) * (7 + (i % 4) * 2.3), z = -18 + i * 2.8;
+      trunk.position.set(x,.75,z); crown.position.set(x,2.1,z); this.scene.add(trunk,crown);
+    }
+    const lang = getLanguage();
+    const labels = lang === 'es' ? ['Territorio','Lenguas','Memoria viva'] : lang === 'pt-BR' ? ['Território','Línguas','Memória viva'] : ['Territory','Languages','Living memory'];
+    [-8,0,8].forEach((x,index) => {
+      const base = new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.8,.6,8), new THREE.MeshLambertMaterial({color:stoneColor}));
+      const marker = new THREE.Mesh(new THREE.OctahedronGeometry(.65), new THREE.MeshPhongMaterial({color:accentColor,emissive:accentColor,emissiveIntensity:.18}));
+      base.position.set(x,.3,-4); marker.position.set(x,1.5,-4); marker.name='interaction-marker'; this.scene.add(base,marker);
+      playerController.addCollider(x,-4,3.2,3.2);
+      playerController.interactiveZones.push({ id:`people_${cultureId}_${index}`, name:labels[index], type:'object', position:new THREE.Vector3(x,.7,-1.8), radius:3.2, promptText:`${labels[index]} · ${profile.name[lang]}`, onInteract:()=>onTriggerObject(`people_${cultureId}_${index}`) });
+    });
+    const resident = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(.34,.5,.95,7),new THREE.MeshLambertMaterial({color:accentColor})); body.position.y=.6;
+    const head = new THREE.Mesh(new THREE.SphereGeometry(.24,8,8),new THREE.MeshLambertMaterial({color:0xb87545})); head.position.y=1.25;
+    const sign = new THREE.Mesh(new THREE.OctahedronGeometry(.18),new THREE.MeshBasicMaterial({color:0xffd166})); sign.position.y=1.75; sign.name='interaction-marker';
+    resident.add(body,head,sign); resident.position.set(4,0,7); this.scene.add(resident);
+    playerController.interactiveZones.push({id:`npc_people_${cultureId}`,name:profile.name[lang],type:'npc',position:new THREE.Vector3(4,.7,7),radius:2.8,promptText:`${lang==='es'?'Conversar':lang==='pt-BR'?'Conversar':'Talk'} · ${profile.name[lang]}`,onInteract:()=>onTriggerNpc(`npc_people_${cultureId}`)});
   }
 
   public buildAndesEnvironment(

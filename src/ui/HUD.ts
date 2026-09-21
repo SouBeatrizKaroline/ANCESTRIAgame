@@ -1,7 +1,8 @@
 import { GameState } from '../state/GameState';
 import { AudioManager } from '../engine/AudioManager';
 import { ANDES_MISSIONS } from '../data/missions/andesMissions';
-import { t } from '../i18n';
+import { getLanguage, t } from '../i18n';
+import { PEOPLE_CATALOG } from '../data/peopleCatalog';
 
 export class HUD {
   private container: HTMLElement;
@@ -37,13 +38,15 @@ export class HUD {
 
   public render(): void {
     const state = GameState.getInstance();
+    const catalogProfile = PEOPLE_CATALOG.find((item) => item.id === state.selectedCultureId);
+    const journeyName = state.selectedCultureId === 'mexica' ? 'Mexico-Tenochtitlan' : state.selectedCultureId === 'inca' ? 'Andes' : catalogProfile?.name[getLanguage()] || 'Atlas';
 
     this.container.innerHTML = `
       <div class="hud-layer">
         <!-- Barra Superior -->
         <header class="hud-top-bar">
           <div class="hud-brand">
-            <span class="region-pill">ANCESTRIA • ${state.selectedCultureId === 'mexica' ? 'Mexico-Tenochtitlan' : 'Andes'}</span>
+            <span class="region-pill">ANCESTRIA • ${journeyName}</span>
           </div>
 
           <div class="hud-center-stats">
@@ -58,7 +61,7 @@ export class HUD {
             <button class="hud-btn" id="btn-hud-journal" title="${t('hud.journal')} [J]">
               <span>📖 ${t('hud.journal')}</span>
             </button>
-            <button class="hud-btn" id="btn-hud-atlas" title="Abrir mapa de ANCESTRIA [M]">
+            <button class="hud-btn" id="btn-hud-atlas" title="${t('hud.map')} [M]">
               <span>🗺️ ${t('hud.map')}</span>
             </button>
             <button class="hud-btn" id="btn-hud-settings" title="${t('hud.settings')}">
@@ -95,9 +98,9 @@ export class HUD {
           </div>
 
           <button class="touch-action-btn" id="btn-touch-action">
-            <span>ACCIÓN</span>
+            <span>${t('hud.action').toUpperCase()}</span>
           </button>
-          <button class="touch-action-btn touch-jump-btn" id="btn-touch-jump"><span>SALTAR</span></button>
+          <button class="touch-action-btn touch-jump-btn" id="btn-touch-jump"><span>${t('hud.jump').toUpperCase()}</span></button>
         </div>
       </div>
     `;
@@ -110,6 +113,15 @@ export class HUD {
     const state = GameState.getInstance();
     if (state.selectedCultureId === 'mexica') {
       return `<div class="mission-header"><span class="mission-badge">${t('mexica.mission')}</span><h4>${t('mexica.missionTitle')}</h4></div><div class="mission-step"><span class="step-bullet">●</span><p>${t('mexica.objective')}</p></div>`;
+    }
+    if (state.selectedCultureId !== 'inca') {
+      const profile = PEOPLE_CATALOG.find((item) => item.id === state.selectedCultureId);
+      const lang = getLanguage();
+      if (profile) {
+        const badge = lang === 'es' ? 'Recorrido exploratorio' : lang === 'pt-BR' ? 'Percurso exploratório' : 'Exploratory journey';
+        const objective = lang === 'es' ? 'Explora tres núcleos de conocimiento y conversa con el personaje educativo.' : lang === 'pt-BR' ? 'Explore três núcleos de conhecimento e converse com o personagem educativo.' : 'Explore three knowledge points and talk with the educational character.';
+        return `<div class="mission-header"><span class="mission-badge">${badge}</span><h4>${profile.name[lang]}</h4></div><div class="mission-step"><span class="step-bullet">●</span><p>${objective}</p></div>`;
+      }
     }
     const mission = ANDES_MISSIONS.find((m) => m.id === state.activeMissionId) || ANDES_MISSIONS[0];
 

@@ -30,6 +30,8 @@ El Atlas del juego incluye fichas trilingües iniciales de 13 pueblos o formacio
 
 Las fichas diferencian pueblos contemporáneos de formaciones políticas históricas. No convierten automáticamente cada entrada en un recorrido jugable ni sustituyen una investigación comunitaria específica.
 
+Todos los perfiles cuentan ahora con un prototipo 3D exploratorio accesible desde la selección de recorridos y desde la pestaña de pueblos del Atlas. Mexica y Tawantinsuyu conservan sus escenarios narrativos detallados; los otros once recorridos usan un espacio interpretativo del Atlas con personaje educativo y núcleos interactivos sobre territorio, lenguas y memoria viva. Estos espacios no se presentan como reconstrucciones de comunidades o arquitecturas específicas y deberán profundizarse con investigación y colaboración indígena propia antes de incorporar representaciones culturales adicionales.
+
 ## Idiomas e internacionalización
 
 - **Español**: idioma inicial y referencia editorial.
