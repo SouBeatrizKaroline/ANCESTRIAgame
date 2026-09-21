@@ -90,6 +90,12 @@ export class UIManager {
     }, () => this.mexicaJourneyModal.show(), () => this.andeanJourneyModal.show(), () => this.mainMenu.show());
 
     this.regionMapModal = new RegionMapModal(this.modalContainer, (regionId) => {
+      if (regionId === 'andes') {
+        GameState.getInstance().selectCulture('inca');
+        this.hud.render();
+        onStartGame('inca');
+        return;
+      }
       this.showToast(`Territorio ${regionId.toUpperCase()} seleccionado.`, 'info');
       restoreModalOrigin();
     }, restoreModalOrigin);
