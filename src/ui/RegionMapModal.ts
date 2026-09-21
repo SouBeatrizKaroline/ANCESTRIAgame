@@ -30,13 +30,15 @@ export class RegionMapModal {
   private container: HTMLElement;
   private onSelectRegion: (regionId: RegionId) => void;
   private onSelectCulture: (cultureId: CultureId) => void;
+  private onExploreCulture: (cultureId: CultureId) => void;
   private onDismiss: () => void;
   private activeView: 'territories' | 'peoples' = 'territories';
 
-  constructor(container: HTMLElement, onSelectRegion: (regionId: RegionId) => void, onSelectCulture: (cultureId: CultureId) => void, onDismiss: () => void = () => {}) {
+  constructor(container: HTMLElement, onSelectRegion: (regionId: RegionId) => void, onSelectCulture: (cultureId: CultureId) => void, onExploreCulture: (cultureId: CultureId) => void, onDismiss: () => void = () => {}) {
     this.container = container;
     this.onSelectRegion = onSelectRegion;
     this.onSelectCulture = onSelectCulture;
+    this.onExploreCulture = onExploreCulture;
     this.onDismiss = onDismiss;
   }
 
@@ -51,10 +53,10 @@ export class RegionMapModal {
     const regions = Object.values(ALL_REGIONS);
     const lang = getLanguage();
     const labels = lang === 'es'
-      ? { territories:'Territorios', peoples:'13 pueblos y formaciones', living:'Pueblo contemporáneo', historical:'Formación histórica', language:'Lenguas', source:'Fuente panorámica', play:'Explorar prototipo 3D', caution:'Estas fichas son puntos de partida. Cada recorrido jugable requiere fuentes indígenas propias, actuales y específicas.' }
+      ? { territories:'Territorios', peoples:'13 pueblos y formaciones', living:'Pueblo contemporáneo', historical:'Formación histórica', language:'Lenguas', source:'Fuente panorámica', play:'Explorar prototipo 3D', learn:'Abrir recorrido educativo', caution:'Estas fichas son puntos de partida. Cada recorrido jugable requiere fuentes indígenas propias, actuales y específicas.' }
       : lang === 'pt-BR'
-        ? { territories:'Territórios', peoples:'13 povos e formações', living:'Povo contemporâneo', historical:'Formação histórica', language:'Línguas', source:'Fonte panorâmica', play:'Explorar protótipo 3D', caution:'Estas fichas são pontos de partida. Cada percurso jogável exige fontes indígenas próprias, atuais e específicas.' }
-        : { territories:'Territories', peoples:'13 peoples and formations', living:'Contemporary people', historical:'Historical formation', language:'Languages', source:'Overview source', play:'Explore 3D prototype', caution:'These profiles are starting points. Every playable journey requires current, specific Indigenous sources of its own.' };
+        ? { territories:'Territórios', peoples:'13 povos e formações', living:'Povo contemporâneo', historical:'Formação histórica', language:'Línguas', source:'Fonte panorâmica', play:'Explorar protótipo 3D', learn:'Abrir percurso educativo', caution:'Estas fichas são pontos de partida. Cada percurso jogável exige fontes indígenas próprias, atuais e específicas.' }
+        : { territories:'Territories', peoples:'13 peoples and formations', living:'Contemporary people', historical:'Historical formation', language:'Languages', source:'Overview source', play:'Explore 3D prototype', learn:'Open learning journey', caution:'These profiles are starting points. Every playable journey requires current, specific Indigenous sources of its own.' };
 
     this.container.innerHTML = `
       <div class="atlas-modal-overlay">
@@ -118,7 +120,7 @@ export class RegionMapModal {
                 `;
                 })
                 .join('')}
-            </div>` : `<p class="people-catalog-caution">${labels.caution}</p><div class="people-catalog-grid">${PEOPLE_CATALOG.map((person) => `<article class="people-catalog-card"><div class="people-card-top"><span class="region-status-badge">${person.kind === 'living' ? labels.living : labels.historical}</span><span>${person.kind === 'living' ? '●' : '◆'}</span></div><h3>${person.name[lang]}</h3><p class="people-territory">📍 ${person.territory[lang]}</p><p>${person.summary[lang]}</p><div class="people-language"><strong>${labels.language}:</strong> ${person.languages[lang]}</div><button class="btn-primary btn-enter-culture" data-culture-id="${person.id}">${labels.play} →</button></article>`).join('')}</div><a class="atlas-source-link" href="${ATLAS_SOURCE_URL}" target="_blank" rel="noopener noreferrer">${labels.source}: Atlas sociolingüístico UNICEF / FUNPROEIB Andes ↗</a>`}
+            </div>` : `<p class="people-catalog-caution">${labels.caution}</p><div class="people-catalog-grid">${PEOPLE_CATALOG.map((person) => `<article class="people-catalog-card"><div class="people-card-top"><span class="region-status-badge">${person.kind === 'living' ? labels.living : labels.historical}</span><span>${person.kind === 'living' ? '●' : '◆'}</span></div><h3>${person.name[lang]}</h3><p class="people-territory">📍 ${person.territory[lang]}</p><p>${person.summary[lang]}</p><div class="people-language"><strong>${labels.language}:</strong> ${person.languages[lang]}</div><button class="btn-primary btn-enter-culture" data-culture-id="${person.id}">${labels.play} →</button><button class="btn-menu-option culture-learn btn-learn-culture" data-culture-id="${person.id}">${labels.learn}</button></article>`).join('')}</div><a class="atlas-source-link" href="${ATLAS_SOURCE_URL}" target="_blank" rel="noopener noreferrer">${labels.source}: Atlas sociolingüístico UNICEF / FUNPROEIB Andes ↗</a>`}
           </div>
         </div>
       </div>
@@ -147,6 +149,9 @@ export class RegionMapModal {
     this.container.querySelectorAll<HTMLButtonElement>('[data-atlas-view]').forEach((button) => button.addEventListener('click', () => { this.activeView = button.dataset.atlasView as 'territories' | 'peoples'; AudioManager.getInstance().playClick(); this.render(); }));
     this.container.querySelectorAll<HTMLButtonElement>('.btn-enter-culture').forEach((button) => button.addEventListener('click', () => {
       const cultureId = button.dataset.cultureId as CultureId; AudioManager.getInstance().playClick(); this.close(); this.onSelectCulture(cultureId);
+    }));
+    this.container.querySelectorAll<HTMLButtonElement>('.btn-learn-culture').forEach((button) => button.addEventListener('click', () => {
+      const cultureId = button.dataset.cultureId as CultureId; AudioManager.getInstance().playClick(); this.close(); this.onExploreCulture(cultureId);
     }));
   }
 

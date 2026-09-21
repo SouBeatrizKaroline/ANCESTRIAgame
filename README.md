@@ -32,6 +32,10 @@ Las fichas diferencian pueblos contemporáneos de formaciones políticas histór
 
 Todos los perfiles cuentan ahora con un prototipo 3D exploratorio accesible desde la selección de recorridos y desde la pestaña de pueblos del Atlas. Mexica y Tawantinsuyu conservan sus escenarios narrativos detallados; los otros once recorridos usan un espacio interpretativo del Atlas con personaje educativo y núcleos interactivos sobre territorio, lenguas y memoria viva. Estos espacios no se presentan como reconstrucciones de comunidades o arquitecturas específicas y deberán profundizarse con investigación y colaboración indígena propia antes de incorporar representaciones culturales adicionales.
 
+Los trece perfiles también incluyen un recorrido educativo de cinco capítulos. En los once recorridos incorporados más recientemente, los capítulos abordan nombre e identidad, territorio, lenguas, continuidad histórica o contemporánea y responsabilidad en el uso de fuentes. Las alternativas se presentan en orden variable, el progreso queda guardado localmente y todo el flujo está disponible en español, portugués e inglés.
+
+La interfaz móvil utiliza un HUD compacto, misión expandible, controles junto al borde inferior y modales con altura dinámica, desplazamiento interno y respeto por las áreas seguras del dispositivo.
+
 ## Idiomas e internacionalización
 
 - **Español**: idioma inicial y referencia editorial.

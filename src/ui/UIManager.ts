@@ -11,6 +11,7 @@ import { CultureSelectionModal } from './CultureSelectionModal';
 import { MexicaJourneyModal } from './MexicaJourneyModal';
 import { AndeanJourneyModal } from './AndeanJourneyModal';
 import { MexicaDialogueModal } from './MexicaDialogueModal';
+import { PeopleJourneyModal } from './PeopleJourneyModal';
 import { TerracesMinigame } from './Minigames/TerracesMinigame';
 import { QuipuMinigame } from './Minigames/QuipuMinigame';
 import { StoneworkMinigame } from './Minigames/StoneworkMinigame';
@@ -35,6 +36,7 @@ export class UIManager {
   public mexicaJourneyModal!: MexicaJourneyModal;
   public andeanJourneyModal!: AndeanJourneyModal;
   public mexicaDialogueModal!: MexicaDialogueModal;
+  public peopleJourneyModal!: PeopleJourneyModal;
 
   private onVirtualMoveCallback: (dx: number, dz: number) => void;
   private onInteractCallback: () => void;
@@ -86,10 +88,11 @@ export class UIManager {
     this.aboutModal = new AboutModal(this.modalContainer, restoreModalOrigin);
     this.mexicaJourneyModal = new MexicaJourneyModal(this.modalContainer, () => this.cultureSelectionModal.show());
     this.andeanJourneyModal = new AndeanJourneyModal(this.modalContainer, () => this.cultureSelectionModal.show());
+    this.peopleJourneyModal = new PeopleJourneyModal(this.modalContainer, () => this.cultureSelectionModal.show());
     this.cultureSelectionModal = new CultureSelectionModal(this.modalContainer, (cultureId) => {
       this.hud.render();
       onStartGame(cultureId);
-    }, () => this.mexicaJourneyModal.show(), () => this.andeanJourneyModal.show(), () => this.mainMenu.show());
+    }, () => this.mexicaJourneyModal.show(), () => this.andeanJourneyModal.show(), (cultureId) => this.peopleJourneyModal.show(cultureId), () => this.mainMenu.show());
 
     this.regionMapModal = new RegionMapModal(this.modalContainer, (regionId) => {
       if (regionId === 'andes') {
@@ -104,6 +107,10 @@ export class UIManager {
       GameState.getInstance().selectCulture(cultureId);
       this.hud.render();
       onStartGame(cultureId);
+    }, (cultureId) => {
+      if (cultureId === 'mexica') this.mexicaJourneyModal.show();
+      else if (cultureId === 'inca') this.andeanJourneyModal.show();
+      else this.peopleJourneyModal.show(cultureId);
     }, restoreModalOrigin);
 
     this.hud = new HUD(this.hudContainer, {
