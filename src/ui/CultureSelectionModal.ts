@@ -23,13 +23,12 @@ export class CultureSelectionModal {
       const statusLabel = progress.status === 'completed' ? copy.complete : progress.status === 'in_progress' ? copy.progress : progress.status === 'locked' ? copy.locked : copy.available;
       const primary = progress.status === 'completed' ? copy.replay : progress.status === 'in_progress' ? copy.continue : copy.play;
       const prerequisite = progress.prerequisite ? journeyName(progress.prerequisite, lang) : '';
-      return `<article class="culture-card ${progress.unlocked ? 'culture-card-active' : 'culture-card-locked'}">
+      return `<article class="culture-card ${progress.unlocked ? 'culture-card-active' : 'culture-card-locked'}" data-route-step="${index + 1}">
         <div class="journey-card-heading"><span class="culture-status">${String(index + 1).padStart(2,'0')} · ${statusLabel}</span><strong>${progress.completed}/${progress.total}</strong></div>
-        <h3>${profile.name[lang]}</h3><p>${profile.summary[lang]}</p>
-        <div class="journey-meter" aria-label="${progress.completed}/${progress.total} ${copy.memories}"><span style="width:${(progress.completed/progress.total)*100}%"></span></div>
+        <h3>${profile.name[lang]}</h3>${progress.unlocked ? `<p>${profile.summary[lang]}</p><div class="journey-meter" aria-label="${progress.completed}/${progress.total} ${copy.memories}"><span style="width:${(progress.completed/progress.total)*100}%"></span></div>` : `<p class="locked-route-hint">${copy.requires}: ${prerequisite}</p>`}
         ${progress.unlocked
           ? `<button class="btn-menu-primary culture-start-any" data-culture-id="${cultureId}">${primary}</button><button class="btn-menu-option culture-learn culture-journey-any" data-culture-id="${cultureId}">${copy.learn}</button>`
-          : `<button class="btn-menu-option journey-locked-button" disabled>🔒 ${copy.requires}: ${prerequisite}</button>`}
+          : `<span class="route-lock" aria-hidden="true">🔒</span>`}
       </article>`;
     }).join('');
 

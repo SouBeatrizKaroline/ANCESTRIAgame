@@ -389,6 +389,17 @@ html, body {
 .journey-card-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}.journey-card-heading>strong{color:var(--color-gold);font-size:.78rem}
 .journey-meter{height:6px;margin:10px 0 14px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.1)}.journey-meter span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--color-orange),var(--color-gold));transition:width .3s ease}
 .culture-card-locked{opacity:.68;border-style:dashed}.journey-locked-button{width:100%;margin-top:auto;cursor:not-allowed;opacity:.8}.journey-order-note{margin:-4px 0 16px;padding:8px 12px;border-left:3px solid var(--color-gold);color:#aeb9c4;font-size:.78rem}
+.people-library-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.people-library-card{display:flex;min-height:180px;flex-direction:column;padding:16px;border:1px solid rgba(244,162,97,.2);border-radius:14px;background:linear-gradient(150deg,rgba(39,39,66,.9),rgba(18,22,34,.96));transition:.2s ease}
+.people-library-card:hover{border-color:rgba(244,162,97,.62);transform:translateY(-2px)}
+.people-library-card h3{margin:14px 0 9px;font:700 1.05rem/1.2 var(--font-display)}
+.people-library-card .people-territory{color:#b6c3c8;font-size:.78rem;line-height:1.45}
+.atlas-consult-button,.atlas-reader-back{margin-top:auto;border:0;background:transparent;color:#f2b367;font:700 .82rem var(--font-base);text-align:left;cursor:pointer}
+.atlas-profile-reader{min-height:410px;padding:22px;border:1px solid rgba(244,162,97,.3);border-radius:18px;background:radial-gradient(circle at 90% 0,rgba(244,162,97,.12),transparent 38%),rgba(20,28,39,.92)}
+.atlas-reader-back{margin:0 0 24px}.atlas-reader-hero{padding:10px 0 22px;border-bottom:1px solid rgba(255,255,255,.1)}.atlas-reader-hero h3{margin:10px 0 8px;font:700 clamp(1.7rem,4vw,2.7rem) var(--font-display)}.atlas-reader-hero p{color:#d3b181}
+.atlas-reader-columns{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;padding:26px 0}.atlas-reader-columns p{margin-top:10px;color:#d1d9dd;line-height:1.7}.atlas-reader-columns aside{margin-top:18px;padding:14px;border-left:3px solid var(--color-gold);background:rgba(244,162,97,.08);color:#aebdc3;font-size:.82rem;line-height:1.55}
+@media(max-width:900px){.people-library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.people-library-grid{grid-template-columns:1fr 1fr;gap:9px}.people-library-card{min-height:155px;padding:12px}.people-library-card h3{font-size:.9rem}.people-library-card .region-status-badge{font-size:.58rem}.atlas-reader-columns{grid-template-columns:1fr;gap:12px;padding:18px 0}.atlas-profile-reader{padding:16px}}
 .atlas-source-link{display:block;margin:18px 0 2px;padding:12px;text-align:center;color:#f1bd78;border:1px solid rgba(244,162,97,.25);border-radius:12px;background:rgba(10,15,29,.4)}
 @media (max-width:720px){.region-cards-grid{grid-template-columns:1fr}.atlas-map-visual{padding:14px}.region-card{min-height:240px}.atlas-header{padding:18px}}
 @media(max-width:900px){.people-catalog-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -1194,9 +1205,12 @@ html, body {
 .culture-selection-window .settings-header { padding:18px 28px; flex:0 0 auto; }
 .culture-selection-window .settings-body { padding:18px 28px 20px; }
 .culture-intro { color: #cbd5e1; line-height: 1.5; margin: 0 0 14px; font-size:.92rem; }
-.culture-grid { display: grid; grid-template-columns: 1fr 1fr .65fr; gap: 16px; }
+.culture-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
 .culture-card { display:flex; flex-direction:column; min-width:0; border: 1px solid rgba(255,255,255,.12); border-radius: var(--border-radius-md); padding: 16px 18px; background: rgba(15,23,42,.52); }
 .culture-card-active { border-color: var(--color-gold); background: linear-gradient(145deg, rgba(180,83,9,.2), rgba(15,23,42,.62)); }
+.culture-card-active:first-child{grid-column:span 2;min-height:300px;box-shadow:0 16px 34px rgba(0,0,0,.2)}
+.culture-card-locked{position:relative;min-height:145px;padding-right:48px;background:rgba(10,15,27,.72)}
+.culture-card-locked h3{margin-top:12px}.culture-card-locked .locked-route-hint{margin:auto 0 0;color:#8f9aa7;font-size:.72rem}.route-lock{position:absolute;right:16px;bottom:16px;display:grid;width:28px;height:28px;place-items:center;border:1px solid rgba(244,162,97,.25);border-radius:50%;filter:grayscale(.3)}
 .culture-card-planned { opacity: .64; }
 .culture-status { display: inline-block; color: var(--color-gold); font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
 .culture-card h3 { margin: 8px 0; font-size:1.05rem; }
@@ -1207,7 +1221,7 @@ html, body {
 .culture-preview-note { margin-top:12px; padding:12px; border-radius:10px; background:rgba(244,162,97,.1); color:#f3d8b4 !important; font-size:.82rem; }
 .culture-back { margin-top: 12px; padding:9px 14px; }
 @media (max-width: 900px) and (min-width: 621px) { .culture-grid{grid-template-columns:1fr 1fr}.culture-card-planned{grid-column:1 / -1;min-height:auto}.culture-selection-window .settings-body{padding:14px 18px 18px} }
-@media (max-width: 620px) { .culture-grid { grid-template-columns: 1fr; } .culture-selection-window{max-height:96vh}.culture-selection-window .settings-body{padding:16px 18px 20px} }
+@media (max-width: 620px) { .culture-grid { grid-template-columns: 1fr 1fr;gap:10px } .culture-card-active:first-child{grid-column:1 / -1;min-height:270px}.culture-card-locked{min-height:128px;padding:12px 36px 12px 12px}.culture-card-locked h3{font-size:.85rem}.culture-card-locked .culture-status{font-size:.59rem}.culture-card-locked .journey-card-heading>strong{display:none}.culture-selection-window{max-height:96vh}.culture-selection-window .settings-body{padding:16px 18px 20px} }
 @media (max-height: 680px) and (min-width: 761px) { .culture-selection-window .settings-header{padding:14px 24px}.culture-selection-window .settings-body{padding:12px 24px 14px}.culture-intro{margin-bottom:10px}.culture-card{padding:12px 14px}.culture-card p{font-size:.8rem}.culture-name-note{font-size:.69rem!important}.culture-back{margin-top:8px} }
 
 .mexica-journey-overlay { position:fixed; inset:0; z-index:120; display:grid; place-items:center; padding:20px; background:linear-gradient(rgba(5,14,16,.78),rgba(5,14,16,.92)),url('/assets/menu/mexica-lake.webp') center/cover; }

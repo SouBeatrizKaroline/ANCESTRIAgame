@@ -9,7 +9,7 @@ Juego educativo web de exploración 2.5D/3D sobre historias, tecnologías, memor
 ## Exploración y Atlas: funciones diferentes
 
 - **Exploración** es el modo jugable. Los recorridos se liberan de uno en uno, comenzando siempre por Mexica. Completar las memorias de un recorrido abre el siguiente.
-- **Atlas de las Américas** es una biblioteca de consulta. Mantiene visibles las 13 fichas sociolingüísticas incluso cuando su recorrido jugable todavía está bloqueado.
+- **Atlas de las Américas** es una biblioteca de consulta libre. Mantiene visibles las 13 fichas sociolingüísticas en tarjetas compactas y abre cada pueblo en una ficha de lectura propia. No repite botones de juego, barras de progreso ni bloqueos.
 - Un recorrido ya abierto o completado puede volver a jugarse en cualquier momento.
 - Cada descubrimiento, conversación o capítulo otorga fragmentos solamente la primera vez. Si un recorrido quedó incompleto, las memorias pendientes todavía pueden completarse y puntuar una vez.
 - El orden de liberación es una decisión curatorial de navegación y no expresa jerarquía, evolución ni homogeneidad cultural entre los pueblos.

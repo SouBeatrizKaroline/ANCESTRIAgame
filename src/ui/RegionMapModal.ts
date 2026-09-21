@@ -34,6 +34,7 @@ export class RegionMapModal {
   private onExploreCulture: (cultureId: CultureId) => void;
   private onDismiss: () => void;
   private activeView: 'territories' | 'peoples' = 'territories';
+  private selectedProfile: CultureId | null = null;
 
   constructor(container: HTMLElement, onSelectRegion: (regionId: RegionId) => void, onSelectCulture: (cultureId: CultureId) => void, onExploreCulture: (cultureId: CultureId) => void, onDismiss: () => void = () => {}) {
     this.container = container;
@@ -54,10 +55,12 @@ export class RegionMapModal {
     const regions = Object.values(ALL_REGIONS);
     const lang = getLanguage();
     const labels = lang === 'es'
-      ? { territories:'Exploración', peoples:'Atlas: 13 pueblos y formaciones', living:'Pueblo contemporáneo', historical:'Formación histórica', language:'Lenguas', source:'Fuente panorámica', play:'Explorar prototipo 3D', learn:'Abrir recorrido educativo', caution:'El Atlas es una biblioteca de consulta: todas las fichas permanecen visibles. La exploración jugable avanza de una en una y requiere fuentes indígenas propias, actuales y específicas.', locked:'Recorrido todavía bloqueado', requires:'Completa primero', progress:'Progreso' }
+      ? { territories:'Mapa de territorios', peoples:'Biblioteca de pueblos', living:'Pueblo contemporáneo', historical:'Formación histórica', language:'Lenguas', source:'Fuente panorámica', caution:'Consulta libre: estas fichas no dependen del progreso del juego. Cada una diferencia territorio, lenguas, contexto y continuidad.', consult:'Consultar ficha', back:'Volver a la biblioteca', context:'Contexto y cuidado editorial', principle:'Esta ficha es un punto de partida. Un recorrido cultural más específico debe priorizar voces, autorías y organizaciones indígenas del pueblo correspondiente.', requires:'Completa primero' }
       : lang === 'pt-BR'
-        ? { territories:'Exploração', peoples:'Atlas: 13 povos e formações', living:'Povo contemporâneo', historical:'Formação histórica', language:'Línguas', source:'Fonte panorâmica', play:'Explorar protótipo 3D', learn:'Abrir percurso educativo', caution:'O Atlas é uma biblioteca de consulta: todas as fichas permanecem visíveis. A exploração jogável avança uma por vez e exige fontes indígenas próprias, atuais e específicas.', locked:'Percurso ainda bloqueado', requires:'Conclua primeiro', progress:'Progresso' }
-        : { territories:'Exploration', peoples:'Atlas: 13 peoples and formations', living:'Contemporary people', historical:'Historical formation', language:'Languages', source:'Overview source', play:'Explore 3D prototype', learn:'Open learning journey', caution:'The Atlas is a reference library: every profile remains visible. Playable exploration advances one journey at a time and requires current, specific Indigenous sources.', locked:'Journey still locked', requires:'Complete first', progress:'Progress' };
+        ? { territories:'Mapa de territórios', peoples:'Biblioteca de povos', living:'Povo contemporâneo', historical:'Formação histórica', language:'Línguas', source:'Fonte panorâmica', caution:'Consulta livre: estas fichas não dependem do progresso do jogo. Cada uma diferencia território, línguas, contexto e continuidade.', consult:'Consultar ficha', back:'Voltar à biblioteca', context:'Contexto e cuidado editorial', principle:'Esta ficha é um ponto de partida. Um percurso cultural mais específico deve priorizar vozes, autorias e organizações indígenas do povo correspondente.', requires:'Conclua primeiro' }
+        : { territories:'Territory map', peoples:'Peoples library', living:'Contemporary people', historical:'Historical formation', language:'Languages', source:'Overview source', caution:'Open reference: these profiles do not depend on game progress. Each distinguishes territory, languages, context, and continuity.', consult:'View profile', back:'Back to library', context:'Context and editorial care', principle:'This profile is a starting point. A more specific cultural journey must prioritize Indigenous voices, authors, and organizations from the corresponding people.', requires:'Complete first' };
+
+    const selected = this.selectedProfile ? PEOPLE_CATALOG.find((item) => item.id === this.selectedProfile) : null;
 
     this.container.innerHTML = `
       <div class="atlas-modal-overlay">
@@ -122,9 +125,9 @@ export class RegionMapModal {
                 `;
                 })
                 .join('')}
-            </div>` : `<p class="people-catalog-caution">${labels.caution}</p><div class="people-catalog-grid">${JOURNEY_ORDER.map((cultureId) => {
-              const person=PEOPLE_CATALOG.find((item)=>item.id===cultureId)!; const progress=getJourneyProgress(cultureId,state.unlockedDiscoveryIds,state.selectedCultureId); const prerequisite=progress.prerequisite?journeyName(progress.prerequisite,lang):'';
-              return `<article class="people-catalog-card ${progress.unlocked?'':'people-card-locked'}"><div class="people-card-top"><span class="region-status-badge">${person.kind === 'living' ? labels.living : labels.historical}</span><span>${progress.completed}/${progress.total}</span></div><h3>${person.name[lang]}</h3><p class="people-territory">📍 ${person.territory[lang]}</p><p>${person.summary[lang]}</p><div class="people-language"><strong>${labels.language}:</strong> ${person.languages[lang]}</div><div class="journey-meter"><span style="width:${(progress.completed/progress.total)*100}%"></span></div>${progress.unlocked?`<button class="btn-primary btn-enter-culture" data-culture-id="${person.id}">${labels.play} →</button><button class="btn-menu-option culture-learn btn-learn-culture" data-culture-id="${person.id}">${labels.learn}</button>`:`<button class="btn-menu-option journey-locked-button" disabled>🔒 ${labels.requires}: ${prerequisite}</button>`}</article>`;
+            </div>` : selected ? `<article class="atlas-profile-reader"><button class="atlas-reader-back" id="atlas-profile-back">← ${labels.back}</button><div class="atlas-reader-hero"><span class="region-status-badge">${selected.kind === 'living' ? labels.living : labels.historical}</span><h3>${selected.name[lang]}</h3><p>📍 ${selected.territory[lang]}</p></div><div class="atlas-reader-columns"><section><span class="badge">${labels.context}</span><p>${selected.summary[lang]}</p></section><section><strong>${labels.language}</strong><p>${selected.languages[lang]}</p><aside>${labels.principle}</aside></section></div><a class="atlas-source-link" href="${ATLAS_SOURCE_URL}" target="_blank" rel="noopener noreferrer">${labels.source}: Atlas sociolingüístico UNICEF / FUNPROEIB Andes ↗</a></article>` : `<p class="people-catalog-caution">${labels.caution}</p><div class="people-library-grid">${JOURNEY_ORDER.map((cultureId) => {
+              const person=PEOPLE_CATALOG.find((item)=>item.id===cultureId)!;
+              return `<article class="people-library-card"><div class="people-card-top"><span class="region-status-badge">${person.kind === 'living' ? labels.living : labels.historical}</span><span aria-hidden="true">${person.kind === 'living' ? '●' : '◆'}</span></div><h3>${person.name[lang]}</h3><p class="people-territory">📍 ${person.territory[lang]}</p><button class="atlas-consult-button" data-profile-id="${person.id}">${labels.consult} →</button></article>`;
             }).join('')}</div><a class="atlas-source-link" href="${ATLAS_SOURCE_URL}" target="_blank" rel="noopener noreferrer">${labels.source}: Atlas sociolingüístico UNICEF / FUNPROEIB Andes ↗</a>`}
           </div>
         </div>
@@ -151,7 +154,9 @@ export class RegionMapModal {
         this.onSelectRegion(regionId);
       });
     });
-    this.container.querySelectorAll<HTMLButtonElement>('[data-atlas-view]').forEach((button) => button.addEventListener('click', () => { this.activeView = button.dataset.atlasView as 'territories' | 'peoples'; AudioManager.getInstance().playClick(); this.render(); }));
+    this.container.querySelectorAll<HTMLButtonElement>('[data-atlas-view]').forEach((button) => button.addEventListener('click', () => { this.activeView = button.dataset.atlasView as 'territories' | 'peoples'; this.selectedProfile = null; AudioManager.getInstance().playClick(); this.render(); }));
+    this.container.querySelectorAll<HTMLButtonElement>('[data-profile-id]').forEach((button) => button.addEventListener('click', () => { this.selectedProfile = button.dataset.profileId as CultureId; AudioManager.getInstance().playClick(); this.render(); }));
+    this.container.querySelector('#atlas-profile-back')?.addEventListener('click', () => { this.selectedProfile = null; AudioManager.getInstance().playClick(); this.render(); });
     this.container.querySelectorAll<HTMLButtonElement>('.btn-enter-culture').forEach((button) => button.addEventListener('click', () => {
       const cultureId = button.dataset.cultureId as CultureId; AudioManager.getInstance().playClick(); this.close(); this.onSelectCulture(cultureId);
     }));
