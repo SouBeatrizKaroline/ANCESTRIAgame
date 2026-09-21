@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import { GameState, CULTURE_SPAWN_POINTS } from '../state/GameState';
+import { GameState } from '../state/GameState';
 import { AudioManager } from './AudioManager';
+import { ANDES_NPCS } from '../data/dialogues/andesDialogues';
 import { CultureId } from '../data/types';
 
 export interface InteractiveZone {
@@ -13,9 +14,28 @@ export interface InteractiveZone {
   onInteract: () => void;
 }
 
+export const CULTURE_SPAWN_POINTS: Record<string, { x: number; y: number; z: number; rotationY: number }> = {
+  mexica: { x: 0, y: 0.7, z: 6, rotationY: Math.PI },
+  inca: { x: 0, y: 0.7, z: 10, rotationY: Math.PI },
+  maya: { x: 0, y: 0.7, z: 10, rotationY: Math.PI },
+  amazonia: { x: 0, y: 0.7, z: 10, rotationY: Math.PI },
+  indigenas_brasil: { x: 0, y: 0.7, z: 10, rotationY: Math.PI },
+  quechua: { x: 0, y: 0.7, z: 10, rotationY: Math.PI },
+  aymara: { x: 0, y: 0.7, z: 10, rotationY: Math.PI },
+  zapotec: { x: 0, y: 0.7, z: 10, rotationY: Math.PI },
+  raramuri: { x: 0, y: 0.7, z: 10, rotationY: Math.PI },
+  bribri: { x: 0, y: 0.7, z: 10, rotationY: Math.PI },
+  wayuu: { x: 0, y: 0.7, z: 10, rotationY: Math.PI },
+  warao: { x: 0, y: 0.7, z: 10, rotationY: Math.PI },
+  yanomami: { x: 0, y: 0.7, z: 10, rotationY: Math.PI },
+  guarani: { x: 0, y: 0.7, z: 10, rotationY: Math.PI },
+  tupinamba: { x: 0, y: 0.7, z: 10, rotationY: Math.PI },
+  xukuru: { x: 0, y: 0.7, z: 10, rotationY: Math.PI },
+  default: { x: 0, y: 0.7, z: 10, rotationY: Math.PI }
+};
+
 export class PlayerController {
   public group: THREE.Group;
-  public cultureId: CultureId;
   private leftLeg!: THREE.Mesh;
   private rightLeg!: THREE.Mesh;
   private bodyMesh!: THREE.Mesh;
@@ -30,38 +50,41 @@ export class PlayerController {
   private lastStepSoundTime: number = 0;
   private verticalVelocity = 0;
   private readonly groundY = 0.7;
-  public colliders: THREE.Box3[] = [];
+  private colliders: THREE.Box3[] = [];
 
   public interactiveZones: InteractiveZone[] = [];
   public currentInteractiveZone: InteractiveZone | null = null;
 
   constructor(cultureId: CultureId = 'inca') {
-    this.cultureId = cultureId;
     this.group = new THREE.Group();
     this.buildMesh(cultureId);
     this.setupInputs();
 
-    this.resetToSpawn(cultureId);
+    // Posiciona o jogador com ponto de surgimento seguro da cultura selecionada
+    const spawn = CULTURE_SPAWN_POINTS[cultureId] || CULTURE_SPAWN_POINTS.default;
+    this.group.position.set(spawn.x, spawn.y, spawn.z);
+    this.group.rotation.y = spawn.rotationY;
   }
 
-  public resetToSpawn(cultureId: CultureId = this.cultureId): void {
-    this.cultureId = cultureId;
-    const spawn = CULTURE_SPAWN_POINTS[cultureId] || { x: 0, y: 0.7, z: 12, rotationY: Math.PI };
+  public spawnForCulture(cultureId: CultureId): void {
+    const spawn = CULTURE_SPAWN_POINTS[cultureId] || CULTURE_SPAWN_POINTS.default;
     this.group.position.set(spawn.x, spawn.y, spawn.z);
     this.group.rotation.y = spawn.rotationY;
     this.verticalVelocity = 0;
+    this.resolveOverlap();
 
     const state = GameState.getInstance();
-    state.playerTransform.x = spawn.x;
-    state.playerTransform.y = spawn.y;
-    state.playerTransform.z = spawn.z;
-    state.playerTransform.rotationY = spawn.rotationY;
+    state.playerTransform.x = this.group.position.x;
+    state.playerTransform.y = this.group.position.y;
+    state.playerTransform.z = this.group.position.z;
+    state.playerTransform.rotationY = this.group.rotation.y;
   }
 
   private buildMesh(cultureId: CultureId): void {
+    // Materiais low-poly estilizados
     const skinMat = new THREE.MeshLambertMaterial({ color: 0xc68642 });
     const ponchoMat = new THREE.MeshLambertMaterial({ color: cultureId === 'mexica' ? 0x274c47 : 0xb23a22 });
-    const ponchoAccentMat = new THREE.MeshLambertMaterial({ color: 0xf4a261 });
+    const ponchoAccentMat = new THREE.MeshLambertMaterial({ color: 0xf4a261 }); // Ocre
     const chulloMat = new THREE.MeshLambertMaterial({ color: cultureId === 'mexica' ? 0xc98c3a : 0x2a9d8f });
     const chulloAccentMat = new THREE.MeshLambertMaterial({ color: 0xe76f51 });
     const pantsMat = new THREE.MeshLambertMaterial({ color: 0x4a4e69 });
@@ -69,29 +92,34 @@ export class PlayerController {
     const hairMat = new THREE.MeshLambertMaterial({ color: 0x25150f });
     const eyeMat = new THREE.MeshBasicMaterial({ color: 0x1b1210 });
 
+    // Tronco / Poncho (Unku)
     const ponchoGeo = new THREE.CylinderGeometry(0.32, 0.45, 0.65, 6);
     this.bodyMesh = new THREE.Mesh(ponchoGeo, ponchoMat);
     this.bodyMesh.position.y = 0.62;
     this.bodyMesh.castShadow = true;
     this.group.add(this.bodyMesh);
 
+    // Detalhe de faixa no poncho (Tokapu)
     const bandGeo = new THREE.CylinderGeometry(0.38, 0.42, 0.12, 6);
     const bandMesh = new THREE.Mesh(bandGeo, ponchoAccentMat);
     bandMesh.position.y = 0.58;
     this.group.add(bandMesh);
 
+    // Bolsa tiracolo (Chuspa)
     const bagGeo = new THREE.BoxGeometry(0.18, 0.22, 0.1);
     this.chuspaMesh = new THREE.Mesh(bagGeo, bagMat);
     this.chuspaMesh.position.set(0.3, 0.5, 0.15);
     this.chuspaMesh.rotation.z = -0.2;
     this.group.add(this.chuspaMesh);
 
+    // Cabeça
     const headGeo = new THREE.BoxGeometry(0.35, 0.35, 0.35);
     this.headMesh = new THREE.Mesh(headGeo, skinMat);
     this.headMesh.position.y = 1.1;
     this.headMesh.castShadow = true;
     this.group.add(this.headMesh);
 
+    // Cabelo e rosto dão identidade e legibilidade à distância sem buscar realismo genérico.
     const hair = new THREE.Mesh(new THREE.BoxGeometry(0.37, 0.12, 0.37), hairMat);
     hair.position.set(0, 1.25, 0);
     this.group.add(hair);
@@ -101,11 +129,13 @@ export class PlayerController {
       this.group.add(eye);
     });
 
+    // Gorro Andino com abas (Chullo)
     const hatGeo = new THREE.ConeGeometry(0.32, 0.4, 5);
     this.hatMesh = new THREE.Mesh(hatGeo, chulloMat);
     this.hatMesh.position.y = 1.35;
     this.group.add(this.hatMesh);
 
+    // Abas de orelha do chullo
     const earGeo = new THREE.BoxGeometry(0.06, 0.16, 0.12);
     const leftEar = new THREE.Mesh(earGeo, chulloAccentMat);
     leftEar.position.set(0.2, 1.05, 0);
@@ -114,6 +144,7 @@ export class PlayerController {
     this.group.add(leftEar);
     this.group.add(rightEar);
 
+    // Pernas
     const legGeo = new THREE.BoxGeometry(0.14, 0.45, 0.14);
     this.leftLeg = new THREE.Mesh(legGeo, pantsMat);
     this.leftLeg.position.set(0.14, 0.22, 0);
@@ -159,50 +190,58 @@ export class PlayerController {
     );
   }
 
-  public ensureSafePosition(): void {
-    const radius = 0.35;
-    const curBox = new THREE.Box3(
-      new THREE.Vector3(this.group.position.x - radius, 0, this.group.position.z - radius),
-      new THREE.Vector3(this.group.position.x + radius, 1.5, this.group.position.z + radius)
-    );
-
-    const colliding = this.colliders.some((box) => box.intersectsBox(curBox));
-    if (colliding) {
-      const spawn = CULTURE_SPAWN_POINTS[this.cultureId] || { x: 0, y: 0.7, z: 12, rotationY: Math.PI };
-      this.group.position.set(spawn.x, spawn.y, spawn.z);
-      this.group.rotation.y = spawn.rotationY;
+  public jump(): void {
+    if (this.group.position.y <= this.groundY + 0.02) {
+      this.verticalVelocity = 5.4;
     }
-
-    this.group.position.x = Math.max(-23.5, Math.min(23.5, this.group.position.x));
-    this.group.position.z = Math.max(-23.5, Math.min(23.5, this.group.position.z));
   }
 
-  public jump(): void {
-    if (this.group.position.y <= this.groundY + 0.05) {
-      this.verticalVelocity = 5.4;
+  public resolveOverlap(): void {
+    const radius = 0.32;
+    for (const box of this.colliders) {
+      const pBox = new THREE.Box3(
+        new THREE.Vector3(this.group.position.x - radius, 0, this.group.position.z - radius),
+        new THREE.Vector3(this.group.position.x + radius, 1.5, this.group.position.z + radius)
+      );
+      if (box.intersectsBox(pBox)) {
+        const leftPush = box.min.x - (this.group.position.x + radius);
+        const rightPush = box.max.x - (this.group.position.x - radius);
+        const topPush = box.min.z - (this.group.position.z + radius);
+        const bottomPush = box.max.z - (this.group.position.z - radius);
+
+        const pushX = Math.abs(leftPush) < Math.abs(rightPush) ? leftPush : rightPush;
+        const pushZ = Math.abs(topPush) < Math.abs(bottomPush) ? topPush : bottomPush;
+
+        if (Math.abs(pushX) < Math.abs(pushZ)) {
+          this.group.position.x += pushX;
+        } else {
+          this.group.position.z += pushZ;
+        }
+      }
     }
   }
 
   private canOccupy(x: number, z: number): boolean {
     const radius = 0.32;
-    const testBox = new THREE.Box3(
+    const targetBox = new THREE.Box3(
       new THREE.Vector3(x - radius, 0, z - radius),
       new THREE.Vector3(x + radius, 1.5, z + radius)
     );
-    const currentBox = new THREE.Box3(
-      new THREE.Vector3(this.group.position.x - radius, 0, this.group.position.z - radius),
-      new THREE.Vector3(this.group.position.x + radius, 1.5, this.group.position.z + radius)
-    );
-
     for (const box of this.colliders) {
-      if (box.intersectsBox(testBox)) {
-        if (box.intersectsBox(currentBox)) {
-          const center = new THREE.Vector3();
-          box.getCenter(center);
-          const curDistSq = (this.group.position.x - center.x) ** 2 + (this.group.position.z - center.z) ** 2;
-          const nextDistSq = (x - center.x) ** 2 + (z - center.z) ** 2;
+      if (box.intersectsBox(targetBox)) {
+        // Se a posição atual já estiver em interseção com este obstáculo,
+        // permite o movimento se ele afastar o jogador do centro do colisor (escape)
+        const curBox = new THREE.Box3(
+          new THREE.Vector3(this.group.position.x - radius, 0, this.group.position.z - radius),
+          new THREE.Vector3(this.group.position.x + radius, 1.5, this.group.position.z + radius)
+        );
+        if (box.intersectsBox(curBox)) {
+          const boxCenterX = (box.min.x + box.max.x) / 2;
+          const boxCenterZ = (box.min.z + box.max.z) / 2;
+          const curDistSq = (this.group.position.x - boxCenterX) ** 2 + (this.group.position.z - boxCenterZ) ** 2;
+          const nextDistSq = (x - boxCenterX) ** 2 + (z - boxCenterZ) ** 2;
           if (nextDistSq > curDistSq) {
-            continue;
+            continue; // Movendo para fora do obstáculo!
           }
         }
         return false;
@@ -214,6 +253,7 @@ export class PlayerController {
   public update(delta: number): void {
     const isReducedMotion = GameState.getInstance().settings.reduceMotion;
 
+    // Movimento por teclado
     let keyboardDirX = 0;
     let keyboardDirZ = 0;
 
@@ -231,23 +271,27 @@ export class PlayerController {
     if (isMoving) {
       dir.normalize();
 
+      // Rotação suave do personagem na direção do movimento
       const targetRotation = Math.atan2(dir.x, dir.z);
       let diff = targetRotation - this.group.rotation.y;
       while (diff < -Math.PI) diff += Math.PI * 2;
       while (diff > Math.PI) diff -= Math.PI * 2;
       this.group.rotation.y += diff * (isReducedMotion ? 0.4 : 0.2);
 
+      // Deslocamento
       const moveDistance = this.speed * delta;
       const nextX = this.group.position.x + dir.x * moveDistance;
       const nextZ = this.group.position.z + dir.z * moveDistance;
 
-      if (nextX > -23.5 && nextX < 23.5 && this.canOccupy(nextX, this.group.position.z)) {
+      // Limites do espaço jogável (-24 a +24 em X, -24 a +24 em Z)
+      if (nextX > -24 && nextX < 24 && this.canOccupy(nextX, this.group.position.z)) {
         this.group.position.x = nextX;
       }
-      if (nextZ > -23.5 && nextZ < 23.5 && this.canOccupy(this.group.position.x, nextZ)) {
+      if (nextZ > -24 && nextZ < 24 && this.canOccupy(this.group.position.x, nextZ)) {
         this.group.position.z = nextZ;
       }
 
+      // Animação de caminhada das pernas
       this.walkCycle += delta * 12;
       if (!isReducedMotion) {
         this.leftLeg.rotation.x = Math.sin(this.walkCycle) * 0.6;
@@ -255,27 +299,35 @@ export class PlayerController {
         this.bodyMesh.position.y = 0.62 + Math.abs(Math.sin(this.walkCycle * 2)) * 0.04;
       }
 
+      // Som de passos periódicos
       const now = performance.now();
       if (now - this.lastStepSoundTime > 340) {
         AudioManager.getInstance().playStep();
         this.lastStepSoundTime = now;
       }
     } else {
+      // Repouso
       this.leftLeg.rotation.x = 0;
       this.rightLeg.rotation.x = 0;
       this.bodyMesh.position.y = 0.62;
     }
 
+    // Gravidade e salto vertical
     this.verticalVelocity -= 13 * delta;
     this.group.position.y = Math.max(this.groundY, this.group.position.y + this.verticalVelocity * delta);
     if (this.group.position.y === this.groundY) this.verticalVelocity = 0;
 
+    // Resolução contínua de sobreposição para impedir travamento em paredes
+    this.resolveOverlap();
+
+    // Atualiza estado do jogador
     const state = GameState.getInstance();
     state.playerTransform.x = this.group.position.x;
     state.playerTransform.y = this.group.position.y;
     state.playerTransform.z = this.group.position.z;
     state.playerTransform.rotationY = this.group.rotation.y;
 
+    // Checagem de zonas de interação próximas
     this.checkInteractiveZones();
   }
 

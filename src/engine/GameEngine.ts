@@ -18,6 +18,7 @@ export class GameEngine {
   private readonly boundResize = () => this.onWindowResize();
   private resizeObserver: ResizeObserver | null = null;
 
+  // Parâmetros de câmera suave isométrica 2.5D
   private cameraOffset = new THREE.Vector3(0, 11, 12);
   private cameraLookTarget = new THREE.Vector3();
 
@@ -30,15 +31,18 @@ export class GameEngine {
     this.container = container;
     this.clock = new THREE.Clock();
 
+    // 1. Cena com atmosfera límpida
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x9fc8dc);
     this.scene.fog = new THREE.FogExp2(0x9fc8dc, 0.012);
 
+    // 2. Câmera com ângulo isométrico acolhedor (2.5D)
     const initialWidth = Math.max(container.clientWidth || window.innerWidth || 1, 1);
     const initialHeight = Math.max(container.clientHeight || window.innerHeight || 1, 1);
     const aspect = initialWidth / initialHeight;
     this.camera = new THREE.PerspectiveCamera(45, aspect, 0.5, 120);
 
+    // 3. Renderizador WebGL otimizado
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     this.renderer.setSize(initialWidth, initialHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -46,31 +50,29 @@ export class GameEngine {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.container.appendChild(this.renderer.domElement);
 
+    // 4. Iluminação solar acolhedora e luz difusa
     this.setupLighting();
 
+    // 5. Controlador do Jogador
     this.playerController = new PlayerController(cultureId);
     this.scene.add(this.playerController.group);
 
+    // 6. Construtor do Cenário
     this.worldRenderer = new WorldRenderer(this.scene);
-    if (cultureId === 'mexica') {
-      this.worldRenderer.buildMexicaEnvironment(this.playerController, onTriggerNpc, onTriggerObject);
-    } else if (cultureId === 'inca') {
-      this.worldRenderer.buildAndesEnvironment(this.playerController, onTriggerNpc, onTriggerObject);
-    } else {
-      this.worldRenderer.buildPeopleAtlasEnvironment(cultureId, this.playerController, onTriggerNpc, onTriggerObject);
-    }
+    if (cultureId === 'mexica') this.worldRenderer.buildMexicaEnvironment(this.playerController, onTriggerNpc, onTriggerObject);
+    else if (cultureId === 'inca') this.worldRenderer.buildAndesEnvironment(this.playerController, onTriggerNpc, onTriggerObject);
+    else this.worldRenderer.buildPeopleAtlasEnvironment(cultureId, this.playerController, onTriggerNpc, onTriggerObject);
 
-    this.playerController.ensureSafePosition();
+    // 7. Garante posicionamento em ponto de início seguro e sem colisão
+    this.playerController.spawnForCulture(cultureId);
 
-    const playerPos = this.playerController.group.position;
-    this.camera.position.set(
-      playerPos.x + this.cameraOffset.x,
-      playerPos.y + this.cameraOffset.y,
-      playerPos.z + this.cameraOffset.z
-    );
-    this.cameraLookTarget.copy(playerPos);
-    this.camera.lookAt(playerPos.x, playerPos.y + 0.8, playerPos.z);
+    // 8. Sincroniza a câmera imediatamente com o ponto de surgimento
+    const pPos = this.playerController.group.position;
+    this.camera.position.set(pPos.x + this.cameraOffset.x, pPos.y + this.cameraOffset.y, pPos.z + this.cameraOffset.z);
+    this.cameraLookTarget.copy(pPos);
+    this.camera.lookAt(pPos.x, pPos.y + 0.8, pPos.z);
 
+    // 9. Event listeners
     window.addEventListener('resize', this.boundResize);
     this.resizeObserver = new ResizeObserver(this.boundResize);
     this.resizeObserver.observe(this.container);
@@ -118,14 +120,17 @@ export class GameEngine {
     const delta = Math.min(this.clock.getDelta(), 0.1);
     const elapsedTime = this.clock.getElapsedTime();
 
+    // Atualiza jogador
     this.playerController.update(delta);
+
+    // Anima elementos ambientais
     this.worldRenderer.animate(elapsedTime);
 
+    // Câmera segue o jogador suavemente
     const playerPos = this.playerController.group.position;
     if (![playerPos.x, playerPos.y, playerPos.z].every(Number.isFinite)) {
-      this.playerController.resetToSpawn();
+      this.playerController.spawnForCulture(GameState.getInstance().selectedCultureId);
     }
-
     const targetCamX = playerPos.x + this.cameraOffset.x;
     const targetCamY = playerPos.y + this.cameraOffset.y;
     const targetCamZ = playerPos.z + this.cameraOffset.z;
@@ -133,18 +138,20 @@ export class GameEngine {
     const isReducedMotion = GameState.getInstance().settings.reduceMotion;
     const lerpFactor = isReducedMotion ? 0.3 : 0.08;
 
-    if ([targetCamX, targetCamY, targetCamZ].every(Number.isFinite)) {
-      this.camera.position.x += (targetCamX - this.camera.position.x) * lerpFactor;
-      this.camera.position.y += (targetCamY - this.camera.position.y) * lerpFactor;
-      this.camera.position.z += (targetCamZ - this.camera.position.z) * lerpFactor;
-
-      this.cameraLookTarget.lerp(playerPos, lerpFactor);
-      this.camera.lookAt(
-        this.cameraLookTarget.x,
-        this.cameraLookTarget.y + 0.8,
-        this.cameraLookTarget.z
-      );
+    if (![targetCamX, targetCamY, targetCamZ].every(Number.isFinite)) {
+      this.animationFrameId = requestAnimationFrame(this.loop);
+      return;
     }
+    this.camera.position.x += (targetCamX - this.camera.position.x) * lerpFactor;
+    this.camera.position.y += (targetCamY - this.camera.position.y) * lerpFactor;
+    this.camera.position.z += (targetCamZ - this.camera.position.z) * lerpFactor;
+
+    this.cameraLookTarget.lerp(playerPos, lerpFactor);
+    this.camera.lookAt(
+      this.cameraLookTarget.x,
+      this.cameraLookTarget.y + 0.8,
+      this.cameraLookTarget.z
+    );
 
     this.renderer.render(this.scene, this.camera);
     this.animationFrameId = requestAnimationFrame(this.loop);

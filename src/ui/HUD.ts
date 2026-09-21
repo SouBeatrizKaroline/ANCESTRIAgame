@@ -38,13 +38,14 @@ export class HUD {
 
   public render(): void {
     const state = GameState.getInstance();
-    const lang = getLanguage();
     const catalogProfile = PEOPLE_CATALOG.find((item) => item.id === state.selectedCultureId);
-    const journeyName = state.selectedCultureId === 'mexica'
-      ? 'Mexico-Tenochtitlan'
-      : state.selectedCultureId === 'inca'
-      ? 'Andes · Tawantinsuyu'
-      : catalogProfile?.name[lang] || 'Atlas';
+    const lang = getLanguage();
+    const journeyName =
+      state.selectedCultureId === 'mexica'
+        ? 'Mexico-Tenochtitlan'
+        : state.selectedCultureId === 'inca'
+          ? (lang === 'es' ? 'Andes · Tawantinsuyu' : lang === 'pt-BR' ? 'Andes · Tawantinsuyu' : 'Andes · Tawantinsuyu')
+          : catalogProfile?.name[lang] || 'Atlas';
 
     this.container.innerHTML = `
       <div class="hud-layer">
@@ -90,24 +91,26 @@ export class HUD {
           </button>
         </div>
 
-        <!-- Controles Virtuais Touch Mobile -->
-        <div class="hud-touch-controls" id="hud-touch-controls" style="touch-action: none; -webkit-touch-callout: none; user-select: none;">
-          <div class="dpad-container" id="dpad-touch-area" style="touch-action: none; user-select: none;">
-            <button class="dpad-btn dpad-up" data-dir="up" aria-label="Mover arriba" style="touch-action: none;">▲</button>
-            <div class="dpad-middle" style="touch-action: none;">
-              <button class="dpad-btn dpad-left" data-dir="left" aria-label="Mover izquierda" style="touch-action: none;">◀</button>
-              <div class="dpad-center" style="touch-action: none;"></div>
-              <button class="dpad-btn dpad-right" data-dir="right" aria-label="Mover derecha" style="touch-action: none;">▶</button>
+        <!-- Controles Virtuais para Dispositivos Móveis / Touch -->
+        <div class="hud-touch-controls" id="hud-touch-controls">
+          <div class="dpad-container">
+            <button class="dpad-btn dpad-up" data-dir="up" aria-label="Mover hacia arriba">▲</button>
+            <div class="dpad-middle">
+              <button class="dpad-btn dpad-left" data-dir="left" aria-label="Mover a la izquierda">◀</button>
+              <div class="dpad-center"></div>
+              <button class="dpad-btn dpad-right" data-dir="right" aria-label="Mover a la derecha">▶</button>
             </div>
-            <button class="dpad-btn dpad-down" data-dir="down" aria-label="Mover abajo" style="touch-action: none;">▼</button>
+            <button class="dpad-btn dpad-down" data-dir="down" aria-label="Mover hacia abajo">▼</button>
           </div>
 
-          <button class="touch-action-btn touch-jump-btn" id="btn-touch-jump" aria-label="${t('hud.jump')}" style="touch-action: none; user-select: none;">
-            <span>${t('hud.jump').toUpperCase()}</span>
-          </button>
-          <button class="touch-action-btn" id="btn-touch-action" aria-label="${t('hud.action')}" style="touch-action: none; user-select: none;">
-            <span>${t('hud.action').toUpperCase()}</span>
-          </button>
+          <div class="touch-action-cluster">
+            <button class="touch-action-btn touch-jump-btn" id="btn-touch-jump" aria-label="${t('hud.jump')}">
+              <span>${t('hud.jump').toUpperCase()}</span>
+            </button>
+            <button class="touch-action-btn" id="btn-touch-action" aria-label="${t('hud.action')}">
+              <span>${t('hud.action').toUpperCase()}</span>
+            </button>
+          </div>
         </div>
       </div>
     `;
@@ -122,8 +125,14 @@ export class HUD {
 
     if (state.selectedCultureId === 'mexica') {
       return `
-        <div class="mission-header"><span class="mission-badge">${t('mexica.mission')}</span><h4>${t('mexica.missionTitle')}</h4></div>
-        <div class="mission-step"><span class="step-bullet">●</span><p>${t('mexica.objective')}</p></div>
+        <div class="mission-header">
+          <span class="mission-badge">${t('mexica.mission')}</span>
+          <h4>${t('mexica.missionTitle')}</h4>
+        </div>
+        <div class="mission-step">
+          <span class="step-bullet">●</span>
+          <p>${t('mexica.objective')}</p>
+        </div>
       `;
     }
 
@@ -132,13 +141,19 @@ export class HUD {
       if (profile) {
         const badge = lang === 'es' ? 'Recorrido exploratorio' : lang === 'pt-BR' ? 'Percurso exploratório' : 'Exploratory journey';
         const objective = lang === 'es'
-          ? 'Explora los tres núcleos de saber (territorio, lenguas y memoria) y conversa con la guía educativa.'
+          ? 'Explora los tres núcleos de memoria viva y conversa con el personaje educativo.'
           : lang === 'pt-BR'
-          ? 'Explore os três núcleos de saber (território, línguas e memória) e converse com a guia educativa.'
-          : 'Explore the three knowledge centers (territory, languages, and memory) and talk to the guide.';
+            ? 'Explore os três núcleos de memória viva e converse com o personagem educativo.'
+            : 'Explore the three living memory nodes and speak with the educational resident.';
         return `
-          <div class="mission-header"><span class="mission-badge">${badge}</span><h4>${profile.name[lang]}</h4></div>
-          <div class="mission-step"><span class="step-bullet">●</span><p>${objective}</p></div>
+          <div class="mission-header">
+            <span class="mission-badge">${badge}</span>
+            <h4>${profile.name[lang]}</h4>
+          </div>
+          <div class="mission-step">
+            <span class="step-bullet">●</span>
+            <p>${objective}</p>
+          </div>
         `;
       }
     }
@@ -146,33 +161,32 @@ export class HUD {
     const mission = ANDES_MISSIONS.find((m) => m.id === state.activeMissionId) || ANDES_MISSIONS[0];
 
     if (!mission) {
+      const freeTitle = lang === 'es' ? 'Exploración libre' : lang === 'pt-BR' ? 'Exploração livre' : 'Free exploration';
+      const freeDesc = lang === 'es' ? 'Descubre memorias y registra hallazgos en tu diario.' : lang === 'pt-BR' ? 'Descubra memórias e registre achados no seu diário.' : 'Discover memories and record findings in your journal.';
       return `
         <div class="mission-header">
-          <h4>${lang === 'es' ? 'Exploración libre' : lang === 'pt-BR' ? 'Exploração livre' : 'Free exploration'}</h4>
+          <h4>${freeTitle}</h4>
         </div>
-        <p class="mission-desc">${lang === 'es' ? 'Descubre saberes y registra hallazgos en tu diario.' : lang === 'pt-BR' ? 'Descubra saberes e registre achados no seu diário.' : 'Discover knowledge and record findings in your journal.'}</p>
+        <p class="mission-desc">${freeDesc}</p>
       `;
     }
 
     const currentStep = mission.steps.find((s) => !s.isCompleted);
     const completedCount = mission.steps.filter((s) => s.isCompleted).length;
     const progressPercent = Math.round((completedCount / mission.steps.length) * 100);
-
-    const typeBadge = mission.type === 'principal'
+    const badgeLabel = mission.type === 'principal'
       ? (lang === 'es' ? 'Misión principal' : lang === 'pt-BR' ? 'Missão principal' : 'Main mission')
       : (lang === 'es' ? 'Misión secundaria' : lang === 'pt-BR' ? 'Missão secundária' : 'Side mission');
-
-    const objLabel = lang === 'es' ? 'Objetivo actual' : lang === 'pt-BR' ? 'Objetivo atual' : 'Current objective';
-    const doneLabel = lang === 'es' ? '¡Misión completada!' : lang === 'pt-BR' ? '¡Missão concluída!' : 'Mission completed!';
+    const completeLabel = lang === 'es' ? '¡Misión completada!' : lang === 'pt-BR' ? 'Missão concluída!' : 'Mission completed!';
 
     return `
       <div class="mission-header">
-        <span class="mission-badge">${typeBadge}</span>
+        <span class="mission-badge">${badgeLabel}</span>
         <h4>${mission.title}</h4>
       </div>
       <div class="mission-step">
         <span class="step-bullet">●</span>
-        <p><strong>${objLabel}:</strong> ${currentStep ? currentStep.description : doneLabel}</p>
+        <p>${currentStep ? currentStep.description : completeLabel}</p>
       </div>
       <div class="mission-progress-bar">
         <div class="progress-fill" style="width: ${progressPercent}%;"></div>
@@ -219,100 +233,98 @@ export class HUD {
       this.onInteract();
     });
 
-    const touchAction = this.container.querySelector('#btn-touch-action');
-    const touchJump = this.container.querySelector('#btn-touch-jump');
+    // Touch Action button
+    const actionBtn = this.container.querySelector('#btn-touch-action');
+    if (actionBtn) {
+      actionBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.onInteract();
+      });
+      actionBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        this.onInteract();
+      }, { passive: false });
+    }
 
-    const handleAction = (e: Event) => {
-      e.preventDefault();
-      this.onInteract();
+    // Touch Jump button
+    const jumpBtn = this.container.querySelector('#btn-touch-jump');
+    if (jumpBtn) {
+      jumpBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.onJump();
+      });
+      jumpBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        this.onJump();
+      }, { passive: false });
+    }
+
+    // D-Pad Touch events com suporte contínuo a arrasto e multi-toque móvel
+    const dpadButtons = this.container.querySelectorAll<HTMLElement>('.dpad-btn');
+    const dpadContainer = this.container.querySelector<HTMLElement>('.dpad-container');
+    let activeDir = { x: 0, z: 0 };
+
+    const updateDir = (dir: string | null) => {
+      activeDir = { x: 0, z: 0 };
+      if (dir === 'up') activeDir.z = -1;
+      if (dir === 'down') activeDir.z = 1;
+      if (dir === 'left') activeDir.x = -1;
+      if (dir === 'right') activeDir.x = 1;
+      this.onVirtualMove(activeDir.x, activeDir.z);
     };
 
-    const handleJump = (e: Event) => {
-      e.preventDefault();
-      this.onJump();
+    const findDirFromTouch = (touch: Touch): string | null => {
+      const el = document.elementFromPoint(touch.clientX, touch.clientY);
+      const btn = el?.closest<HTMLElement>('.dpad-btn');
+      return btn ? btn.getAttribute('data-dir') : null;
     };
 
-    touchAction?.addEventListener('touchstart', handleAction, { passive: false });
-    touchAction?.addEventListener('click', handleAction);
-
-    touchJump?.addEventListener('touchstart', handleJump, { passive: false });
-    touchJump?.addEventListener('click', handleJump);
-
-    const dpadContainer = this.container.querySelector<HTMLElement>('#dpad-touch-area');
-    const dpadButtons = this.container.querySelectorAll<HTMLButtonElement>('.dpad-btn');
-
-    const setMove = (x: number, z: number) => {
-      this.onVirtualMove(x, z);
-    };
+    let activeTouchId: number | null = null;
 
     if (dpadContainer) {
-      let isTouchingDpad = false;
-
-      const calcDpadVector = (clientX: number, clientY: number) => {
-        const rect = dpadContainer.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const dx = clientX - centerX;
-        const dy = clientY - centerY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < 8) {
-          setMove(0, 0);
-          return;
-        }
-
-        const vx = Math.abs(dx) > 10 ? Math.sign(dx) : 0;
-        const vz = Math.abs(dy) > 10 ? Math.sign(dy) : 0;
-        setMove(vx, vz);
-      };
-
       dpadContainer.addEventListener('touchstart', (e: TouchEvent) => {
         e.preventDefault();
-        isTouchingDpad = true;
-        if (e.touches.length > 0) {
-          calcDpadVector(e.touches[0].clientX, e.touches[0].clientY);
+        if (e.changedTouches.length > 0) {
+          const t = e.changedTouches[0];
+          activeTouchId = t.identifier;
+          updateDir(findDirFromTouch(t));
         }
       }, { passive: false });
 
       dpadContainer.addEventListener('touchmove', (e: TouchEvent) => {
         e.preventDefault();
-        if (isTouchingDpad && e.touches.length > 0) {
-          calcDpadVector(e.touches[0].clientX, e.touches[0].clientY);
+        for (let i = 0; i < e.changedTouches.length; i++) {
+          const t = e.changedTouches[i];
+          if (t.identifier === activeTouchId) {
+            updateDir(findDirFromTouch(t));
+            break;
+          }
         }
       }, { passive: false });
 
-      const endDpadTouch = (e: Event) => {
-        e.preventDefault();
-        isTouchingDpad = false;
-        setMove(0, 0);
+      const endTouch = (e: TouchEvent) => {
+        for (let i = 0; i < e.changedTouches.length; i++) {
+          if (e.changedTouches[i].identifier === activeTouchId) {
+            activeTouchId = null;
+            updateDir(null);
+            break;
+          }
+        }
       };
 
-      dpadContainer.addEventListener('touchend', endDpadTouch, { passive: false });
-      dpadContainer.addEventListener('touchcancel', endDpadTouch, { passive: false });
+      dpadContainer.addEventListener('touchend', endTouch, { passive: false });
+      dpadContainer.addEventListener('touchcancel', endTouch, { passive: false });
     }
 
+    // Fallback mouse listeners para ambiente desktop
     dpadButtons.forEach((btn) => {
       const dir = btn.getAttribute('data-dir');
-      const startMove = (e: Event) => {
-        e.preventDefault();
-        let vx = 0, vz = 0;
-        if (dir === 'up') vz = -1;
-        if (dir === 'down') vz = 1;
-        if (dir === 'left') vx = -1;
-        if (dir === 'right') vx = 1;
-        setMove(vx, vz);
-      };
-
-      const endMove = (e: Event) => {
-        e.preventDefault();
-        setMove(0, 0);
-      };
-
-      btn.addEventListener('mousedown', startMove);
-      btn.addEventListener('mouseup', endMove);
-      btn.addEventListener('mouseleave', endMove);
+      btn.addEventListener('mousedown', (e) => { e.preventDefault(); updateDir(dir); });
+      btn.addEventListener('mouseup', (e) => { e.preventDefault(); updateDir(null); });
+      btn.addEventListener('mouseleave', (e) => { e.preventDefault(); updateDir(null); });
     });
 
+    // Atalhos de teclado [J] para diário e [M] para mapa
     window.addEventListener('keydown', (e) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
       if (e.code === 'KeyJ') {

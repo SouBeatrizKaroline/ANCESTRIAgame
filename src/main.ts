@@ -1,4 +1,3 @@
-import './styles/main.css';
 import { GameEngine } from './engine/GameEngine';
 import { UIManager } from './ui/UIManager';
 import { AudioManager } from './engine/AudioManager';
@@ -7,17 +6,17 @@ import { CultureId } from './data/types';
 
 window.addEventListener('DOMContentLoaded', () => {
   applyDocumentLanguage(getLanguage());
-  const canvasContainer = document.getElementById('game-canvas-container');
-  const uiRoot = document.getElementById('ui-root');
+
+  const canvasContainer = document.getElementById('game-canvas-container') as HTMLElement;
+  const uiRoot = document.getElementById('ui-root') as HTMLElement;
 
   if (!canvasContainer || !uiRoot) {
-    console.error('Containers essenciais do DOM não foram encontrados.');
+    console.error('No se encontraron los contenedores esenciales del juego.');
     return;
   }
 
   let gameEngine: GameEngine | null = null;
 
-  // Criação do UIManager
   const uiManager = new UIManager(uiRoot, {
     onVirtualMove: (dx, dz) => {
       if (gameEngine) {
@@ -29,32 +28,33 @@ window.addEventListener('DOMContentLoaded', () => {
         gameEngine.playerController.interact();
       }
     },
-    onJump: () => gameEngine?.playerController.jump(),
+    onJump: () => {
+      if (gameEngine) {
+        gameEngine.playerController.jump();
+      }
+    },
     onStartGame: (cultureId: CultureId) => {
       if (gameEngine) gameEngine.destroy();
       gameEngine = new GameEngine(
-          canvasContainer,
-          cultureId,
-          (npcId) => {
-            uiManager.openNpcDialogue(npcId);
-          },
-          (objectId) => {
-            uiManager.openObjectInteraction(objectId);
-          }
-        );
+        canvasContainer,
+        cultureId,
+        (npcId) => {
+          uiManager.openNpcDialogue(npcId);
+        },
+        (objectId) => {
+          uiManager.openObjectInteraction(objectId);
+        }
+      );
       gameEngine.start();
     }
   });
 
-  // Exibe o menu principal na inicialização
-  uiManager.mainMenu.show();
-
-  // Inicia áudio suave na primeira interação do usuário
-  const handleFirstInteraction = () => {
-    AudioManager.getInstance().playClick();
-    window.removeEventListener('click', handleFirstInteraction);
-    window.removeEventListener('keydown', handleFirstInteraction);
+  // Habilita audio al primer clic o interacción táctil del usuario
+  const initAudioOnUserGesture = () => {
+    AudioManager.getInstance();
+    window.removeEventListener('click', initAudioOnUserGesture);
+    window.removeEventListener('touchstart', initAudioOnUserGesture);
   };
-  window.addEventListener('click', handleFirstInteraction);
-  window.addEventListener('keydown', handleFirstInteraction);
+  window.addEventListener('click', initAudioOnUserGesture, { once: true });
+  window.addEventListener('touchstart', initAudioOnUserGesture, { once: true });
 });

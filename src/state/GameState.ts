@@ -1,27 +1,9 @@
 import { CultureId, GameSaveData, RegionId, UserSettings } from '../data/types';
 import { ANDES_MISSIONS } from '../data/missions/andesMissions';
 import { ANDES_DISCOVERIES } from '../data/discoveries/andesDiscoveries';
+import { CULTURE_SPAWN_POINTS } from '../engine/PlayerController';
 
 const SAVE_KEY = 'ancestria_game_save_v2';
-
-export const CULTURE_SPAWN_POINTS: Record<string, { x: number; y: number; z: number; rotationY: number }> = {
-  mexica: { x: 0, y: 0.7, z: 14, rotationY: Math.PI },
-  inca: { x: 0, y: 0.7, z: 14, rotationY: Math.PI },
-  quechua: { x: 0, y: 0.7, z: 12, rotationY: Math.PI },
-  aymara: { x: 0, y: 0.7, z: 12, rotationY: Math.PI },
-  zapotec: { x: 0, y: 0.7, z: 12, rotationY: Math.PI },
-  raramuri: { x: 0, y: 0.7, z: 12, rotationY: Math.PI },
-  bribri: { x: 0, y: 0.7, z: 12, rotationY: Math.PI },
-  wayuu: { x: 0, y: 0.7, z: 12, rotationY: Math.PI },
-  warao: { x: 0, y: 0.7, z: 12, rotationY: Math.PI },
-  yanomami: { x: 0, y: 0.7, z: 12, rotationY: Math.PI },
-  guarani: { x: 0, y: 0.7, z: 12, rotationY: Math.PI },
-  tupinamba: { x: 0, y: 0.7, z: 12, rotationY: Math.PI },
-  xukuru: { x: 0, y: 0.7, z: 12, rotationY: Math.PI },
-  maya: { x: 0, y: 0.7, z: 12, rotationY: Math.PI },
-  amazonia: { x: 0, y: 0.7, z: 12, rotationY: Math.PI },
-  indigenas_brasil: { x: 0, y: 0.7, z: 12, rotationY: Math.PI }
-};
 
 export type GameEvent =
   | 'fragments_changed'
@@ -45,7 +27,7 @@ export class GameState {
   public completedMissionIds: string[] = [];
   public activeMissionId: string | null = 'mission_main_andes';
   public unlockedDiscoveryIds: string[] = [];
-  public playerTransform = { x: 0, y: 0.7, z: 14, rotationY: Math.PI };
+  public playerTransform = { x: 0, y: 0.7, z: 6, rotationY: Math.PI };
   public nearbyInteraction: {
     id: string;
     name: string;
@@ -94,7 +76,7 @@ export class GameState {
         try {
           cb(data);
         } catch (e) {
-          console.error(`Error en callback para evento ${event}:`, e);
+          console.error(`Error en callback de evento ${event}:`, e);
         }
       });
     }
@@ -171,23 +153,11 @@ export class GameState {
     this.emit('settings_changed', this.settings);
   }
 
-  public resetPlayerToSpawn(cultureId: CultureId = this.selectedCultureId): void {
-    const spawn = CULTURE_SPAWN_POINTS[cultureId] || { x: 0, y: 0.7, z: 12, rotationY: Math.PI };
-    this.playerTransform = { ...spawn };
-  }
-
   public selectCulture(cultureId: CultureId): void {
     this.selectedCultureId = cultureId;
-    if (cultureId === 'mexica' || cultureId === 'maya') {
-      this.currentRegionId = 'mesoamerica';
-    } else if (cultureId === 'inca' || cultureId === 'quechua' || cultureId === 'aymara') {
-      this.currentRegionId = 'andes';
-    } else if (cultureId === 'yanomami' || cultureId === 'warao') {
-      this.currentRegionId = 'amazonia';
-    } else {
-      this.currentRegionId = 'territorios_brasil';
-    }
-    this.resetPlayerToSpawn(cultureId);
+    this.currentRegionId = cultureId === 'mexica' || cultureId === 'maya' ? 'mesoamerica' : 'andes';
+    const spawn = CULTURE_SPAWN_POINTS[cultureId] || CULTURE_SPAWN_POINTS.default;
+    this.playerTransform = { x: spawn.x, y: spawn.y, z: spawn.z, rotationY: spawn.rotationY };
     this.save();
     this.emit('culture_changed', cultureId);
   }
@@ -227,7 +197,7 @@ export class GameState {
     try {
       const raw = localStorage.getItem(SAVE_KEY) || localStorage.getItem('atlas_origens_game_save_v1');
       if (!raw) return false;
-      const data = JSON.parse(raw);
+      const data: GameSaveData = JSON.parse(raw);
       if (data) {
         this.knowledgeFragments = data.knowledgeFragments || 0;
         this.unlockedRegionIds = data.unlockedRegionIds || ['mesoamerica'];
@@ -236,14 +206,14 @@ export class GameState {
         this.unlockedDiscoveryIds = data.unlockedDiscoveryIds || [];
         this.currentRegionId = data.currentRegionId || 'mesoamerica';
         this.selectedCultureId = data.selectedCultureId || 'mexica';
-        if (data.playerTransform && Number.isFinite(data.playerTransform.x) && Number.isFinite(data.playerTransform.z)) {
+        if (data.playerTransform && [data.playerTransform.x, data.playerTransform.y, data.playerTransform.z].every(Number.isFinite)) {
           this.playerTransform = data.playerTransform;
         } else {
-          this.resetPlayerToSpawn(this.selectedCultureId);
+          const spawn = CULTURE_SPAWN_POINTS[this.selectedCultureId] || CULTURE_SPAWN_POINTS.default;
+          this.playerTransform = { x: spawn.x, y: spawn.y, z: spawn.z, rotationY: spawn.rotationY };
         }
         if (data.settings) {
           this.settings = { ...this.settings, ...data.settings };
-          if (!this.settings.language) this.settings.language = 'es';
         }
         return true;
       }
@@ -257,7 +227,7 @@ export class GameState {
     const progressKeys: string[] = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key && (key.startsWith('ancestria_') || key === SAVE_KEY || key === 'atlas_origens_game_save_v1')) {
+      if (key && (key.startsWith('ancestria_') || key.startsWith('atlas_origens_') || key === SAVE_KEY)) {
         progressKeys.push(key);
       }
     }
@@ -269,7 +239,8 @@ export class GameState {
     this.unlockedDiscoveryIds = [];
     this.currentRegionId = 'mesoamerica';
     this.selectedCultureId = 'mexica';
-    this.resetPlayerToSpawn('mexica');
+    const spawn = CULTURE_SPAWN_POINTS.mexica;
+    this.playerTransform = { x: spawn.x, y: spawn.y, z: spawn.z, rotationY: spawn.rotationY };
     ANDES_MISSIONS.forEach((m) => {
       m.isCompleted = false;
       m.isActive = m.id === 'mission_main_andes';
@@ -278,6 +249,5 @@ export class GameState {
     this.save();
     this.emit('fragments_changed', 0);
     this.emit('mission_updated', null);
-    this.emit('culture_changed', 'mexica');
   }
 }
