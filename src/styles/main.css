@@ -1021,6 +1021,22 @@ html, body {
 .mexica-complete p { color:#b9cac7; margin-bottom:24px; line-height:1.6; }
 .completion-symbol { display:block; color:#f4c261; font-size:2.2rem; margin-bottom:8px; }
 @media(max-width:760px){ .mexica-journey-body{grid-template-columns:1fr;padding:20px}.mexica-journey-header{padding:20px}.mexica-sources{padding:16px 20px 22px}.mexica-complete{padding:36px 24px} }
+@media (max-height:720px) and (min-width:761px) {
+  .mexica-journey-overlay{padding:8px}
+  .mexica-journey-window{width:min(1040px,94vw);max-height:calc(100vh - 16px);overflow:hidden;border-radius:20px}
+  .mexica-journey-header{padding:14px 30px 12px}
+  .mexica-journey-header h2{margin-top:3px;font-size:clamp(1.35rem,2.6vw,1.85rem);line-height:1.08}
+  .mexica-journey-body{gap:22px;padding:18px 30px 16px}
+  .mexica-story>p{margin:8px 0 14px;font-size:.92rem;line-height:1.5}
+  .source-principle{padding:11px 14px;font-size:.76rem;line-height:1.4}
+  .mexica-activity{padding:16px 18px}
+  .mexica-activity h3{margin:6px 0 11px;font-size:1.02rem;line-height:1.28}
+  .mexica-options{gap:7px}
+  .mexica-options button{padding:9px 12px;font-size:.8rem}
+  .mexica-feedback{min-height:12px;margin-top:7px}
+  .mexica-sources{gap:5px 12px;padding:10px 30px 12px;font-size:.67rem}
+  .mexica-sources small{line-height:1.25}
+}
 
 .setting-info strong {
   display: block;
