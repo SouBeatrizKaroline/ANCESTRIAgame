@@ -19,7 +19,7 @@ export class WorldRenderer {
     this.scene = scene;
   }
 
-  public buildMexicaEnvironment(playerController: PlayerController, onTriggerObject: (objectId: string) => void): void {
+  public buildMexicaEnvironment(playerController: PlayerController, onTriggerNpc: (npcId: string) => void, onTriggerObject: (objectId: string) => void): void {
     const water = new THREE.Mesh(
       new THREE.PlaneGeometry(60, 60),
       new THREE.MeshPhongMaterial({ color: 0x3b9faf, shininess: 70 })
@@ -101,6 +101,21 @@ export class WorldRenderer {
       { id: 'mexica_causeway', name: 'Calzadas / Causeways', x: 0, z: 11, prompt: t('mexica.causewayPrompt') },
       { id: 'mexica_templo', name: 'Recinto ceremonial', x: 0, z: -7, prompt: t('mexica.templePrompt') }
     ].forEach((o) => playerController.interactiveZones.push({ id: o.id, name: o.name, type: 'object', position: new THREE.Vector3(o.x, 0.7, o.z), radius: 3, promptText: o.prompt, onInteract: () => onTriggerObject(o.id) }));
+    const residents = [
+      { id: 'npc_mexica_chinampa', name: 'Cuidadora de chinampa', role: 'Personaje educativo', x: 11, z: 8, color: 0x2a9d8f },
+      { id: 'npc_mexica_market', name: 'Comerciante de Tlatelolco', role: 'Personaje educativo', x: 2, z: 9, color: 0xc98c3a },
+      { id: 'npc_mexica_language', name: 'Mediadora de memoria nahua', role: 'Personaje educativo', x: 6, z: -6, color: 0x9b5de5 }
+    ];
+    residents.forEach((resident) => {
+      const group = new THREE.Group();
+      const body = new THREE.Mesh(new THREE.CylinderGeometry(.3, .46, .82, 6), new THREE.MeshLambertMaterial({ color: resident.color })); body.position.y = .55; body.castShadow = true;
+      const sash = new THREE.Mesh(new THREE.CylinderGeometry(.38, .41, .1, 6), new THREE.MeshLambertMaterial({ color: 0xf4a261 })); sash.position.y = .55;
+      const head = new THREE.Mesh(new THREE.BoxGeometry(.33, .33, .33), new THREE.MeshLambertMaterial({ color: 0xb87545 })); head.position.y = 1.1; head.castShadow = true;
+      const hair = new THREE.Mesh(new THREE.BoxGeometry(.35, .12, .35), new THREE.MeshLambertMaterial({ color: 0x24150f })); hair.position.y = 1.25;
+      const marker = new THREE.Mesh(new THREE.OctahedronGeometry(.18), new THREE.MeshBasicMaterial({ color: 0xffd166 })); marker.position.y = 1.62; marker.name = 'interaction-marker';
+      group.add(body, sash, head, hair, marker); group.position.set(resident.x, 0, resident.z); this.scene.add(group); this.npcMeshes.set(resident.id, group);
+      playerController.interactiveZones.push({ id: resident.id, name: resident.name, type: 'npc', position: new THREE.Vector3(resident.x, .7, resident.z), radius: 2.7, promptText: `Conversar con ${resident.name} (${resident.role})`, onInteract: () => onTriggerNpc(resident.id) });
+    });
   }
 
   public buildAndesEnvironment(
@@ -558,6 +573,7 @@ export class WorldRenderer {
       const iconMat = new THREE.MeshBasicMaterial({ color: 0xffe066 });
       const icon = new THREE.Mesh(iconGeo, iconMat);
       icon.position.y = 1.6;
+      icon.name = 'interaction-marker';
       npcGroup.add(icon);
 
       npcGroup.position.set(npc.position.x, npc.position.y, npc.position.z);
@@ -644,7 +660,7 @@ export class WorldRenderer {
 
     // Ícones sobre a cabeça dos NPCs flutuando
     this.npcMeshes.forEach((npcGroup) => {
-      const icon = npcGroup.children[3];
+      const icon = npcGroup.getObjectByName('interaction-marker');
       if (icon) {
         icon.rotation.y = elapsedTime * 2;
         icon.position.y = 1.6 + Math.sin(elapsedTime * 3) * 0.08;

@@ -12,6 +12,7 @@ Juego educativo web de exploración 2.5D/3D sobre historias, tecnologías, memor
 
 - Prototipo 3D de un paisaje inspirado en Mexico-Tenochtitlan, con lago, canales, calzadas, chinampas, viviendas y recinto ceremonial.
 - Puntos interactivos sobre el manejo del agua, las chinampas y la organización lacustre.
+- Tres habitantes educativos dentro del escenario — chinampa, intercambio de Tlatelolco y memoria/lengua nahua — con diálogos, preguntas aleatorias, respuestas explicativas y fuentes. Son síntesis educativas identificadas, no personas históricas inventadas.
 - Recorrido educativo en tres capítulos sobre territorio, prácticas chinamperas y el uso contextualizado de los nombres Mexica, tenochca y “azteca”.
 - “Mexica” se utiliza como nombre principal; “azteca” se explica como el término internacionalmente más difundido sin borrar el nombre propio.
 

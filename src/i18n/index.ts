@@ -38,7 +38,7 @@ const messages = {
     'journal.didYouKnow': '¿Sabías que?', 'journal.sources': 'Fuentes y referencias históricas y arqueológicas', 'journal.sourceLink': 'Consultar registro',
     'atlas.badge': 'Territorios y memorias de las Américas', 'atlas.subtitle': 'Elige un territorio para conocer saberes desde contextos y perspectivas propias.', 'atlas.fragments': 'Tus fragmentos de conocimiento',
     'atlas.playable': 'Jugable', 'atlas.expansion': 'En expansión', 'atlas.characters': 'personajes', 'atlas.discoveries': 'descubrimientos', 'atlas.explore': 'Explorar ahora', 'atlas.soon': 'Disponible próximamente', 'atlas.requires': 'Requiere',
-    'mexica.mission': 'Recorrido Mexica', 'mexica.missionTitle': 'La ciudad entre aguas', 'mexica.objective': 'Explora calzadas, canales, chinampas y el recinto ceremonial. Abre el recorrido educativo para consultar fuentes y contextos.',
+    'mexica.mission': 'Recorrido Mexica', 'mexica.missionTitle': 'La ciudad entre aguas', 'mexica.objective': 'Conversa con tres habitantes educativos y explora calzadas, canales, chinampas y el recinto ceremonial.',
     'mexica.chinampaPrompt': 'Observar el manejo de agua y suelo de las chinampas', 'mexica.causewayPrompt': 'Examinar cómo las calzadas y canales articulan la ciudad', 'mexica.templePrompt': 'Conocer el contexto del recinto ceremonial',
   },
   'pt-BR': {
@@ -69,7 +69,7 @@ const messages = {
     'journal.didYouKnow': 'Você sabia?', 'journal.sources': 'Fontes e referências históricas e arqueológicas', 'journal.sourceLink': 'Consultar registro',
     'atlas.badge': 'Territórios e memórias das Américas', 'atlas.subtitle': 'Escolha um território para conhecer saberes em seus próprios contextos e perspectivas.', 'atlas.fragments': 'Seus fragmentos de conhecimento',
     'atlas.playable': 'Jogável', 'atlas.expansion': 'Em expansão', 'atlas.characters': 'personagens', 'atlas.discoveries': 'descobertas', 'atlas.explore': 'Explorar agora', 'atlas.soon': 'Disponível em breve', 'atlas.requires': 'Requer',
-    'mexica.mission': 'Percurso Mexica', 'mexica.missionTitle': 'A cidade entre águas', 'mexica.objective': 'Explore calçadas, canais, chinampas e o recinto cerimonial. Abra o percurso educativo para consultar fontes e contextos.',
+    'mexica.mission': 'Percurso Mexica', 'mexica.missionTitle': 'A cidade entre águas', 'mexica.objective': 'Converse com três habitantes educativos e explore calçadas, canais, chinampas e o recinto cerimonial.',
     'mexica.chinampaPrompt': 'Observar o manejo de água e solo das chinampas', 'mexica.causewayPrompt': 'Examinar como calçadas e canais articulam a cidade', 'mexica.templePrompt': 'Conhecer o contexto do recinto cerimonial',
   },
   en: {
@@ -100,7 +100,7 @@ const messages = {
     'journal.didYouKnow': 'Did you know?', 'journal.sources': 'Historical and archaeological sources', 'journal.sourceLink': 'Open record',
     'atlas.badge': 'Territories and memories of the Americas', 'atlas.subtitle': 'Choose a territory to explore knowledge through its own contexts and perspectives.', 'atlas.fragments': 'Your knowledge fragments',
     'atlas.playable': 'Playable', 'atlas.expansion': 'In development', 'atlas.characters': 'characters', 'atlas.discoveries': 'discoveries', 'atlas.explore': 'Explore now', 'atlas.soon': 'Coming soon', 'atlas.requires': 'Requires',
-    'mexica.mission': 'Mexica journey', 'mexica.missionTitle': 'The city among the waters', 'mexica.objective': 'Explore causeways, canals, chinampas, and the ceremonial precinct. Open the learning journey to consult sources and context.',
+    'mexica.mission': 'Mexica journey', 'mexica.missionTitle': 'The city among the waters', 'mexica.objective': 'Talk to three educational residents and explore causeways, canals, chinampas, and the ceremonial precinct.',
     'mexica.chinampaPrompt': 'Observe chinampa water and soil management', 'mexica.causewayPrompt': 'Examine how causeways and canals connect the city', 'mexica.templePrompt': 'Learn about the ceremonial precinct context',
   }
 } as const;

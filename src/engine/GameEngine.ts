@@ -55,7 +55,7 @@ export class GameEngine {
 
     // 6. Construtor do Cenário Andino
     this.worldRenderer = new WorldRenderer(this.scene);
-    if (cultureId === 'mexica') this.worldRenderer.buildMexicaEnvironment(this.playerController, onTriggerObject);
+    if (cultureId === 'mexica') this.worldRenderer.buildMexicaEnvironment(this.playerController, onTriggerNpc, onTriggerObject);
     else this.worldRenderer.buildAndesEnvironment(this.playerController, onTriggerNpc, onTriggerObject);
 
     // 7. Event listeners

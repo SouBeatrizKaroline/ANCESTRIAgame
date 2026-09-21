@@ -10,6 +10,7 @@ import { AboutModal } from './AboutModal';
 import { CultureSelectionModal } from './CultureSelectionModal';
 import { MexicaJourneyModal } from './MexicaJourneyModal';
 import { AndeanJourneyModal } from './AndeanJourneyModal';
+import { MexicaDialogueModal } from './MexicaDialogueModal';
 import { TerracesMinigame } from './Minigames/TerracesMinigame';
 import { QuipuMinigame } from './Minigames/QuipuMinigame';
 import { StoneworkMinigame } from './Minigames/StoneworkMinigame';
@@ -31,6 +32,7 @@ export class UIManager {
   public cultureSelectionModal!: CultureSelectionModal;
   public mexicaJourneyModal!: MexicaJourneyModal;
   public andeanJourneyModal!: AndeanJourneyModal;
+  public mexicaDialogueModal!: MexicaDialogueModal;
 
   private onVirtualMoveCallback: (dx: number, dz: number) => void;
   private onInteractCallback: () => void;
@@ -71,6 +73,7 @@ export class UIManager {
     this.dialogueModal = new DialogueModal(this.modalContainer, (minigameId) => {
       this.openMinigame(minigameId);
     });
+    this.mexicaDialogueModal = new MexicaDialogueModal(this.modalContainer);
 
     this.journalModal = new JournalModal(this.modalContainer);
     this.settingsModal = new SettingsModal(this.modalContainer);
@@ -108,6 +111,7 @@ export class UIManager {
   }
 
   public openNpcDialogue(npcId: string): void {
+    if (npcId.startsWith('npc_mexica_')) { this.mexicaDialogueModal.show(npcId as 'npc_mexica_chinampa' | 'npc_mexica_market' | 'npc_mexica_language'); return; }
     const dialogueIdMap: Record<string, string> = {
       npc_kuntur: 'dia_kuntur_intro',
       npc_sumaq: 'dia_sumaq_intro',
