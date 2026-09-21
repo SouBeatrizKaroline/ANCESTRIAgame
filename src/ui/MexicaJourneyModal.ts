@@ -38,7 +38,13 @@ export class MexicaJourneyModal {
   public show(): void {
     const saved = Number(localStorage.getItem(PROGRESS_KEY) || 0);
     this.chapterIndex = Math.min(Math.max(saved, 0), chapters.length - 1);
-    this.render();
+    this.renderOverview(saved);
+  }
+
+  private renderOverview(saved: number): void {
+    this.container.innerHTML = `<div class="mexica-journey-overlay"><article class="mexica-journey-window journey-overview-window"><header class="mexica-journey-header"><div><span class="badge">RECORRIDO MEXICA</span><h2>Tres memorias para explorar</h2><p>Elige un capítulo. Tu progreso queda guardado en este dispositivo.</p></div><button class="btn-close" id="mexica-close" aria-label="Cerrar">&times;</button></header><div class="journey-overview-grid">${chapters.map((c, i) => `<button class="journey-chapter-card ${i < saved ? 'completed' : ''}" data-chapter="${i}"><span class="journey-number">0${i + 1}</span><span class="culture-status">${c.eyebrow.split('·')[1]}</span><strong>${c.title}</strong><small>${i < saved ? '✓ Memoria recorrida' : i === Math.min(saved, chapters.length - 1) ? 'Continuar aquí →' : 'Explorar capítulo →'}</small></button>`).join('')}</div><footer class="journey-overview-footer">Territorio lacustre · Chinampas · Nombre y memoria</footer></article></div>`;
+    this.container.querySelector('#mexica-close')?.addEventListener('click', () => { this.close(); this.onBack(); });
+    this.container.querySelectorAll<HTMLButtonElement>('[data-chapter]').forEach((button) => button.addEventListener('click', () => { this.chapterIndex = Number(button.dataset.chapter); AudioManager.getInstance().playClick(); this.render(); }));
   }
 
   private render(feedback = ''): void {
