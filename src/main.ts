@@ -3,6 +3,7 @@ import { GameEngine } from './engine/GameEngine';
 import { UIManager } from './ui/UIManager';
 import { AudioManager } from './engine/AudioManager';
 import { applyDocumentLanguage, getLanguage } from './i18n';
+import { CultureId } from './data/types';
 
 window.addEventListener('DOMContentLoaded', () => {
   applyDocumentLanguage(getLanguage());
@@ -28,10 +29,11 @@ window.addEventListener('DOMContentLoaded', () => {
         gameEngine.playerController.interact();
       }
     },
-    onStartGame: () => {
-      if (!gameEngine) {
-        gameEngine = new GameEngine(
+    onStartGame: (cultureId: CultureId) => {
+      if (gameEngine) gameEngine.destroy();
+      gameEngine = new GameEngine(
           canvasContainer,
+          cultureId,
           (npcId) => {
             uiManager.openNpcDialogue(npcId);
           },
@@ -39,8 +41,7 @@ window.addEventListener('DOMContentLoaded', () => {
             uiManager.openObjectInteraction(objectId);
           }
         );
-        gameEngine.start();
-      }
+      gameEngine.start();
     }
   });
 

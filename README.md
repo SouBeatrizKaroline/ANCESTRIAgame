@@ -21,6 +21,12 @@ Jogo educativo de aventura e exploração 2.5D / 3D low-poly sobre saberes e pov
 
 As traduções da interface ficam centralizadas em `src/i18n/index.ts`, e o fluxo de escolha de povo em `src/ui/CultureSelectionModal.ts`. Para adicionar um idioma, inclua seu código no tipo `Language`, em `SUPPORTED_LANGUAGES` e no catálogo de mensagens. Para adicionar um povo jogável, crie seus dados culturais/fontes e uma entrada própria no seletor, sem reutilizar narrativas de outro povo como se fossem equivalentes.
 
+### Percurso Mexica disponível
+
+O primeiro cartão oferece duas experiências complementares: um **protótipo 3D explorável** de Mexico-Tenochtitlan, com lago, canais, calçadas, chinampas, moradias e recinto cerimonial; e um **percurso educativo interativo**, responsivo e persistente sobre território lacustre, chinampas e a relação entre os nomes **Mexica**, **tenochca** e o exônimo mais difundido **azteca**. O progresso educativo fica somente no navegador e a conclusão concede 30 Fragmentos de Conhecimento.
+
+As fontes são exibidas dentro da experiência. A curadoria começa pela *Crónica Mexicáyotl*, texto histórico nahua-mexica atribuído a Hernando Alvarado Tezozómoc, e por autores e falantes nahuas contemporâneos divulgados pelo INALI; materiais do INAH, do Museo del Templo Mayor e da UNESCO apoiam o contexto material. Vozes contemporâneas não são projetadas automaticamente sobre o século XV, e documentos do período colonial são identificados e contextualizados.
+
 ### Diretriz editorial
 
 Histórias, saberes, nomes e elementos culturais devem ser apresentados como conhecimentos situados, apoiados em relatos, tradições, fontes e perspectivas de povos originários. Fontes indígenas devem ser priorizadas; documentos coloniais podem ser contextualizados como registros históricos, mas não devem ocupar automaticamente o lugar de voz principal.
@@ -60,7 +66,7 @@ EXPLORAR ➔ DESCOBRIR ➔ INTERAGIR ➔ APRENDER ➔ RESOLVER ➔ DESBLOQUEAR
 
 ---
 
-## 🌄 O MVP Jogável: Andes & Tawantinsuyu (Incas)
+## 🌄 O protótipo 3D jogável: Andes & Tawantinsuyu
 
 A primeira região verticalmente implementada transporta o jogador para o coração do **Vale Sagrado dos Andes**:
 
@@ -111,7 +117,7 @@ O mapa-múndi continental prepara a expansão do jogo em quatro grandes eixos:
 ## 📁 Estrutura de Pastas do Projeto
 
 ```
-Gemini-RepoLab/
+ANCESTRIAgame/
 ├── index.html                     # Ponto de entrada do Vite e aplicação web
 ├── standalone.html                # Versão para teste direto no navegador com importmap
 ├── package.json                   # Dependências e scripts de execução
@@ -179,10 +185,10 @@ Gemini-RepoLab/
 ### 1. Executando em Modo de Desenvolvimento (Vite)
 ```bash
 # Clone o repositório
-git clone https://github.com/SouBeatrizKaroline/Gemini-RepoLab.git
+git clone https://github.com/SouBeatrizKaroline/ANCESTRIAgame.git
 
 # Entre na pasta do projeto
-cd Gemini-RepoLab
+cd ANCESTRIAgame
 
 # Instale as dependências
 npm install
@@ -235,6 +241,8 @@ O projeto foi planejado desde a arquitetura inicial com recursos dedicados de ac
 
 Todo o conteúdo inserido no jogo apoia-se em literatura especializada e relatórios patrimoniais de instituições de pesquisa:
 
+O percurso Mexica utiliza também fontes acessíveis diretamente na interface: [*Crónica Mexicáyotl* (UNAM)](https://historicas.unam.mx/publicaciones/catalogo/ficha?id=008c), [autores e falantes nahuas contemporâneos (INALI)](https://www.inali.gob.mx/detalle/2020-10-12-17-19-51), [sistema chinampero (INAH)](https://www.inah.gob.mx/boletines/el-sistema-chinampero-de-la-cuenca-de-mexico-en-la-nueva-edicion-de-arqueologia-mexicana), [agricultura mexica (Museo del Templo Mayor)](https://www.templomayor.inah.gob.mx/salas-del-museo/sala-7-agricultura) e [Xochimilco (UNESCO)](https://whc.unesco.org/en/list/412).
+
 1. **MURRA, John Victor (1972)**. *El control vertical de un máximo de pisos ecológicos en la economía de las sociedades andinas*. Universidad Hermilio Valdizán, Huánuco.
    - *Contribuição:* Base teórica da distribuição de cultivos nos andenes conforme microclimas e altitudes.
 2. **ROSTWOROWSKI, María (1988)**. *Historia del Tahuantinsuyu*. Instituto de Estudios Peruanos (IEP).
@@ -258,8 +266,10 @@ Todo o conteúdo inserido no jogo apoia-se em literatura especializada e relató
 
 ## 🔮 Roadmap e Expansões Futuras
 
-- [ ] **Mesoamérica: O Esplendor das Cidades-Estado e Lagos**
-  - Implementação da região jogável com pirâmides maias de calcário e as hortas flutuantes (*chinampas*) de Tenochtitlan.
+- [x] **Protótipo 3D e percurso educativo inicial Mexica**
+  - Experiência narrativa responsiva sobre Mexico-Tenochtitlan, chinampas e nomenclatura, com fontes visíveis e progresso persistente.
+- [ ] **Expansão 3D mesoamericana**
+  - Implementação futura de uma região explorável própria; povos mexicas e povos maias terão percursos separados, sem homogeneização.
   - Minigame do calendário e matemática vigesimal maia com o uso do zero.
 - [ ] **Amazônia: Floresta Cultivada & Cacicados das Águas**
   - Cenário de igarapés e aldeias circulares com estradas elevadas.

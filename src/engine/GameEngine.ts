@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { PlayerController } from './PlayerController';
 import { WorldRenderer } from './WorldRenderer';
 import { GameState } from '../state/GameState';
+import { CultureId } from '../data/types';
 
 export class GameEngine {
   private container: HTMLElement;
@@ -21,6 +22,7 @@ export class GameEngine {
 
   constructor(
     container: HTMLElement,
+    cultureId: CultureId,
     onTriggerNpc: (npcId: string) => void,
     onTriggerObject: (objectId: string) => void
   ) {
@@ -29,8 +31,8 @@ export class GameEngine {
 
     // 1. Cena com atmosfera andina límpida
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0xa7c5eb); // Céu azul andino claro
-    this.scene.fog = new THREE.FogExp2(0xa7c5eb, 0.015);
+    this.scene.background = new THREE.Color(0x9fc8dc); // Céu azul andino claro
+    this.scene.fog = new THREE.FogExp2(0x9fc8dc, 0.012);
 
     // 2. Câmera com ângulo isométrico acolhedor (2.5D)
     const aspect = container.clientWidth / (container.clientHeight || 1);
@@ -48,12 +50,13 @@ export class GameEngine {
     this.setupLighting();
 
     // 5. Controlador do Jogador
-    this.playerController = new PlayerController();
+    this.playerController = new PlayerController(cultureId);
     this.scene.add(this.playerController.group);
 
     // 6. Construtor do Cenário Andino
     this.worldRenderer = new WorldRenderer(this.scene);
-    this.worldRenderer.buildAndesEnvironment(this.playerController, onTriggerNpc, onTriggerObject);
+    if (cultureId === 'mexica') this.worldRenderer.buildMexicaEnvironment();
+    else this.worldRenderer.buildAndesEnvironment(this.playerController, onTriggerNpc, onTriggerObject);
 
     // 7. Event listeners
     window.addEventListener('resize', this.onWindowResize.bind(this));

@@ -18,6 +18,83 @@ export class WorldRenderer {
     this.scene = scene;
   }
 
+  public buildMexicaEnvironment(): void {
+    const water = new THREE.Mesh(
+      new THREE.PlaneGeometry(60, 60),
+      new THREE.MeshPhongMaterial({ color: 0x3b9faf, shininess: 70 })
+    );
+    water.rotation.x = -Math.PI / 2;
+    water.position.y = -0.18;
+    water.receiveShadow = true;
+    this.scene.add(water);
+
+    const causewayMat = new THREE.MeshLambertMaterial({ color: 0xcbb994 });
+    const islandMat = new THREE.MeshLambertMaterial({ color: 0x687b45 });
+    const soilMat = new THREE.MeshLambertMaterial({ color: 0x58412f });
+    const stoneMat = new THREE.MeshLambertMaterial({ color: 0xb9a98d });
+    const redMat = new THREE.MeshLambertMaterial({ color: 0xa33d2d });
+
+    const island = new THREE.Mesh(new THREE.CylinderGeometry(11, 12, 0.5, 12), islandMat);
+    island.position.y = 0.05;
+    island.receiveShadow = true;
+    this.scene.add(island);
+
+    [[0, 18, 4, 28], [18, 0, 28, 4], [-18, 0, 28, 4]].forEach(([x, z, w, h]) => {
+      const road = new THREE.Mesh(new THREE.BoxGeometry(w, 0.28, h), causewayMat);
+      road.position.set(x, 0.12, z);
+      road.receiveShadow = true;
+      this.scene.add(road);
+    });
+
+    // Chinampas: parcelas retangulares separadas por canais, mostradas como prática lacustre.
+    [-20, -14, 14, 20].forEach((x, ix) => {
+      [-17, -9, 9, 17].forEach((z, iz) => {
+        const plot = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.38, 6.2), soilMat);
+        plot.position.set(x, 0.04, z);
+        plot.receiveShadow = true;
+        this.scene.add(plot);
+        for (let row = -2; row <= 2; row += 2) {
+          const crop = new THREE.Mesh(
+            new THREE.ConeGeometry(0.22, 0.7, 5),
+            new THREE.MeshLambertMaterial({ color: (ix + iz) % 2 ? 0x7aa64b : 0x91b955 })
+          );
+          crop.position.set(x + row * 0.7, 0.55, z);
+          crop.castShadow = true;
+          this.scene.add(crop);
+        }
+      });
+    });
+
+    const platform = new THREE.Mesh(new THREE.BoxGeometry(8, 1.2, 8), stoneMat);
+    platform.position.set(0, 0.7, -2);
+    platform.castShadow = true;
+    platform.receiveShadow = true;
+    this.scene.add(platform);
+    for (let level = 0; level < 3; level++) {
+      const temple = new THREE.Mesh(new THREE.BoxGeometry(5 - level, 1, 4 - level * 0.55), redMat);
+      temple.position.set(0, 1.8 + level, -2.4);
+      temple.castShadow = true;
+      this.scene.add(temple);
+    }
+    const shrineA = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.3, 1.5), new THREE.MeshLambertMaterial({ color: 0x2f6762 }));
+    shrineA.position.set(-1.2, 4.25, -2.4);
+    const shrineB = shrineA.clone();
+    (shrineB.material as THREE.MeshLambertMaterial) = new THREE.MeshLambertMaterial({ color: 0xc68b32 });
+    shrineB.position.x = 1.2;
+    this.scene.add(shrineA, shrineB);
+
+    [[7, 5], [-7, 5], [7, -9], [-7, -9]].forEach(([x, z], index) => {
+      const house = new THREE.Mesh(new THREE.BoxGeometry(3.2, 1.8, 2.6), new THREE.MeshLambertMaterial({ color: index % 2 ? 0xd9c7a0 : 0xc9b184 }));
+      house.position.set(x, 1, z);
+      house.castShadow = true;
+      const roof = new THREE.Mesh(new THREE.ConeGeometry(2.25, 1.1, 4), new THREE.MeshLambertMaterial({ color: 0x8d623c }));
+      roof.position.set(x, 2.35, z);
+      roof.rotation.y = Math.PI / 4;
+      roof.castShadow = true;
+      this.scene.add(house, roof);
+    });
+  }
+
   public buildAndesEnvironment(
     playerController: PlayerController,
     onTriggerNpc: (npcId: string) => void,
@@ -53,7 +130,10 @@ export class WorldRenderer {
     // 10. Cordilheira de montanhas ao fundo com picos nevados
     this.createMountainBackdrop();
 
-    // 11. Criação dos NPCs 3D e registro das zonas de interação
+    // 11. Camadas decorativas leves para profundidade, cor e orientação visual
+    this.createScenicDetails();
+
+    // 12. Criação dos NPCs 3D e registro das zonas de interação
     this.createNPCsAndInteractions(playerController, onTriggerNpc, onTriggerObject);
   }
 
@@ -368,8 +448,8 @@ export class WorldRenderer {
   }
 
   private createMountainBackdrop(): void {
-    const mountainMat = new THREE.MeshLambertMaterial({ color: 0x495057 });
-    const snowMat = new THREE.MeshLambertMaterial({ color: 0xffffff });
+    const mountainMat = new THREE.MeshLambertMaterial({ color: 0x52645f });
+    const snowMat = new THREE.MeshLambertMaterial({ color: 0xf7f0df });
 
     const mountainCoords = [
       { x: -28, z: -28, radius: 14, height: 26 },
@@ -395,6 +475,32 @@ export class WorldRenderer {
     });
   }
 
+  private createScenicDetails(): void {
+    const flowerColors = [0xf4c95d, 0xe76f51, 0x9b5de5];
+    const positions = [
+      [-4.7, 8.5], [4.8, 9.8], [5.2, -5.8], [-8.3, 7.2],
+      [8.2, 7.5], [-5.1, -12.2], [4.2, -12.8], [10.4, 1.5]
+    ];
+    positions.forEach(([x, z], index) => {
+      const tuft = new THREE.Group();
+      for (let i = 0; i < 3; i++) {
+        const stem = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.025, 0.035, 0.34 + i * 0.05, 5),
+          new THREE.MeshLambertMaterial({ color: 0x527a3b })
+        );
+        stem.position.set((i - 1) * 0.12, 0.18, (i % 2) * 0.08);
+        const bloom = new THREE.Mesh(
+          new THREE.OctahedronGeometry(0.09),
+          new THREE.MeshLambertMaterial({ color: flowerColors[(index + i) % flowerColors.length] })
+        );
+        bloom.position.copy(stem.position).setY(stem.position.y + 0.2 + i * 0.025);
+        tuft.add(stem, bloom);
+      }
+      tuft.position.set(x, 0.02, z);
+      this.scene.add(tuft);
+    });
+  }
+
   private createNPCsAndInteractions(
     playerController: PlayerController,
     onTriggerNpc: (npcId: string) => void,
@@ -404,6 +510,8 @@ export class WorldRenderer {
       const npcGroup = new THREE.Group();
       const skinMat = new THREE.MeshLambertMaterial({ color: 0xbc6c25 });
       const tunicMat = new THREE.MeshLambertMaterial({ color: npc.visualColor });
+      const hairMat = new THREE.MeshLambertMaterial({ color: 0x24150f });
+      const sashMat = new THREE.MeshLambertMaterial({ color: 0xf4a261 });
 
       // Corpo com túnica
       const bodyGeo = new THREE.CylinderGeometry(0.3, 0.42, 0.8, 6);
@@ -418,6 +526,14 @@ export class WorldRenderer {
       head.position.y = 1.1;
       head.castShadow = true;
       npcGroup.add(head);
+
+      const hair = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.11, 0.35), hairMat);
+      hair.position.y = 1.23;
+      npcGroup.add(hair);
+
+      const sash = new THREE.Mesh(new THREE.CylinderGeometry(0.37, 0.39, 0.1, 6), sashMat);
+      sash.position.y = 0.55;
+      npcGroup.add(sash);
 
       // Faixa de cabelo / gorro
       const bandGeo = new THREE.BoxGeometry(0.34, 0.08, 0.34);

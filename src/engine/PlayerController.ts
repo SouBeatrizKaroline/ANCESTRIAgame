@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { GameState } from '../state/GameState';
 import { AudioManager } from './AudioManager';
 import { ANDES_NPCS } from '../data/dialogues/andesDialogues';
+import { CultureId } from '../data/types';
 
 export interface InteractiveZone {
   id: string;
@@ -31,9 +32,9 @@ export class PlayerController {
   public interactiveZones: InteractiveZone[] = [];
   public currentInteractiveZone: InteractiveZone | null = null;
 
-  constructor() {
+  constructor(cultureId: CultureId = 'inca') {
     this.group = new THREE.Group();
-    this.buildMesh();
+    this.buildMesh(cultureId);
     this.setupInputs();
 
     // Carrega posição inicial do GameState
@@ -42,15 +43,17 @@ export class PlayerController {
     this.group.rotation.y = state.playerTransform.rotationY;
   }
 
-  private buildMesh(): void {
+  private buildMesh(cultureId: CultureId): void {
     // Materiais low-poly estilizados
     const skinMat = new THREE.MeshLambertMaterial({ color: 0xc68642 });
-    const ponchoMat = new THREE.MeshLambertMaterial({ color: 0xb23a22 }); // Vermelho terroso inca
+    const ponchoMat = new THREE.MeshLambertMaterial({ color: cultureId === 'mexica' ? 0x274c47 : 0xb23a22 });
     const ponchoAccentMat = new THREE.MeshLambertMaterial({ color: 0xf4a261 }); // Ocre
-    const chulloMat = new THREE.MeshLambertMaterial({ color: 0x2a9d8f }); // Azul-turquesa andino
+    const chulloMat = new THREE.MeshLambertMaterial({ color: cultureId === 'mexica' ? 0xc98c3a : 0x2a9d8f });
     const chulloAccentMat = new THREE.MeshLambertMaterial({ color: 0xe76f51 });
     const pantsMat = new THREE.MeshLambertMaterial({ color: 0x4a4e69 });
     const bagMat = new THREE.MeshLambertMaterial({ color: 0xe9c46a });
+    const hairMat = new THREE.MeshLambertMaterial({ color: 0x25150f });
+    const eyeMat = new THREE.MeshBasicMaterial({ color: 0x1b1210 });
 
     // Tronco / Poncho (Unku)
     const ponchoGeo = new THREE.CylinderGeometry(0.32, 0.45, 0.65, 6);
@@ -78,6 +81,16 @@ export class PlayerController {
     this.headMesh.position.y = 1.1;
     this.headMesh.castShadow = true;
     this.group.add(this.headMesh);
+
+    // Cabelo e rosto dão identidade e legibilidade à distância sem buscar realismo genérico.
+    const hair = new THREE.Mesh(new THREE.BoxGeometry(0.37, 0.12, 0.37), hairMat);
+    hair.position.set(0, 1.25, 0);
+    this.group.add(hair);
+    [-0.085, 0.085].forEach((x) => {
+      const eye = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.035, 0.018), eyeMat);
+      eye.position.set(x, 1.12, 0.184);
+      this.group.add(eye);
+    });
 
     // Gorro Andino com abas (Chullo)
     const hatGeo = new THREE.ConeGeometry(0.32, 0.4, 5);

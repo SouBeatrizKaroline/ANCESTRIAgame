@@ -957,19 +957,48 @@ html, body {
 }
 @media (max-width:800px){ .main-menu-card{grid-template-columns:1fr; max-height:94vh; overflow-y:auto;} .menu-story-panel{padding:28px 26px 22px;border-right:0;border-bottom:1px solid rgba(242,184,96,.2)} .game-title{font-size:3rem}.featured-journey,.menu-ethics-note{display:none}.menu-action-panel{padding:24px 26px 30px}.menu-language-switch{margin-bottom:14px}.main-menu-card{min-height:auto}.game-tagline{margin:12px 0 0}.ancestria-glyph{margin-bottom:12px} }
 
-.culture-selection-window { max-width: 920px; }
-.culture-intro { color: #cbd5e1; line-height: 1.65; margin: 0 0 20px; }
+.culture-selection-window { max-width: 980px; max-height:94vh; }
+.culture-selection-window .settings-header { padding:18px 28px; flex:0 0 auto; }
+.culture-selection-window .settings-body { padding:18px 28px 20px; }
+.culture-intro { color: #cbd5e1; line-height: 1.5; margin: 0 0 14px; font-size:.92rem; }
 .culture-grid { display: grid; grid-template-columns: 1fr 1fr .65fr; gap: 16px; }
-.culture-card { border: 1px solid rgba(255,255,255,.12); border-radius: var(--border-radius-md); padding: 20px; background: rgba(15,23,42,.52); }
+.culture-card { display:flex; flex-direction:column; min-width:0; border: 1px solid rgba(255,255,255,.12); border-radius: var(--border-radius-md); padding: 16px 18px; background: rgba(15,23,42,.52); }
 .culture-card-active { border-color: var(--color-gold); background: linear-gradient(145deg, rgba(180,83,9,.2), rgba(15,23,42,.62)); }
 .culture-card-planned { opacity: .64; }
 .culture-status { display: inline-block; color: var(--color-gold); font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
-.culture-card h3 { margin: 10px 0; }
-.culture-card p { color: #cbd5e1; line-height: 1.55; }
-.culture-name-note { font-size: .82rem; border-left: 2px solid var(--color-gold); padding-left: 10px; }
+.culture-card h3 { margin: 8px 0; font-size:1.05rem; }
+.culture-card p { color: #cbd5e1; line-height: 1.42; font-size:.86rem; }
+.culture-card .btn-menu-primary { min-height:48px; margin-top:auto; padding:10px 13px; font-size:.94rem; }
+.culture-card .culture-learn { width:100%; margin-top:7px; padding:8px 10px; font-size:.84rem; }
+.culture-name-note { margin-bottom:12px; font-size: .74rem !important; line-height:1.35 !important; border-left: 2px solid var(--color-gold); padding-left: 9px; }
 .culture-preview-note { margin-top:12px; padding:12px; border-radius:10px; background:rgba(244,162,97,.1); color:#f3d8b4 !important; font-size:.82rem; }
-.culture-back { margin-top: 18px; }
-@media (max-width: 760px) { .culture-grid { grid-template-columns: 1fr; } }
+.culture-back { margin-top: 12px; padding:9px 14px; }
+@media (max-width: 760px) { .culture-grid { grid-template-columns: 1fr; } .culture-selection-window{max-height:96vh}.culture-selection-window .settings-body{padding:16px 18px 20px} }
+@media (max-height: 680px) and (min-width: 761px) { .culture-selection-window .settings-header{padding:14px 24px}.culture-selection-window .settings-body{padding:12px 24px 14px}.culture-intro{margin-bottom:10px}.culture-card{padding:12px 14px}.culture-card p{font-size:.8rem}.culture-name-note{font-size:.69rem!important}.culture-back{margin-top:8px} }
+
+.mexica-journey-overlay { position:fixed; inset:0; z-index:120; display:grid; place-items:center; padding:20px; background:linear-gradient(rgba(5,14,16,.78),rgba(5,14,16,.92)),url('/assets/menu/mexica-lake.webp') center/cover; }
+.mexica-journey-window { width:min(1040px,96vw); max-height:92vh; overflow:auto; border:1px solid rgba(244,162,97,.48); border-radius:24px; background:rgba(16,27,29,.96); box-shadow:0 30px 90px rgba(0,0,0,.62); }
+.mexica-journey-header { display:flex; justify-content:space-between; gap:20px; padding:24px 30px 18px; }
+.mexica-journey-header h2 { margin-top:5px; font:700 clamp(1.45rem,3vw,2.2rem) var(--font-display); }
+.mexica-progress { height:4px; background:rgba(255,255,255,.08); }
+.mexica-progress span { display:block; height:100%; background:linear-gradient(90deg,#e1713e,#f4c261); transition:width .35s ease; }
+.mexica-journey-body { display:grid; grid-template-columns:1.05fr .95fr; gap:28px; padding:30px; }
+.mexica-story>p { margin:12px 0 20px; color:#d4dfdd; line-height:1.75; font-size:1.02rem; }
+.source-principle { padding:16px 18px; border-left:3px solid #e7a353; background:rgba(231,163,83,.08); color:#bfcfcd; line-height:1.55; font-size:.85rem; }
+.mexica-activity { padding:22px; border:1px solid rgba(255,255,255,.1); border-radius:18px; background:rgba(255,255,255,.035); }
+.mexica-activity h3 { margin:9px 0 16px; line-height:1.4; }
+.mexica-options { display:grid; gap:9px; }
+.mexica-options button { text-align:left; padding:12px 14px; border:1px solid rgba(255,255,255,.14); border-radius:10px; background:#19272a; color:#f4f7f7; cursor:pointer; transition:.18s ease; }
+.mexica-options button:hover { border-color:#e7a353; background:#223436; transform:translateX(3px); }
+.mexica-feedback { min-height:22px; margin-top:12px; color:#f4bd77; font-weight:700; font-size:.86rem; }
+.mexica-sources { display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; padding:18px 30px 24px; border-top:1px solid rgba(255,255,255,.08); color:#93a9a6; font-size:.75rem; }
+.mexica-sources a { color:#f0b66e; }
+.mexica-sources small { flex-basis:100%; line-height:1.45; color:#829894; }
+.mexica-complete { padding:54px; text-align:center; max-width:650px; }
+.mexica-complete h2 { margin:8px 0 12px; font:700 2.1rem var(--font-display); }
+.mexica-complete p { color:#b9cac7; margin-bottom:24px; line-height:1.6; }
+.completion-symbol { display:block; color:#f4c261; font-size:2.2rem; margin-bottom:8px; }
+@media(max-width:760px){ .mexica-journey-body{grid-template-columns:1fr;padding:20px}.mexica-journey-header{padding:20px}.mexica-sources{padding:16px 20px 22px}.mexica-complete{padding:36px 24px} }
 
 .setting-info strong {
   display: block;

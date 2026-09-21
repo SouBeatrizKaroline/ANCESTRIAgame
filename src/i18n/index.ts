@@ -27,7 +27,7 @@ const messages = {
     'people.mexicaDesc': 'Recorrido inicial sobre Mexico-Tenochtitlan, chinampas y saberes mexicas, priorizando fuentes y perspectivas indígenas.',
     'people.start': 'Comenzar con el pueblo Mexica', 'people.soon': 'Próximamente', 'people.back': 'Volver',
     'people.inca': 'Pueblos andinos / Tawantinsuyu', 'people.maya': 'Pueblos mayas',
-    'people.mexicaStatus': 'Recorrido inicial · en investigación', 'people.mexicaExplore': 'Conocer el recorrido Mexica',
+    'people.mexicaStatus': 'Prototipo 3D disponible', 'people.mexicaStart': 'Jugar el prototipo Mexica 3D', 'people.mexicaExplore': 'Abrir recorrido educativo',
     'people.mexicaPreview': 'Este recorrido está siendo construido con revisión de fuentes y perspectivas indígenas. La experiencia 3D Mexica todavía no está disponible.',
     'people.incaStatus': 'Prototipo 3D disponible', 'people.incaDesc': 'Explora el prototipo actual del Valle Sagrado andino, con misiones, diálogos y minijuegos.', 'people.incaStart': 'Jugar el prototipo andino',
     'people.note': '“Azteca” es el término más difundido internacionalmente; usamos Mexica como nombre propio del pueblo de Mexico-Tenochtitlan.'
@@ -50,7 +50,7 @@ const messages = {
     'people.mexica': 'Mexica (também conhecido como Asteca)', 'people.mexicaDesc': 'Percurso inicial sobre Mexico-Tenochtitlan, chinampas e saberes mexicas, priorizando fontes e perspectivas indígenas.',
     'people.start': 'Começar com o povo Mexica', 'people.soon': 'Em breve', 'people.back': 'Voltar', 'people.inca': 'Povos andinos / Tawantinsuyu',
     'people.maya': 'Povos maias', 'people.note': '“Asteca” é o termo mais difundido internacionalmente; usamos Mexica como nome próprio do povo de Mexico-Tenochtitlan.'
-    ,'people.mexicaStatus': 'Percurso inicial · em pesquisa', 'people.mexicaExplore': 'Conhecer o percurso Mexica',
+    ,'people.mexicaStatus': 'Protótipo 3D disponível', 'people.mexicaStart': 'Jogar o protótipo Mexica 3D', 'people.mexicaExplore': 'Abrir percurso educativo',
     'people.mexicaPreview': 'Este percurso está sendo construído com revisão de fontes e perspectivas indígenas. A experiência 3D Mexica ainda não está disponível.',
     'people.incaStatus': 'Protótipo 3D disponível', 'people.incaDesc': 'Explore o protótipo atual do Vale Sagrado andino, com missões, diálogos e minijogos.', 'people.incaStart': 'Jogar o protótipo andino'
   },
@@ -72,7 +72,7 @@ const messages = {
     'people.mexica': 'Mexica (also known as Aztec)', 'people.mexicaDesc': 'The initial journey explores Mexico-Tenochtitlan, chinampas, and Mexica knowledge, prioritizing Indigenous sources and perspectives.',
     'people.start': 'Begin with the Mexica people', 'people.soon': 'Coming soon', 'people.back': 'Back', 'people.inca': 'Andean peoples / Tawantinsuyu',
     'people.maya': 'Maya peoples', 'people.note': '“Aztec” is the best-known international term; we use Mexica as the people’s own name for Mexico-Tenochtitlan.'
-    ,'people.mexicaStatus': 'Initial journey · in research', 'people.mexicaExplore': 'Explore the Mexica journey',
+    ,'people.mexicaStatus': '3D prototype available', 'people.mexicaStart': 'Play the Mexica 3D prototype', 'people.mexicaExplore': 'Open the learning journey',
     'people.mexicaPreview': 'This journey is being built with a review of Indigenous sources and perspectives. The Mexica 3D experience is not available yet.',
     'people.incaStatus': '3D prototype available', 'people.incaDesc': 'Explore the current Andean Sacred Valley prototype, with missions, dialogue, and minigames.', 'people.incaStart': 'Play the Andean prototype'
   }

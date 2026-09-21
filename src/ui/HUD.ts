@@ -39,7 +39,7 @@ export class HUD {
         <!-- Barra Superior -->
         <header class="hud-top-bar">
           <div class="hud-brand">
-            <span class="region-pill">ANCESTRIA • Andes</span>
+            <span class="region-pill">ANCESTRIA • ${state.selectedCultureId === 'mexica' ? 'Mexico-Tenochtitlan' : 'Andes'}</span>
           </div>
 
           <div class="hud-center-stats">
@@ -103,6 +103,9 @@ export class HUD {
 
   private renderActiveMission(): string {
     const state = GameState.getInstance();
+    if (state.selectedCultureId === 'mexica') {
+      return `<div class="mission-header"><span class="mission-badge">Recorrido Mexica</span><h4>La ciudad entre aguas</h4></div><div class="mission-step"><span class="step-bullet">●</span><p><strong>Objetivo:</strong> Explora calzadas, canales, chinampas y el recinto ceremonial. Abre el recorrido educativo desde la selección para consultar fuentes y contextos.</p></div>`;
+    }
     const mission = ANDES_MISSIONS.find((m) => m.id === state.activeMissionId) || ANDES_MISSIONS[0];
 
     if (!mission) {

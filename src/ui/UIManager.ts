@@ -8,6 +8,7 @@ import { RegionMapModal } from './RegionMapModal';
 import { SettingsModal } from './SettingsModal';
 import { AboutModal } from './AboutModal';
 import { CultureSelectionModal } from './CultureSelectionModal';
+import { MexicaJourneyModal } from './MexicaJourneyModal';
 import { TerracesMinigame } from './Minigames/TerracesMinigame';
 import { QuipuMinigame } from './Minigames/QuipuMinigame';
 import { StoneworkMinigame } from './Minigames/StoneworkMinigame';
@@ -27,6 +28,7 @@ export class UIManager {
   public settingsModal!: SettingsModal;
   public aboutModal!: AboutModal;
   public cultureSelectionModal!: CultureSelectionModal;
+  public mexicaJourneyModal!: MexicaJourneyModal;
 
   private onVirtualMoveCallback: (dx: number, dz: number) => void;
   private onInteractCallback: () => void;
@@ -36,7 +38,7 @@ export class UIManager {
     callbacks: {
       onVirtualMove: (dx: number, dz: number) => void;
       onInteract: () => void;
-      onStartGame: () => void;
+      onStartGame: (cultureId: import('../data/types').CultureId) => void;
     }
   ) {
     this.uiRoot = uiRoot;
@@ -60,7 +62,7 @@ export class UIManager {
     this.setupGlobalStateListeners();
   }
 
-  private initComponents(onStartGame: () => void): void {
+  private initComponents(onStartGame: (cultureId: import('../data/types').CultureId) => void): void {
     this.dialogueModal = new DialogueModal(this.modalContainer, (minigameId) => {
       this.openMinigame(minigameId);
     });
@@ -68,10 +70,11 @@ export class UIManager {
     this.journalModal = new JournalModal(this.modalContainer);
     this.settingsModal = new SettingsModal(this.modalContainer);
     this.aboutModal = new AboutModal(this.modalContainer);
-    this.cultureSelectionModal = new CultureSelectionModal(this.modalContainer, () => {
+    this.mexicaJourneyModal = new MexicaJourneyModal(this.modalContainer, () => this.cultureSelectionModal.show());
+    this.cultureSelectionModal = new CultureSelectionModal(this.modalContainer, (cultureId) => {
       this.hud.render();
-      onStartGame();
-    }, () => this.mainMenu.show());
+      onStartGame(cultureId);
+    }, () => this.mexicaJourneyModal.show(), () => this.mainMenu.show());
 
     this.regionMapModal = new RegionMapModal(this.modalContainer, (regionId) => {
       this.showToast(`Territorio ${regionId.toUpperCase()} seleccionado.`, 'info');
