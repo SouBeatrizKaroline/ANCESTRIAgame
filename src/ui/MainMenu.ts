@@ -1,6 +1,7 @@
 import { GameState } from '../state/GameState';
 import { AudioManager } from '../engine/AudioManager';
-import { t } from '../i18n';
+import { applyDocumentLanguage, t } from '../i18n';
+import { Language } from '../data/types';
 
 export class MainMenu {
   private container: HTMLElement;
@@ -34,22 +35,31 @@ export class MainMenu {
 
     this.container.innerHTML = `
       <div class="main-menu-overlay">
-        <div class="main-menu-backdrop">
-          <div class="main-menu-mountains-silhouette"></div>
-        </div>
+        <div class="ancestria-sky" aria-hidden="true"><span class="ancestria-sun"></span><span class="ancestria-stars"></span></div>
+        <div class="ancestria-landscape" aria-hidden="true"><span></span><span></span><span></span></div>
 
         <div class="main-menu-card">
-          <div class="menu-brand">
+          <section class="menu-story-panel">
+            <div class="ancestria-glyph" aria-hidden="true"><span>◆</span><span>✦</span><span>◆</span></div>
             <span class="hero-badge">${t('menu.badge')}</span>
             <h1 class="game-title">ANCESTRIA</h1>
             <p class="game-brand-subtitle">Stories. Peoples. Memories.</p>
             <p class="game-tagline">${t('menu.tagline')}</p>
-          </div>
+            <div class="featured-journey">
+              <span class="featured-kicker">RECORRIDO INICIAL · MÉXICO-TENOCHTITLAN</span>
+              <strong>Mexica</strong>
+              <p>Memoria, agua, ciudad y conocimiento vivo.</p>
+            </div>
+            <p class="menu-ethics-note">${t('menu.footer')}</p>
+          </section>
 
-          <div class="menu-nav-buttons">
+          <section class="menu-action-panel">
+            <div class="menu-language-switch" aria-label="Idioma">
+              ${(['es', 'pt-BR', 'en'] as Language[]).map((language) => `<button class="language-chip ${state.settings.language === language ? 'active' : ''}" data-language="${language}">${language === 'es' ? 'ES' : language === 'pt-BR' ? 'PT' : 'EN'}</button>`).join('')}
+            </div>
+            <div class="menu-nav-buttons">
             <button class="btn-menu-primary" id="btn-play-game">
-              <span class="btn-icon">▶</span>
-              <span>${hasSave ? t('menu.continue') : t('menu.start')}</span>
+              <span class="btn-icon">✦</span><span>${hasSave ? t('menu.continue') : t('menu.start')}</span><span class="btn-arrow">→</span>
             </button>
 
             <button class="btn-menu-option" id="btn-menu-atlas">
@@ -71,11 +81,9 @@ export class MainMenu {
               <span class="btn-icon">📜</span>
               <span>${t('menu.about')}</span>
             </button>
-          </div>
-
-          <footer class="main-menu-footer">
-            <p>${t('menu.footer')}</p>
-          </footer>
+            </div>
+            <footer class="main-menu-footer"><span>PROTÓTIPO</span><span>Web · 3D educativo</span></footer>
+          </section>
         </div>
       </div>
     `;
@@ -84,6 +92,14 @@ export class MainMenu {
   }
 
   private attachEvents(): void {
+    this.container.querySelectorAll<HTMLButtonElement>('.language-chip').forEach((button) => {
+      button.addEventListener('click', () => {
+        const language = button.dataset.language as Language;
+        GameState.getInstance().updateSettings({ language });
+        applyDocumentLanguage(language);
+        this.show();
+      });
+    });
     this.container.querySelector('#btn-play-game')?.addEventListener('click', () => {
       AudioManager.getInstance().playClick();
       AudioManager.getInstance().startAndeanMusic();

@@ -71,7 +71,7 @@ export class UIManager {
     this.cultureSelectionModal = new CultureSelectionModal(this.modalContainer, () => {
       this.hud.render();
       onStartGame();
-    });
+    }, () => this.mainMenu.show());
 
     this.regionMapModal = new RegionMapModal(this.modalContainer, (regionId) => {
       this.showToast(`Territorio ${regionId.toUpperCase()} seleccionado.`, 'info');

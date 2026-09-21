@@ -419,23 +419,25 @@ html, body {
   width: 100vw;
   height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(circle at center, #2b2d42 0%, #11121d 100%);
+  align-items: center; justify-content: center;
+  background: radial-gradient(circle at 22% 20%, #37505c 0%, #18252b 34%, #0d1215 78%);
   z-index: 99;
+  overflow: hidden;
 }
+.main-menu-overlay::after { content:""; position:absolute; inset:0; opacity:.12; pointer-events:none; background-image: linear-gradient(30deg, #f3b35b 1px, transparent 1px), linear-gradient(150deg, #f3b35b 1px, transparent 1px); background-size: 38px 66px; mask-image: linear-gradient(to bottom, #000, transparent 64%); }
+.ancestria-sky { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+.ancestria-sun { position:absolute; width:clamp(180px,24vw,340px); aspect-ratio:1; left:10%; top:10%; border-radius:50%; background:radial-gradient(circle, rgba(255,214,125,.9) 0 18%, rgba(226,129,64,.42) 19% 43%, transparent 44%); filter:drop-shadow(0 0 34px rgba(244,162,97,.28)); }
+.ancestria-stars { position:absolute; inset:0; background-image: radial-gradient(#f7d99b 1px, transparent 1px); background-size:47px 47px; opacity:.26; }
+.ancestria-landscape { position:absolute; inset:auto 0 0; height:32%; display:flex; align-items:flex-end; opacity:.72; }
+.ancestria-landscape span { position:absolute; bottom:-14%; width:58%; height:110%; background:#080d0f; transform:rotate(12deg); border-radius:8% 60% 0 0; }
+.ancestria-landscape span:nth-child(2){ right:-10%; transform:rotate(-10deg); height:84%; background:#0b1718; }
+.ancestria-landscape span:nth-child(3){ left:35%; width:30%; height:72%; clip-path:polygon(50% 0,100% 100%,0 100%); background:#101f1f; transform:none; }
 
-.main-menu-card {
-  max-width: 540px;
-  width: 90%;
-  background: rgba(34, 34, 59, 0.9);
-  border: 1px solid rgba(244, 162, 97, 0.4);
-  padding: 36px 32px;
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-main);
-  text-align: center;
-  backdrop-filter: blur(14px);
-}
+.main-menu-card { position:relative; display:grid; grid-template-columns:minmax(0,1.12fr) minmax(320px,.88fr); max-width:1040px; width:min(92%,1040px); min-height:610px; background:rgba(14,23,25,.82); border:1px solid rgba(242,184,96,.34); border-radius:30px; box-shadow:0 32px 90px rgba(0,0,0,.55); overflow:hidden; backdrop-filter:blur(18px); z-index:2; }
+.menu-story-panel { padding:clamp(34px,5vw,66px); display:flex; flex-direction:column; justify-content:center; background:linear-gradient(145deg,rgba(29,73,70,.48),rgba(12,23,24,.2)); border-right:1px solid rgba(242,184,96,.2); }
+.menu-action-panel { padding:42px 36px; display:flex; flex-direction:column; justify-content:center; }
+.ancestria-glyph { display:flex; align-items:center; gap:12px; color:#f3b35b; margin-bottom:24px; font-size:.85rem; }
+.ancestria-glyph span:nth-child(2){ font-size:1.45rem; }
 
 .hero-badge {
   font-size: 0.8rem;
@@ -447,9 +449,10 @@ html, body {
 
 .game-title {
   font-family: var(--font-display);
-  font-size: 2.5rem;
+  font-size: clamp(3rem,6vw,4.6rem);
   color: #fff;
-  margin: 10px 0;
+  margin: 8px 0 0;
+  letter-spacing:.055em;
   text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
 }
 
@@ -457,8 +460,18 @@ html, body {
   font-size: 0.98rem;
   color: #ced4da;
   line-height: 1.5;
-  margin-bottom: 28px;
+  margin:22px 0 24px;
+  max-width:500px;
 }
+.game-brand-subtitle { margin:4px 0 0; color:#f3b35b; font-size:.78rem; font-weight:800; letter-spacing:.28em; text-transform:uppercase; }
+.featured-journey { margin-top:10px; padding:18px 20px; border-left:3px solid #e49b50; background:rgba(0,0,0,.2); }
+.featured-kicker { color:#e8be7c; font-size:.67rem; font-weight:800; letter-spacing:.14em; }
+.featured-journey strong { display:block; margin-top:6px; font:700 1.65rem var(--font-display); }
+.featured-journey p { color:#b9c9c7; margin-top:4px; font-size:.86rem; }
+.menu-ethics-note { margin-top:24px; color:#8fa6a2; font-size:.75rem; line-height:1.5; }
+.menu-language-switch { align-self:flex-end; display:flex; gap:5px; margin-bottom:22px; padding:4px; border:1px solid rgba(255,255,255,.12); border-radius:999px; }
+.language-chip { border:0; border-radius:999px; padding:6px 10px; background:transparent; color:#91a4a2; cursor:pointer; font-size:.72rem; font-weight:800; }
+.language-chip.active { background:#e7a353; color:#17201f; }
 
 .menu-nav-buttons {
   display: flex;
@@ -481,7 +494,9 @@ html, body {
   gap: 10px;
   box-shadow: var(--shadow-glow);
   transition: all 0.2s ease;
+  min-height:62px;
 }
+.btn-menu-primary .btn-arrow { margin-left:auto; font-size:1.35rem; }
 
 .btn-menu-primary:hover {
   transform: translateY(-2px);
@@ -510,7 +525,7 @@ html, body {
 }
 
 .main-menu-footer {
-  margin-top: 26px;
+  margin-top: 26px; display:flex; justify-content:space-between;
   font-size: 0.8rem;
   color: #8d99ae;
 }
@@ -914,11 +929,11 @@ html, body {
   padding: 14px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
+@media (max-width:800px){ .main-menu-card{grid-template-columns:1fr; max-height:94vh; overflow-y:auto;} .menu-story-panel{padding:28px 26px 22px;border-right:0;border-bottom:1px solid rgba(242,184,96,.2)} .game-title{font-size:3rem}.featured-journey,.menu-ethics-note{display:none}.menu-action-panel{padding:24px 26px 30px}.menu-language-switch{margin-bottom:14px}.main-menu-card{min-height:auto}.game-tagline{margin:12px 0 0}.ancestria-glyph{margin-bottom:12px} }
 
 .culture-selection-window { max-width: 920px; }
-.game-brand-subtitle { margin: -6px 0 10px; color: var(--color-gold); font-size: .82rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
 .culture-intro { color: #cbd5e1; line-height: 1.65; margin: 0 0 20px; }
-.culture-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 16px; }
+.culture-grid { display: grid; grid-template-columns: 1fr 1fr .65fr; gap: 16px; }
 .culture-card { border: 1px solid rgba(255,255,255,.12); border-radius: var(--border-radius-md); padding: 20px; background: rgba(15,23,42,.52); }
 .culture-card-active { border-color: var(--color-gold); background: linear-gradient(145deg, rgba(180,83,9,.2), rgba(15,23,42,.62)); }
 .culture-card-planned { opacity: .64; }
@@ -926,6 +941,7 @@ html, body {
 .culture-card h3 { margin: 10px 0; }
 .culture-card p { color: #cbd5e1; line-height: 1.55; }
 .culture-name-note { font-size: .82rem; border-left: 2px solid var(--color-gold); padding-left: 10px; }
+.culture-preview-note { margin-top:12px; padding:12px; border-radius:10px; background:rgba(244,162,97,.1); color:#f3d8b4 !important; font-size:.82rem; }
 .culture-back { margin-top: 18px; }
 @media (max-width: 760px) { .culture-grid { grid-template-columns: 1fr; } }
 
