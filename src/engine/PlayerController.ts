@@ -28,6 +28,9 @@ export class PlayerController {
   private moveDirection: THREE.Vector3 = new THREE.Vector3();
   private walkCycle: number = 0;
   private lastStepSoundTime: number = 0;
+  private verticalVelocity = 0;
+  private readonly groundY = 0.7;
+  private colliders: THREE.Box3[] = [];
 
   public interactiveZones: InteractiveZone[] = [];
   public currentInteractiveZone: InteractiveZone | null = null;
@@ -123,9 +126,10 @@ export class PlayerController {
   private setupInputs(): void {
     window.addEventListener('keydown', (e) => {
       this.keys[e.code] = true;
-      if (e.code === 'KeyE' || e.code === 'Space' || e.code === 'Enter') {
+      if (e.code === 'KeyE' || e.code === 'Enter') {
         this.interact();
       }
+      if (e.code === 'Space') { e.preventDefault(); this.jump(); }
     });
 
     window.addEventListener('keyup', (e) => {
@@ -138,6 +142,17 @@ export class PlayerController {
     if (this.moveDirection.lengthSq() > 1) {
       this.moveDirection.normalize();
     }
+  }
+
+  public addCollider(centerX: number, centerZ: number, width: number, depth: number): void {
+    this.colliders.push(new THREE.Box3(new THREE.Vector3(centerX - width / 2, -1, centerZ - depth / 2), new THREE.Vector3(centerX + width / 2, 5, centerZ + depth / 2)));
+  }
+
+  public jump(): void { if (this.group.position.y <= this.groundY + 0.02) this.verticalVelocity = 5.4; }
+
+  private canOccupy(x: number, z: number): boolean {
+    const radius = 0.32;
+    return !this.colliders.some((box) => box.intersectsBox(new THREE.Box3(new THREE.Vector3(x - radius, 0, z - radius), new THREE.Vector3(x + radius, 1.5, z + radius))));
   }
 
   public update(delta: number): void {
@@ -174,10 +189,10 @@ export class PlayerController {
       const nextZ = this.group.position.z + dir.z * moveDistance;
 
       // Limites do vale andino jogável (-24 a +24 em X, -24 a +24 em Z)
-      if (nextX > -24 && nextX < 24) {
+      if (nextX > -24 && nextX < 24 && this.canOccupy(nextX, this.group.position.z)) {
         this.group.position.x = nextX;
       }
-      if (nextZ > -24 && nextZ < 24) {
+      if (nextZ > -24 && nextZ < 24 && this.canOccupy(this.group.position.x, nextZ)) {
         this.group.position.z = nextZ;
       }
 
@@ -201,6 +216,10 @@ export class PlayerController {
       this.rightLeg.rotation.x = 0;
       this.bodyMesh.position.y = 0.62;
     }
+
+    this.verticalVelocity -= 13 * delta;
+    this.group.position.y = Math.max(this.groundY, this.group.position.y + this.verticalVelocity * delta);
+    if (this.group.position.y === this.groundY) this.verticalVelocity = 0;
 
     // Atualiza estado do jogador
     const state = GameState.getInstance();

@@ -1,6 +1,7 @@
 import { GameState } from '../state/GameState';
 import { AudioManager } from '../engine/AudioManager';
 import { ANDES_MISSIONS } from '../data/missions/andesMissions';
+import { t } from '../i18n';
 
 export class HUD {
   private container: HTMLElement;
@@ -9,6 +10,7 @@ export class HUD {
   private onOpenSettings: () => void;
   private onOpenMainMenu: () => void;
   private onInteract: () => void;
+  private onJump: () => void;
   private onVirtualMove: (dx: number, dz: number) => void;
 
   constructor(
@@ -19,6 +21,7 @@ export class HUD {
       onOpenSettings: () => void;
       onOpenMainMenu: () => void;
       onInteract: () => void;
+      onJump: () => void;
       onVirtualMove: (dx: number, dz: number) => void;
     }
   ) {
@@ -28,6 +31,7 @@ export class HUD {
     this.onOpenSettings = callbacks.onOpenSettings;
     this.onOpenMainMenu = callbacks.onOpenMainMenu;
     this.onInteract = callbacks.onInteract;
+    this.onJump = callbacks.onJump;
     this.onVirtualMove = callbacks.onVirtualMove;
   }
 
@@ -46,21 +50,21 @@ export class HUD {
             <div class="stat-pill fragments-stat" title="Fragmentos de conocimiento">
               <span class="stat-icon">✨</span>
               <span class="stat-value" id="hud-fragments-count">${state.knowledgeFragments}</span>
-              <span class="stat-label">Fragmentos</span>
+              <span class="stat-label">${t('hud.fragments')}</span>
             </div>
           </div>
 
           <div class="hud-top-actions">
-            <button class="hud-btn" id="btn-hud-journal" title="Abrir diario [J]">
-              <span>📖 Diario</span>
+            <button class="hud-btn" id="btn-hud-journal" title="${t('hud.journal')} [J]">
+              <span>📖 ${t('hud.journal')}</span>
             </button>
             <button class="hud-btn" id="btn-hud-atlas" title="Abrir mapa de ANCESTRIA [M]">
-              <span>🗺️ Mapa</span>
+              <span>🗺️ ${t('hud.map')}</span>
             </button>
-            <button class="hud-btn" id="btn-hud-settings" title="Configuración">
+            <button class="hud-btn" id="btn-hud-settings" title="${t('hud.settings')}">
               <span>⚙️</span>
             </button>
-            <button class="hud-btn" id="btn-hud-menu" title="Menú principal">
+            <button class="hud-btn" id="btn-hud-menu" title="${t('hud.home')}">
               <span>🏠</span>
             </button>
           </div>
@@ -93,6 +97,7 @@ export class HUD {
           <button class="touch-action-btn" id="btn-touch-action">
             <span>ACCIÓN</span>
           </button>
+          <button class="touch-action-btn touch-jump-btn" id="btn-touch-jump"><span>SALTAR</span></button>
         </div>
       </div>
     `;
@@ -104,7 +109,7 @@ export class HUD {
   private renderActiveMission(): string {
     const state = GameState.getInstance();
     if (state.selectedCultureId === 'mexica') {
-      return `<div class="mission-header"><span class="mission-badge">Recorrido Mexica</span><h4>La ciudad entre aguas</h4></div><div class="mission-step"><span class="step-bullet">●</span><p><strong>Objetivo:</strong> Explora calzadas, canales, chinampas y el recinto ceremonial. Abre el recorrido educativo desde la selección para consultar fuentes y contextos.</p></div>`;
+      return `<div class="mission-header"><span class="mission-badge">${t('mexica.mission')}</span><h4>${t('mexica.missionTitle')}</h4></div><div class="mission-step"><span class="step-bullet">●</span><p>${t('mexica.objective')}</p></div>`;
     }
     const mission = ANDES_MISSIONS.find((m) => m.id === state.activeMissionId) || ANDES_MISSIONS[0];
 
@@ -164,6 +169,7 @@ export class HUD {
     this.container.querySelector('#btn-touch-action')?.addEventListener('click', () => {
       this.onInteract();
     });
+    this.container.querySelector('#btn-touch-jump')?.addEventListener('click', () => this.onJump());
 
     // D-Pad Touch events
     const dpadButtons = this.container.querySelectorAll('.dpad-btn');

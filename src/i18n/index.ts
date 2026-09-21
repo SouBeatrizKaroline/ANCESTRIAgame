@@ -31,6 +31,15 @@ const messages = {
     'people.mexicaPreview': 'Este recorrido está siendo construido con revisión de fuentes y perspectivas indígenas. La experiencia 3D Mexica todavía no está disponible.',
     'people.incaStatus': 'Prototipo 3D disponible', 'people.incaDesc': 'Explora el prototipo actual del Valle Sagrado andino, con misiones, diálogos y minijuegos.', 'people.incaStart': 'Jugar el prototipo andino',
     'people.note': '“Azteca” es el término más difundido internacionalmente; usamos Mexica como nombre propio del pueblo de Mexico-Tenochtitlan.'
+    ,'hud.fragments': 'Fragmentos', 'hud.journal': 'Diario', 'hud.map': 'Mapa', 'hud.settings': 'Configuración', 'hud.home': 'Menú principal',
+    'journal.badge': 'Registro cultural', 'journal.title': 'Diario de memorias', 'journal.count': 'Descubrimientos registrados', 'journal.search': 'Buscar saberes, tecnologías y costumbres…',
+    'journal.all': 'Todas', 'journal.tech': 'Tecnologías', 'journal.agriculture': 'Agricultura', 'journal.architecture': 'Arquitectura', 'journal.society': 'Sociedad', 'journal.astronomy': 'Astronomía', 'journal.languages': 'Idiomas',
+    'journal.locked': 'Descubrimiento por revelar', 'journal.hint': 'Pista', 'journal.read': 'Leer detalles y fuentes', 'journal.empty': 'No se encontraron registros con estos criterios.',
+    'journal.didYouKnow': '¿Sabías que?', 'journal.sources': 'Fuentes y referencias históricas y arqueológicas', 'journal.sourceLink': 'Consultar registro',
+    'atlas.badge': 'Territorios y memorias de las Américas', 'atlas.subtitle': 'Elige un territorio para conocer saberes desde contextos y perspectivas propias.', 'atlas.fragments': 'Tus fragmentos de conocimiento',
+    'atlas.playable': 'Jugable', 'atlas.expansion': 'En expansión', 'atlas.characters': 'personajes', 'atlas.discoveries': 'descubrimientos', 'atlas.explore': 'Explorar ahora', 'atlas.soon': 'Disponible próximamente', 'atlas.requires': 'Requiere',
+    'mexica.mission': 'Recorrido Mexica', 'mexica.missionTitle': 'La ciudad entre aguas', 'mexica.objective': 'Explora calzadas, canales, chinampas y el recinto ceremonial. Abre el recorrido educativo para consultar fuentes y contextos.',
+    'mexica.chinampaPrompt': 'Observar el manejo de agua y suelo de las chinampas', 'mexica.causewayPrompt': 'Examinar cómo las calzadas y canales articulan la ciudad', 'mexica.templePrompt': 'Conocer el contexto del recinto ceremonial',
   },
   'pt-BR': {
     'menu.badge': 'Exploração histórica e saberes de povos originários', 'menu.tagline': 'Uma jornada interativa por tecnologias, memórias e culturas das Américas',
@@ -53,6 +62,15 @@ const messages = {
     ,'people.mexicaStatus': 'Protótipo 3D disponível', 'people.mexicaStart': 'Jogar o protótipo Mexica 3D', 'people.mexicaExplore': 'Abrir percurso educativo',
     'people.mexicaPreview': 'Este percurso está sendo construído com revisão de fontes e perspectivas indígenas. A experiência 3D Mexica ainda não está disponível.',
     'people.incaStatus': 'Protótipo 3D disponível', 'people.incaDesc': 'Explore o protótipo atual do Vale Sagrado andino, com missões, diálogos e minijogos.', 'people.incaStart': 'Jogar o protótipo andino'
+    ,'hud.fragments': 'Fragmentos', 'hud.journal': 'Diário', 'hud.map': 'Mapa', 'hud.settings': 'Configurações', 'hud.home': 'Menu principal',
+    'journal.badge': 'Registro cultural', 'journal.title': 'Diário de memórias', 'journal.count': 'Descobertas registradas', 'journal.search': 'Pesquisar saberes, tecnologias e costumes…',
+    'journal.all': 'Todas', 'journal.tech': 'Tecnologias', 'journal.agriculture': 'Agricultura', 'journal.architecture': 'Arquitetura', 'journal.society': 'Sociedade', 'journal.astronomy': 'Astronomia', 'journal.languages': 'Idiomas',
+    'journal.locked': 'Descoberta a revelar', 'journal.hint': 'Pista', 'journal.read': 'Ler detalhes e fontes', 'journal.empty': 'Nenhum registro encontrado para estes critérios.',
+    'journal.didYouKnow': 'Você sabia?', 'journal.sources': 'Fontes e referências históricas e arqueológicas', 'journal.sourceLink': 'Consultar registro',
+    'atlas.badge': 'Territórios e memórias das Américas', 'atlas.subtitle': 'Escolha um território para conhecer saberes em seus próprios contextos e perspectivas.', 'atlas.fragments': 'Seus fragmentos de conhecimento',
+    'atlas.playable': 'Jogável', 'atlas.expansion': 'Em expansão', 'atlas.characters': 'personagens', 'atlas.discoveries': 'descobertas', 'atlas.explore': 'Explorar agora', 'atlas.soon': 'Disponível em breve', 'atlas.requires': 'Requer',
+    'mexica.mission': 'Percurso Mexica', 'mexica.missionTitle': 'A cidade entre águas', 'mexica.objective': 'Explore calçadas, canais, chinampas e o recinto cerimonial. Abra o percurso educativo para consultar fontes e contextos.',
+    'mexica.chinampaPrompt': 'Observar o manejo de água e solo das chinampas', 'mexica.causewayPrompt': 'Examinar como calçadas e canais articulam a cidade', 'mexica.templePrompt': 'Conhecer o contexto do recinto cerimonial',
   },
   en: {
     'menu.badge': 'Historical exploration and Indigenous knowledge', 'menu.tagline': 'An interactive journey through technologies, memories, and cultures of the Americas',
@@ -75,6 +93,15 @@ const messages = {
     ,'people.mexicaStatus': '3D prototype available', 'people.mexicaStart': 'Play the Mexica 3D prototype', 'people.mexicaExplore': 'Open the learning journey',
     'people.mexicaPreview': 'This journey is being built with a review of Indigenous sources and perspectives. The Mexica 3D experience is not available yet.',
     'people.incaStatus': '3D prototype available', 'people.incaDesc': 'Explore the current Andean Sacred Valley prototype, with missions, dialogue, and minigames.', 'people.incaStart': 'Play the Andean prototype'
+    ,'hud.fragments': 'Fragments', 'hud.journal': 'Journal', 'hud.map': 'Map', 'hud.settings': 'Settings', 'hud.home': 'Main menu',
+    'journal.badge': 'Cultural record', 'journal.title': 'Memory journal', 'journal.count': 'Discoveries recorded', 'journal.search': 'Search knowledge, technologies, and customs…',
+    'journal.all': 'All', 'journal.tech': 'Technologies', 'journal.agriculture': 'Agriculture', 'journal.architecture': 'Architecture', 'journal.society': 'Society', 'journal.astronomy': 'Astronomy', 'journal.languages': 'Languages',
+    'journal.locked': 'Discovery yet to be revealed', 'journal.hint': 'Hint', 'journal.read': 'Read details and sources', 'journal.empty': 'No records match these criteria.',
+    'journal.didYouKnow': 'Did you know?', 'journal.sources': 'Historical and archaeological sources', 'journal.sourceLink': 'Open record',
+    'atlas.badge': 'Territories and memories of the Americas', 'atlas.subtitle': 'Choose a territory to explore knowledge through its own contexts and perspectives.', 'atlas.fragments': 'Your knowledge fragments',
+    'atlas.playable': 'Playable', 'atlas.expansion': 'In development', 'atlas.characters': 'characters', 'atlas.discoveries': 'discoveries', 'atlas.explore': 'Explore now', 'atlas.soon': 'Coming soon', 'atlas.requires': 'Requires',
+    'mexica.mission': 'Mexica journey', 'mexica.missionTitle': 'The city among the waters', 'mexica.objective': 'Explore causeways, canals, chinampas, and the ceremonial precinct. Open the learning journey to consult sources and context.',
+    'mexica.chinampaPrompt': 'Observe chinampa water and soil management', 'mexica.causewayPrompt': 'Examine how causeways and canals connect the city', 'mexica.templePrompt': 'Learn about the ceremonial precinct context',
   }
 } as const;
 

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { ANDES_NPCS } from '../data/dialogues/andesDialogues';
 import { PlayerController, InteractiveZone } from './PlayerController';
+import { t } from '../i18n';
 
 /**
  * WorldRenderer - Constrói o mundo 3D low-poly estilizado dos Andes:
@@ -18,7 +19,7 @@ export class WorldRenderer {
     this.scene = scene;
   }
 
-  public buildMexicaEnvironment(): void {
+  public buildMexicaEnvironment(playerController: PlayerController, onTriggerObject: (objectId: string) => void): void {
     const water = new THREE.Mesh(
       new THREE.PlaneGeometry(60, 60),
       new THREE.MeshPhongMaterial({ color: 0x3b9faf, shininess: 70 })
@@ -82,6 +83,7 @@ export class WorldRenderer {
     (shrineB.material as THREE.MeshLambertMaterial) = new THREE.MeshLambertMaterial({ color: 0xc68b32 });
     shrineB.position.x = 1.2;
     this.scene.add(shrineA, shrineB);
+    playerController.addCollider(0, -2, 8.8, 8.8);
 
     [[7, 5], [-7, 5], [7, -9], [-7, -9]].forEach(([x, z], index) => {
       const house = new THREE.Mesh(new THREE.BoxGeometry(3.2, 1.8, 2.6), new THREE.MeshLambertMaterial({ color: index % 2 ? 0xd9c7a0 : 0xc9b184 }));
@@ -92,7 +94,13 @@ export class WorldRenderer {
       roof.rotation.y = Math.PI / 4;
       roof.castShadow = true;
       this.scene.add(house, roof);
+      playerController.addCollider(x, z, 3.8, 3.2);
     });
+    [
+      { id: 'mexica_chinampas', name: 'Chinampas', x: 14, z: 9, prompt: t('mexica.chinampaPrompt') },
+      { id: 'mexica_causeway', name: 'Calzadas / Causeways', x: 0, z: 11, prompt: t('mexica.causewayPrompt') },
+      { id: 'mexica_templo', name: 'Recinto ceremonial', x: 0, z: -7, prompt: t('mexica.templePrompt') }
+    ].forEach((o) => playerController.interactiveZones.push({ id: o.id, name: o.name, type: 'object', position: new THREE.Vector3(o.x, 0.7, o.z), radius: 3, promptText: o.prompt, onInteract: () => onTriggerObject(o.id) }));
   }
 
   public buildAndesEnvironment(
@@ -135,6 +143,10 @@ export class WorldRenderer {
 
     // 12. Criação dos NPCs 3D e registro das zonas de interação
     this.createNPCsAndInteractions(playerController, onTriggerNpc, onTriggerObject);
+    playerController.addCollider(7, 4, 5.3, 4.6);
+    playerController.addCollider(10.5, -3, 5.2, 3.8);
+    playerController.addCollider(0, -16, 7.5, 7.5);
+    playerController.addCollider(-4, -8, 6, 1.6);
   }
 
   private createValleyGround(): void {

@@ -29,6 +29,7 @@ window.addEventListener('DOMContentLoaded', () => {
         gameEngine.playerController.interact();
       }
     },
+    onJump: () => gameEngine?.playerController.jump(),
     onStartGame: (cultureId: CultureId) => {
       if (gameEngine) gameEngine.destroy();
       gameEngine = new GameEngine(

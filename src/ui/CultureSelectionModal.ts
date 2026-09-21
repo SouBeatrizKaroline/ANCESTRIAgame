@@ -4,7 +4,7 @@ import { t } from '../i18n';
 import { AudioManager } from '../engine/AudioManager';
 
 export class CultureSelectionModal {
-  constructor(private container: HTMLElement, private onStart: (cultureId: CultureId) => void, private onExploreMexica: () => void, private onBack: () => void) {}
+  constructor(private container: HTMLElement, private onStart: (cultureId: CultureId) => void, private onExploreMexica: () => void, private onExploreAndean: () => void, private onBack: () => void) {}
 
   public show(): void {
     this.container.innerHTML = `
@@ -19,7 +19,7 @@ export class CultureSelectionModal {
               <button class="btn-menu-option culture-learn" id="culture-preview-mexica">${t('people.mexicaExplore')}</button>
               </article>
             <article class="culture-card culture-card-active"><span class="culture-status">02 · ${t('people.incaStatus')}</span><h3>${t('people.inca')}</h3><p>${t('people.incaDesc')}</p>
-              <button class="btn-menu-primary" id="culture-start-inca">${t('people.incaStart')}</button></article>
+              <button class="btn-menu-primary" id="culture-start-inca">${t('people.incaStart')}</button><button class="btn-menu-option culture-learn" id="culture-preview-inca">${t('people.mexicaExplore')}</button></article>
             <article class="culture-card culture-card-planned"><span class="culture-status">${t('people.soon')}</span><h3>${t('people.maya')}</h3></article>
           </div><button class="btn-menu-option culture-back" id="culture-back">${t('people.back')}</button>
         </div></div></div>`;
@@ -32,6 +32,7 @@ export class CultureSelectionModal {
     this.container.querySelector('#culture-start-inca')?.addEventListener('click', () => {
       GameState.getInstance().selectCulture('inca'); AudioManager.getInstance().playClick(); this.close(); this.onStart('inca');
     });
+    this.container.querySelector('#culture-preview-inca')?.addEventListener('click', () => { AudioManager.getInstance().playClick(); this.close(); this.onExploreAndean(); });
     this.container.querySelector('#culture-close')?.addEventListener('click', () => { this.close(); this.onBack(); });
     this.container.querySelector('#culture-back')?.addEventListener('click', () => { this.close(); this.onBack(); });
   }

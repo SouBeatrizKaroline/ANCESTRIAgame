@@ -9,6 +9,7 @@ import { SettingsModal } from './SettingsModal';
 import { AboutModal } from './AboutModal';
 import { CultureSelectionModal } from './CultureSelectionModal';
 import { MexicaJourneyModal } from './MexicaJourneyModal';
+import { AndeanJourneyModal } from './AndeanJourneyModal';
 import { TerracesMinigame } from './Minigames/TerracesMinigame';
 import { QuipuMinigame } from './Minigames/QuipuMinigame';
 import { StoneworkMinigame } from './Minigames/StoneworkMinigame';
@@ -29,21 +30,25 @@ export class UIManager {
   public aboutModal!: AboutModal;
   public cultureSelectionModal!: CultureSelectionModal;
   public mexicaJourneyModal!: MexicaJourneyModal;
+  public andeanJourneyModal!: AndeanJourneyModal;
 
   private onVirtualMoveCallback: (dx: number, dz: number) => void;
   private onInteractCallback: () => void;
+  private onJumpCallback: () => void;
 
   constructor(
     uiRoot: HTMLElement,
     callbacks: {
       onVirtualMove: (dx: number, dz: number) => void;
       onInteract: () => void;
+      onJump: () => void;
       onStartGame: (cultureId: import('../data/types').CultureId) => void;
     }
   ) {
     this.uiRoot = uiRoot;
     this.onVirtualMoveCallback = callbacks.onVirtualMove;
     this.onInteractCallback = callbacks.onInteract;
+    this.onJumpCallback = callbacks.onJump;
 
     // Cria as subcamadas da interface
     this.hudContainer = document.createElement('div');
@@ -71,10 +76,11 @@ export class UIManager {
     this.settingsModal = new SettingsModal(this.modalContainer);
     this.aboutModal = new AboutModal(this.modalContainer);
     this.mexicaJourneyModal = new MexicaJourneyModal(this.modalContainer, () => this.cultureSelectionModal.show());
+    this.andeanJourneyModal = new AndeanJourneyModal(this.modalContainer, () => this.cultureSelectionModal.show());
     this.cultureSelectionModal = new CultureSelectionModal(this.modalContainer, (cultureId) => {
       this.hud.render();
       onStartGame(cultureId);
-    }, () => this.mexicaJourneyModal.show(), () => this.mainMenu.show());
+    }, () => this.mexicaJourneyModal.show(), () => this.andeanJourneyModal.show(), () => this.mainMenu.show());
 
     this.regionMapModal = new RegionMapModal(this.modalContainer, (regionId) => {
       this.showToast(`Territorio ${regionId.toUpperCase()} seleccionado.`, 'info');
@@ -86,6 +92,7 @@ export class UIManager {
       onOpenSettings: () => this.settingsModal.show(),
       onOpenMainMenu: () => this.mainMenu.show(),
       onInteract: () => this.onInteractCallback(),
+      onJump: () => this.onJumpCallback(),
       onVirtualMove: (dx, dz) => this.onVirtualMoveCallback(dx, dz)
     });
 
@@ -113,6 +120,18 @@ export class UIManager {
 
   public openObjectInteraction(objectId: string): void {
     const state = GameState.getInstance();
+
+    const mexicaFinds: Record<string, string> = {
+      mexica_chinampas: 'Las chinampas combinan suelo construido, canales y manejo continuo del agua. Son una práctica lacustre de larga duración, no una invención aislada de un único pueblo.',
+      mexica_causeway: 'Las calzadas facilitaron el tránsito terrestre; los canales sostuvieron la movilidad por agua y conectaron la ciudad con otros territorios de la cuenca.',
+      mexica_templo: 'El recinto ceremonial se presenta con contexto y fuentes: no reconstruimos ceremonias ni voces como si existiera una interpretación única.'
+    };
+    if (mexicaFinds[objectId]) {
+      const key = `ancestria_find_${objectId}`;
+      if (!localStorage.getItem(key)) { localStorage.setItem(key, '1'); state.addKnowledgeFragments(10); }
+      this.showToast(`${mexicaFinds[objectId]} (+10 fragmentos la primera vez)`, 'success');
+      return;
+    }
 
     if (objectId === 'obj_intihuatana') {
       state.completeMissionStep('mission_main_andes', 'step_intihuatana');
