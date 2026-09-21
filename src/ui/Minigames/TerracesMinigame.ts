@@ -9,22 +9,22 @@ export class TerracesMinigame {
   private tiers = [
     {
       id: 'high',
-      name: 'Piso Alto (Puna & Suni - 3.800m a 4.200m)',
-      climate: 'Frio extremo, geadas frequentes e ventos fortes',
+      name: 'Piso alto (Puna y Suni — 3.800 m a 4.200 m)',
+      climate: 'Frío extremo, heladas frecuentes y vientos fuertes',
       correctCrop: 'papa',
       placedCrop: null as string | null
     },
     {
       id: 'mid',
-      name: 'Piso Médio (Quechua - 2.300m a 3.500m)',
-      climate: 'Vales temperados com boa insolação e chuvas sazonais',
+      name: 'Piso medio (Quechua — 2.300 m a 3.500 m)',
+      climate: 'Valles templados con buena insolación y lluvias estacionales',
       correctCrop: 'milho',
       placedCrop: null as string | null
     },
     {
       id: 'low',
-      name: 'Piso Baixo (Yungas Fluviais - 1.500m a 2.300m)',
-      climate: 'Encostas amenas, alta umidade e ar quente',
+      name: 'Piso bajo (Yungas fluviales — 1.500 m a 2.300 m)',
+      climate: 'Laderas cálidas, humedad elevada y aire caliente',
       correctCrop: 'coca',
       placedCrop: null as string | null
     }
@@ -33,20 +33,20 @@ export class TerracesMinigame {
   private crops = [
     {
       id: 'papa',
-      name: 'Batata Nativa & Quinoa',
-      desc: 'Altamente resistente a geadas noturnas e solos rochosos de grande altitude.',
+      name: 'Papa nativa y quinua',
+      desc: 'Cultivos adaptados a heladas nocturnas y suelos de gran altitud.',
       icon: '🥔'
     },
     {
       id: 'milho',
-      name: 'Milho Sagrado (Sara)',
-      desc: 'Exige temperaturas amenas e solo profundo, essencial para cerimônias e chicha.',
+      name: 'Maíz (sara)',
+      desc: 'Necesita temperaturas moderadas y suelos profundos.',
       icon: '🌽'
     },
     {
       id: 'coca',
-      name: 'Folha de Coca & Ají',
-      desc: 'Plantas perenes que necessitam de calor úmido e proteção contra o gelo.',
+      name: 'Hoja de coca y ají',
+      desc: 'Plantas que necesitan calor, humedad y protección contra las heladas.',
       icon: '🍃'
     }
   ];
@@ -62,14 +62,14 @@ export class TerracesMinigame {
         <div class="minigame-modal-content">
           <div class="minigame-header">
             <div>
-              <span class="badge">Agricultura Andina</span>
-              <h2>Organização dos Andenes por Pisos Ecológicos</h2>
+              <span class="badge">Agricultura andina</span>
+              <h2>Organización de los andenes por pisos ecológicos</h2>
             </div>
-            <button class="btn-close" id="btn-close-minigame" aria-label="Fechar">&times;</button>
+            <button class="btn-close" id="btn-close-minigame" aria-label="Cerrar">&times;</button>
           </div>
 
           <div class="minigame-intro">
-            <p><strong>Desafio de Sumaq:</strong> Os povos andinos dominaram as montanhas cultivando em diferentes altitudes. Distribua cada cultivo no piso ecológico adequado para proteger as lavouras e maximizar a colheita!</p>
+            <p><strong>Desafío de Sumaq:</strong> Diversos pueblos andinos desarrollaron técnicas de cultivo adaptadas a diferentes alturas. Distribuye cada cultivo en el piso ecológico adecuado.</p>
           </div>
 
           <div class="terraces-workspace">
@@ -83,7 +83,7 @@ export class TerracesMinigame {
                     <span class="climate-tag">${tier.climate}</span>
                   </div>
                   <div class="terrace-slot-drop" id="slot-${tier.id}">
-                    <span class="drop-placeholder">Toque ou selecione um cultivo para plantar aqui</span>
+                    <span class="drop-placeholder">Selecciona un cultivo para plantarlo aquí</span>
                   </div>
                 </div>
               `
@@ -92,7 +92,7 @@ export class TerracesMinigame {
             </div>
 
             <div class="terraces-crops-bank">
-              <h4>Cultivos Disponíveis</h4>
+              <h4>Cultivos disponibles</h4>
               <div class="crops-list">
                 ${this.crops
                   .map(
@@ -145,7 +145,7 @@ export class TerracesMinigame {
     slots.forEach((slot) => {
       slot.addEventListener('click', () => {
         if (!this.selectedCropId) {
-          this.setFeedback('Selecione primeiro um cultivo abaixo para colocá-lo neste terraço.', 'info');
+          this.setFeedback('Primero selecciona un cultivo para colocarlo en esta terraza.', 'info');
           return;
         }
         AudioManager.getInstance().playInteract();
@@ -186,7 +186,7 @@ export class TerracesMinigame {
         `;
         slotEl.classList.add('has-item');
       } else {
-        slotEl.innerHTML = `<span class="drop-placeholder">Toque para plantar o cultivo selecionado</span>`;
+        slotEl.innerHTML = `<span class="drop-placeholder">Selecciona para plantar el cultivo elegido</span>`;
         slotEl.classList.remove('has-item');
       }
     });
@@ -209,13 +209,13 @@ export class TerracesMinigame {
       state.addKnowledgeFragments(30);
 
       this.setFeedback(
-        'Excelente! Você organizou os terraços perfeitamente. As batatas e a quinoa suportam as geadas da puna, o milho floresce nos vales e a folha de coca aproveita o calor das encostas inferiores!',
+        '¡Excelente! Organizaste los cultivos según las condiciones de cada piso ecológico.',
         'success'
       );
 
       const checkBtn = this.container.querySelector('#btn-check-terraces') as HTMLButtonElement;
       if (checkBtn) {
-        checkBtn.textContent = 'Concluído com Sucesso! (+30 Fragmentos)';
+        checkBtn.textContent = '¡Completado! (+30 fragmentos)';
         checkBtn.disabled = true;
       }
 
@@ -226,7 +226,7 @@ export class TerracesMinigame {
     } else {
       AudioManager.getInstance().playClick();
       this.setFeedback(
-        'Alguns cultivos estão em pisos que não suportariam o clima. Lembre-se: batatas suportam frio intenso no alto, milho precisa de vales temperados e a folha de coca prefere o calor das encostas baixas!',
+        'Algunos cultivos no corresponden al clima elegido. Revisa la altura, la temperatura y la humedad de cada piso.',
         'error'
       );
     }

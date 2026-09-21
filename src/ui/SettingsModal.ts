@@ -71,7 +71,7 @@ export class SettingsModal {
               <div class="setting-row">
                 <div class="setting-info">
                   <strong>${t('settings.textSize')}</strong>
-                  <small>Ajusta a escala tipográfica das descrições, diálogos e diário.</small>
+                  <small>Ajusta la escala de las descripciones, los diálogos y el diario.</small>
                 </div>
                 <select id="setting-font-size" class="select-input">
                   <option value="normal" ${s.fontSize === 'normal' ? 'selected' : ''}>${t('size.normal')}</option>
@@ -83,7 +83,7 @@ export class SettingsModal {
               <div class="setting-row">
                 <div class="setting-info">
                   <strong>${t('settings.subtitles')}</strong>
-                  <small>Exibe todas as falas, descrições e avisos sem depender de áudio.</small>
+                  <small>Muestra diálogos, descripciones y avisos sin depender del audio.</small>
                 </div>
                 <label class="toggle-switch">
                   <input type="checkbox" id="setting-subtitles" ${s.subtitles ? 'checked' : ''} />
@@ -99,7 +99,7 @@ export class SettingsModal {
               <div class="setting-row">
                 <div class="setting-info">
                   <strong>${t('settings.sfx')} (SFX)</strong>
-                  <small>Passos, cliques, interações com objetos e fanfarras.</small>
+                  <small>Pasos, clics, interacciones con objetos y celebraciones.</small>
                 </div>
                 <div class="range-wrapper">
                   <input type="range" id="setting-sfx-volume" min="0" max="1" step="0.05" value="${s.soundVolume}" />
@@ -110,7 +110,7 @@ export class SettingsModal {
               <div class="setting-row">
                 <div class="setting-info">
                   <strong>${t('settings.music')}</strong>
-                  <small>Melodias pentatônicas calmas de flauta quena e sons naturais.</small>
+                  <small>Melodías pentatónicas suaves de quena y sonidos naturales.</small>
                 </div>
                 <div class="range-wrapper">
                   <input type="range" id="setting-music-volume" min="0" max="1" step="0.05" value="${s.musicVolume}" />

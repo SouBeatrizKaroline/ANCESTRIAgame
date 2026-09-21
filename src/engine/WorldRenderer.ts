@@ -445,7 +445,7 @@ export class WorldRenderer {
         type: 'npc',
         position: new THREE.Vector3(npc.position.x, npc.position.y, npc.position.z),
         radius: 2.6,
-        promptText: `Conversar com ${npc.name} (${npc.role})`,
+        promptText: `Hablar con ${npc.name} (${npc.role})`,
         onInteract: () => onTriggerNpc(npc.id)
       });
     });
@@ -460,31 +460,31 @@ export class WorldRenderer {
     }> = [
       {
         id: 'obj_intihuatana',
-        name: 'Marco Solar Intihuatana',
+        name: 'Marcador solar Intihuatana',
         pos: new THREE.Vector3(0, 2.0, -16),
         radius: 3.2,
-        prompt: 'Contemplar o alinhamento do Sol no Intihuatana'
+        prompt: 'Observar la alineación solar del Intihuatana'
       },
       {
         id: 'obj_qullqa_deposito',
-        name: 'Armazém Qullqa',
+        name: 'Almacén qullqa',
         pos: new THREE.Vector3(10.5, 1.2, -3),
         radius: 3.0,
-        prompt: 'Examinar o sistema de conservação das Qullqas'
+        prompt: 'Examinar el sistema de conservación de las qullqas'
       },
       {
         id: 'obj_terraces_canal',
-        name: 'Canais de Irrigação dos Andenes',
+        name: 'Canales de riego de los andenes',
         pos: new THREE.Vector3(-6.2, 0.5, 2),
         radius: 2.8,
-        prompt: 'Examinar a engenharia hidráulica dos terraços'
+        prompt: 'Examinar la ingeniería hidráulica de las terrazas'
       },
       {
         id: 'obj_bridge',
-        name: 'Ponte Pênsil Q\'eswachaka',
+        name: 'Puente colgante Q\'eswachaka',
         pos: new THREE.Vector3(-1, 1.2, 17),
         radius: 2.8,
-        prompt: 'Atravessar e inspecionar a ponte de capim ichu'
+        prompt: 'Cruzar y observar el puente de fibra de ichu'
       }
     ];
 

@@ -35,6 +35,11 @@ export class MainMenu {
 
     this.container.innerHTML = `
       <div class="main-menu-overlay">
+        <div class="menu-background-slides" aria-hidden="true">
+          <span class="menu-bg-slide menu-bg-mexica"></span>
+          <span class="menu-bg-slide menu-bg-andes"></span>
+          <span class="menu-bg-slide menu-bg-amazonia"></span>
+        </div>
         <div class="ancestria-sky" aria-hidden="true"><span class="ancestria-sun"></span><span class="ancestria-stars"></span></div>
         <div class="ancestria-landscape" aria-hidden="true"><span></span><span></span><span></span></div>
 

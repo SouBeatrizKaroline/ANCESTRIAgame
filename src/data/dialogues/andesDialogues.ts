@@ -4,19 +4,19 @@ export const ANDES_NPCS: NPC[] = [
   {
     id: 'npc_kuntur',
     name: 'Kuntur',
-    role: 'Chasqui dos Caminhos Reais (Qhapaq Ñan)',
+    role: 'Chasqui de los caminos reales (Qhapaq Ñan)',
     regionId: 'andes',
     cultureId: 'inca',
     position: { x: 2, y: 0.6, z: 8 },
     rotationY: 0,
     visualColor: '#e07a5f',
-    clothingDescription: 'Poncho vermelho com grafismos tokapu geométricos, sandálias de couro de lhama e pututu à cintura.',
+    clothingDescription: 'Poncho rojo con diseños tokapu geométricos, sandalias y un pututu en la cintura.',
     dialogueRootId: 'dia_kuntur_intro'
   },
   {
     id: 'npc_sumaq',
     name: 'Sumaq',
-    role: 'Mestra dos Andenes e Sementes',
+    role: 'Maestra de andenes y semillas',
     regionId: 'andes',
     cultureId: 'inca',
     position: { x: -8, y: 1.4, z: 2 },
@@ -28,7 +28,7 @@ export const ANDES_NPCS: NPC[] = [
   {
     id: 'npc_tupaq',
     name: 'Tupaq',
-    role: 'Quipucamayoc dos Armazéns Qullqa',
+    role: 'Quipucamayoc de los almacenes qullqa',
     regionId: 'andes',
     cultureId: 'inca',
     position: { x: 8, y: 1.8, z: -4 },
@@ -40,7 +40,7 @@ export const ANDES_NPCS: NPC[] = [
   {
     id: 'npc_wayra',
     name: 'Wayra',
-    role: 'Mestre Cantero e Escultor de Rocha',
+    role: 'Maestro cantero y escultor de piedra',
     regionId: 'andes',
     cultureId: 'inca',
     position: { x: -4, y: 2.2, z: -8 },
@@ -55,23 +55,23 @@ export const ANDES_DIALOGUES: Record<string, DialogueNode> = {
   dia_kuntur_intro: {
     id: 'dia_kuntur_intro',
     npcId: 'npc_kuntur',
-    speakerName: 'Kuntur (o Chasqui)',
-    role: 'Mensageiro Imperial do Qhapaq Ñan',
-    text: 'Allillanchu, viajante! Bem-vindo aos caminhos do Tawantinsuyu. Sou Kuntur, um chasqui. Meus pés cruzam vales e montanhas levando ordens do Sapa Inca e peixe fresco da costa até o coração dos Andes!',
+    speakerName: 'Kuntur (chasqui)',
+    role: 'Mensajero del Qhapaq Ñan',
+    text: '¡Allillanchu, viajante! Bienvenido a los caminos del Tawantinsuyu. Soy Kuntur, un chasqui. Recorro valles y montañas llevando mensajes entre distintos territorios andinos.',
     choices: [
       {
-        text: 'Como vocês conseguiam correr tão rápido por montanhas tão altas?',
-        response: 'Treinamos desde jovens para respirar o ar rarefeito das punas. Corremos em postos de revezamento (chaskiwasi) a cada poucos quilômetros. Quando me aproximo, toco o meu pututu e o próximo corredor já salta pronto na estrada!'
+        text: '¿Cómo recorrían con tanta rapidez montañas tan altas?',
+        response: 'Nos preparábamos desde jóvenes para el aire de las punas. Corríamos por relevos entre puestos llamados chaskiwasi. Al acercarme, tocaba el pututu para avisar al siguiente corredor.'
       },
       {
-        text: 'O que você carrega nessa bolsa?',
-        response: 'Levo quipus com mensagens confidenciais cifradas em nós e cores, além de avisos urgentes entre os governadores provinciais.',
+        text: '¿Qué llevas en esa bolsa?',
+        response: 'Llevo quipus y avisos entre autoridades de diferentes territorios. Los nudos, colores y formas de las cuerdas registran información.',
         unlockDiscoveryId: 'disc_qhapaq_nan',
         giveFragments: 25
       },
       {
-        text: 'Qual o melhor lugar para aprender sobre as tecnologias daqui?',
-        response: 'Suba até os terraços agrícolas para falar com Sumaq, visite o sábio Tupaq nos silos Qullqa e conheça o mestre Wayra na oficina de cantaria!'
+        text: '¿Dónde puedo conocer otros saberes de este territorio?',
+        response: 'Visita los andenes para hablar con Sumaq, busca a Tupaq junto a las qullqas y conoce a Wayra en el espacio de cantería.'
       }
     ]
   },
@@ -80,18 +80,18 @@ export const ANDES_DIALOGUES: Record<string, DialogueNode> = {
     id: 'dia_sumaq_intro',
     npcId: 'npc_sumaq',
     speakerName: 'Sumaq',
-    role: 'Mestra dos Andenes e Cultivos',
-    text: 'Seja bem-vindo aos nossos terraços, explorador! Enquanto muitos viam as montanhas íngremes como uma barreira impossível, nossos ancestrais viram nelas degraus para o céu e para a vida.',
+    role: 'Maestra de andenes y cultivos',
+    text: 'Bienvenido a los andenes. Generaciones de pueblos andinos desarrollaron formas de cultivar en distintas alturas y condiciones climáticas.',
     choices: [
       {
-        text: 'Por que cultivar em terraços em vez de apenas no fundo do vale?',
-        response: 'No fundo do vale o espaço é escasso e as geadas noturnas se acumulam. Nas encostas, nossas pedras absorvem o calor do sol diurno e aquecem as raízes à noite. Cada altitude é um piso ecológico com clima diferente!',
+        text: '¿Por qué cultivar en terrazas y no solamente en el fondo del valle?',
+        response: 'Las terrazas amplían el área de cultivo, ayudan a manejar el agua y crean condiciones diferentes según la altura. Sus muros también pueden conservar parte del calor del día.',
         unlockDiscoveryId: 'disc_andenes',
         giveFragments: 25
       },
       {
-        text: 'Gostaria de testar meu conhecimento organizando os cultivos!',
-        response: 'Perfeito! Cada planta exige seu clima: a folha sagrada da coca nos pisos quentes inferiores, o milho nos vales amenos, e as batatas nativas e quinoa nos degraus altos e gélidos. Vamos ao trabalho!'
+        text: 'Quiero poner a prueba lo que aprendí sobre los cultivos.',
+        response: 'Cada cultivo necesita condiciones específicas. Observa la altura y el clima antes de organizar las plantas.'
       }
     ],
     triggerMinigameId: 'terraces'
@@ -101,18 +101,18 @@ export const ANDES_DIALOGUES: Record<string, DialogueNode> = {
     id: 'dia_tupaq_intro',
     npcId: 'npc_tupaq',
     speakerName: 'Tupaq',
-    role: 'Quipucamayoc dos Armazéns Qullqa',
-    text: 'Saudações, buscador do saber! Nossas Qullqas estão repletas de mantimentos colhidos no mutirão da Minka. Como guardião dos quipus, sei exatamente quantos grãos de milho e fardos de lã temos guardados.',
+    role: 'Quipucamayoc de los almacenes qullqa',
+    text: 'Saludos. Las qullqas conservan alimentos obtenidos mediante trabajos comunitarios. Los quipus permiten registrar cantidades y categorías mediante cuerdas, colores y nudos.',
     choices: [
       {
-        text: 'Como cordas e nós podem registrar números e contas tão complexas?',
-        response: 'É pura precisão decimal! Cada cordão tem posições: na ponta inferior estão as unidades; no centro, as dezenas; mais acima, as centenas. E as cores identificam o que está sendo contado!',
+        text: '¿Cómo pueden las cuerdas y los nudos registrar cantidades?',
+        response: 'En muchos quipus, la posición de los nudos representa unidades, decenas y centenas. Los colores y la estructura ayudan a distinguir categorías.',
         unlockDiscoveryId: 'disc_quipu',
         giveFragments: 25
       },
       {
-        text: 'Pode me ensinar a interpretar um quipu de suprimentos?',
-        response: 'Com honra! Analise os nós, some os valores das ordens decimais e me diga o total de suprimentos estocados para que nosso povo nunca passe necessidade.'
+        text: '¿Puedes enseñarme a interpretar un quipu de suministros?',
+        response: 'Observa los nudos y sus posiciones. Después calcula el valor registrado en el cordón.'
       }
     ],
     triggerMinigameId: 'quipu'
@@ -122,18 +122,18 @@ export const ANDES_DIALOGUES: Record<string, DialogueNode> = {
     id: 'dia_wayra_intro',
     npcId: 'npc_wayra',
     speakerName: 'Wayra',
-    role: 'Mestre Cantero e Construtor',
-    text: 'A rocha não é matéria morta; ela tem espírito e vontade. Para erguer templos que resistem a terremotos violentos, não usamos cimento nem argamassa. Cada bloco beija o vizinho com perfeição de milímetros.',
+    role: 'Maestro cantero y constructor',
+    text: 'La piedra forma parte del territorio y exige atención. La cantería andina creó muros de bloques cuidadosamente ajustados, capaces de responder a movimientos sísmicos.',
     choices: [
       {
-        text: 'Sem cimento, como as paredes não caem durante os terremotos?',
-        response: 'Pelo peso monumental, juntas poligonais e portas inclinadas! Quando o chão treme, os blocos vibram ligeiramente juntos e se assentam novamente no mesmo lugar, sem rachar!',
+        text: '¿Cómo resisten estos muros los movimientos sísmicos?',
+        response: 'La forma de los bloques, sus uniones y la inclinación de ciertos elementos distribuyen el movimiento. Las técnicas varían según el lugar y la construcción.',
         unlockDiscoveryId: 'disc_cantaria',
         giveFragments: 25
       },
       {
-        text: 'Posso ajudá-lo a talhar e encaixar a famosa pedra de doze ângulos?',
-        response: 'Pegue o martelo de hematita e o abrasivo de areia úmida. Encaixe a pedra central com as pedras de apoio com precisão absoluta!'
+        text: '¿Puedo practicar el ajuste de una piedra poligonal?',
+        response: 'Observa los ángulos y usa el pulido abrasivo para aproximar la pieza al espacio del muro.'
       }
     ],
     triggerMinigameId: 'stonework'

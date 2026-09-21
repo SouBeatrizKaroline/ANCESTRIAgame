@@ -3,43 +3,43 @@ import { Mission } from '../types';
 export const ANDES_MISSIONS: Mission[] = [
   {
     id: 'mission_main_andes',
-    title: 'O Chamado do Tawantinsuyu: A Sabedoria das Alturas',
+    title: 'El llamado del Tawantinsuyu: la sabiduría de las alturas',
     type: 'principal',
     regionId: 'andes',
     cultureId: 'inca',
     summary: 'Conoce tres dimensiones de la vida andina — comunicación, agricultura vertical y registro — y documenta lo aprendido en ANCESTRIA.',
     rewardFragments: 100,
-    historicalContext: 'O Tawantinsuyu manteve a coesão de milhões de habitantes ao longo de 4.000 km de cordilheira sem uso de rodas ou escrita alfabética, articulando estradas, terraços ecológicos e quipus.',
+    historicalContext: 'El Tawantinsuyu articuló caminos, terrazas ecológicas y quipus a lo largo de miles de kilómetros de cordillera.',
     isActive: true,
     isCompleted: false,
     steps: [
       {
         id: 'step_talk_kuntur',
-        description: 'Converse com Kuntur, o Chasqui, no início dos caminhos de pedra.',
+        description: 'Habla con Kuntur, el chasqui, al inicio de los caminos de piedra.',
         isCompleted: false,
         targetEntityId: 'npc_kuntur'
       },
       {
         id: 'step_solve_terraces',
-        description: 'Aprenda o manejo dos andenes com Sumaq e organize os cultivos por altitude.',
+        description: 'Aprende con Sumaq sobre los andenes y organiza los cultivos según la altitud.',
         isCompleted: false,
         targetEntityId: 'minigame_terraces'
       },
       {
         id: 'step_solve_quipu',
-        description: 'Decifre o quipu de estoques com o sábio Tupaq no armazém Qullqa.',
+        description: 'Descifra con Tupaq el quipu de reservas en el almacén qullqa.',
         isCompleted: false,
         targetEntityId: 'minigame_quipu'
       },
       {
         id: 'step_solve_stonework',
-        description: 'Ajude o mestre Wayra a ajustar a pedra poligonal na muralha sismorresistente.',
+        description: 'Ayuda a Wayra a ajustar la piedra poligonal en el muro sismorresistente.',
         isCompleted: false,
         targetEntityId: 'minigame_stonework'
       },
       {
         id: 'step_intihuatana',
-        description: 'Visite o marco solar Intihuatana no topo da aldeia para concluir o registro.',
+        description: 'Visita el marcador solar Intihuatana para concluir el registro.',
         isCompleted: false,
         targetEntityId: 'obj_intihuatana'
       }
@@ -48,11 +48,11 @@ export const ANDES_MISSIONS: Mission[] = [
   },
   {
     id: 'mission_sec_andenes',
-    title: 'O Segredo dos Pisos Ecológicos',
+    title: 'El secreto de los pisos ecológicos',
     type: 'secundaria',
     regionId: 'andes',
     cultureId: 'inca',
-    summary: 'Compreenda como a drenagem por camadas de cascalho e pedras nos terraços previne a erosão e armazena calor contra geadas.',
+    summary: 'Comprende cómo el drenaje de los andenes reduce la erosión y conserva calor frente a las heladas.',
     rewardFragments: 50,
     historicalContext: 'Os andenes não eram simples degraus de terra: eram laboratórios térmicos que chegavam a criar microclimas com até 3°C a 5°C acima da temperatura externa noturna.',
     isActive: false,
@@ -60,13 +60,13 @@ export const ANDES_MISSIONS: Mission[] = [
     steps: [
       {
         id: 'step_sec_andenes_talk',
-        description: 'Pergunte a Sumaq sobre a técnica de drenagem subterrânea dos andenes.',
+        description: 'Pregunta a Sumaq por el drenaje subterráneo de los andenes.',
         isCompleted: false,
         targetEntityId: 'npc_sumaq'
       },
       {
         id: 'step_sec_andenes_inspect',
-        description: 'Examine os canais de pedra que distribuem a água do degrau superior ao inferior.',
+        description: 'Examina los canales de piedra que distribuyen el agua entre las terrazas.',
         isCompleted: false,
         targetEntityId: 'obj_terraces_canal'
       }
@@ -75,7 +75,7 @@ export const ANDES_MISSIONS: Mission[] = [
   },
   {
     id: 'mission_sec_quipu',
-    title: 'A Memória dos Fios Coloridos',
+    title: 'La memoria de los hilos de colores',
     type: 'secundaria',
     regionId: 'andes',
     cultureId: 'inca',
@@ -87,13 +87,13 @@ export const ANDES_MISSIONS: Mission[] = [
     steps: [
       {
         id: 'step_sec_quipu_read',
-        description: 'Analise o quipu principal com Tupaq e identifique a cor do milho e das batatas.',
+        description: 'Analiza el quipu con Tupaq e identifica los colores del maíz y las papas.',
         isCompleted: false,
         targetEntityId: 'npc_tupaq'
       },
       {
         id: 'step_sec_quipu_qullqa',
-        description: 'Inspecione a ventilação do Qullqa que mantém os alimentos preservados.',
+        description: 'Inspecciona la ventilación de la qullqa que ayuda a conservar los alimentos.',
         isCompleted: false,
         targetEntityId: 'obj_qullqa_deposito'
       }

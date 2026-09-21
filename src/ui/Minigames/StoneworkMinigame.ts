@@ -22,42 +22,42 @@ export class StoneworkMinigame {
         <div class="minigame-modal-content">
           <div class="minigame-header">
             <div>
-              <span class="badge">Arquitetura e Engenharia Sísmica</span>
-              <h2>O Encaixe da Pedra de Doze Ângulos</h2>
+              <span class="badge">Arquitectura e ingeniería sísmica</span>
+              <h2>El ajuste de la piedra poligonal</h2>
             </div>
-            <button class="btn-close" id="btn-close-stonework" aria-label="Fechar">&times;</button>
+            <button class="btn-close" id="btn-close-stonework" aria-label="Cerrar">&times;</button>
           </div>
 
           <div class="minigame-intro">
-            <p><strong>Desafio de Wayra:</strong> "Os edifícios incas resistem a terremotos porque as pedras poligonais se abraçam perfeitamente a seco, sem argamassa. Gire e faça o assentamento abrasivo para encaixar o bloco central na muralha!"</p>
+            <p><strong>Desafío de Wayra:</strong> Gira la pieza y usa el pulido abrasivo para aproximarla al espacio central del muro.</p>
           </div>
 
           <div class="stonework-workspace">
             <div class="stone-puzzle-board">
               <!-- Muralha de apoio em torno -->
               <div class="wall-frame">
-                <div class="wall-rock rock-top">Blocos Superiores de Andesita</div>
-                <div class="wall-rock rock-left">Bloco Lateral</div>
+                <div class="wall-rock rock-top">Bloques superiores</div>
+                <div class="wall-rock rock-left">Bloque lateral</div>
                 
                 <!-- Encaixe central onde a pedra deve assentar -->
                 <div class="socket-zone">
                   <div class="twelve-angle-stone" id="target-stone" style="transform: rotate(${this.currentAngle}deg);">
                     <div class="stone-face">
-                      <span class="stone-label">Pedra de 12 Ângulos</span>
+                      <span class="stone-label">Piedra poligonal</span>
                       <div class="stone-bevel"></div>
                     </div>
                   </div>
                 </div>
 
-                <div class="wall-rock rock-right">Bloco Lateral</div>
-                <div class="wall-rock rock-bottom">Base Sísmica Almofadada</div>
+                <div class="wall-rock rock-right">Bloque lateral</div>
+                <div class="wall-rock rock-bottom">Base sismorresistente</div>
               </div>
             </div>
 
             <div class="stonework-tools-panel">
-              <h4>Ajustes de Cantaria</h4>
+              <h4>Ajustes de cantería</h4>
               <div class="tool-section">
-                <label>Girar Bloco de Pedra:</label>
+                <label>Girar el bloque:</label>
                 <div class="rotation-controls">
                   <button class="btn-tool" id="btn-rot-left">↺ Girar -30°</button>
                   <button class="btn-tool" id="btn-rot-right">↻ Girar +30°</button>
@@ -65,22 +65,22 @@ export class StoneworkMinigame {
               </div>
 
               <div class="tool-section">
-                <label>Polimento com Areia Úmida e Hematita:</label>
+                <label>Pulido abrasivo:</label>
                 <button class="btn-tool btn-abrade" id="btn-abrade-stone">
-                  <span>🔨 Polir Juntas de Atrito</span>
-                  <span class="abrade-progress" id="abrade-progress-label">Nível: 0 / 3</span>
+                  <span>🔨 Pulir las juntas</span>
+                  <span class="abrade-progress" id="abrade-progress-label">Nivel: 0 / 3</span>
                 </button>
               </div>
 
               <div class="academic-note">
-                <small><strong>Nota Técnica:</strong> Experimentos de Jean-Pierre Protzen (1993) comprovaram que operários andinos talhavam os blocos por percussão direta com martelos líticos, criando encaixes côncavo-convexos tão justos que uma lâmina de barbear não penetra entre as pedras.</small>
+                <small><strong>Nota técnica:</strong> La arqueología experimental estudia el tallado por percusión con herramientas líticas y el pulido de las superficies de contacto (Jean-Pierre Protzen, 1993).</small>
               </div>
             </div>
           </div>
 
           <div class="minigame-footer">
             <div class="feedback-msg" id="stonework-feedback"></div>
-            <button class="btn-primary" id="btn-check-stonework">Testar Estabilidade Sísmica</button>
+            <button class="btn-primary" id="btn-check-stonework">Comprobar el ajuste</button>
           </div>
         </div>
       </div>
@@ -116,7 +116,7 @@ export class StoneworkMinigame {
       if (this.smoothingStep < 3) {
         this.smoothingStep++;
         const label = this.container.querySelector('#abrade-progress-label');
-        if (label) label.textContent = `Nível: ${this.smoothingStep} / 3 (Polido)`;
+        if (label) label.textContent = `Nivel: ${this.smoothingStep} / 3 (pulido)`;
         this.updateStoneVisual();
       }
     });
@@ -149,13 +149,13 @@ export class StoneworkMinigame {
       state.addKnowledgeFragments(30);
 
       this.setFeedback(
-        'Sensacional! O bloco de doze ângulos assentou-se com precisão milimétrica. A muralha agora é capaz de absorver qualquer onda sísmica com total segurança!',
+        '¡Muy bien! La pieza quedó orientada y pulida para ajustarse al muro.',
         'success'
       );
 
       const checkBtn = this.container.querySelector('#btn-check-stonework') as HTMLButtonElement;
       if (checkBtn) {
-        checkBtn.textContent = 'Encaixe Sísmico Perfeito! (+30 Fragmentos)';
+        checkBtn.textContent = '¡Ajuste completado! (+30 fragmentos)';
         checkBtn.disabled = true;
       }
 
@@ -166,13 +166,13 @@ export class StoneworkMinigame {
     } else if (!isAngleCorrect) {
       AudioManager.getInstance().playClick();
       this.setFeedback(
-        'O ângulo da pedra ainda não coincide com as facetas dos blocos vizinhos. Gire a pedra até que seus doze vértices fiquem nivelados com o soquete da muralha.',
+        'El ángulo de la piedra todavía no coincide con el espacio. Gírala hasta alinear sus caras.',
         'error'
       );
     } else {
       AudioManager.getInstance().playClick();
       this.setFeedback(
-        'A orientação está quase certa, mas as juntas ainda estão ásperas. Use o polimento abrasivo com areia úmida (Nível 3/3) para garantir o contato contínuo!',
+        'La orientación es correcta, pero todavía falta pulir las juntas hasta el nivel 3/3.',
         'error'
       );
     }

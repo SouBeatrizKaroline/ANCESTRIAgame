@@ -74,7 +74,6 @@ export class HUD {
         <!-- Indicador Central Flutuante de Interação -->
         <div class="hud-interaction-banner" id="hud-interaction-banner" style="display: none;">
           <button class="btn-interaction-prompt" id="btn-hud-interact">
-            <span class="key-badge">E</span>
             <span id="interaction-prompt-text">Interactuar</span>
           </button>
         </div>
@@ -92,7 +91,7 @@ export class HUD {
           </div>
 
           <button class="touch-action-btn" id="btn-touch-action">
-            <span>ACCIÓN [E]</span>
+            <span>ACCIÓN</span>
           </button>
         </div>
       </div>

@@ -29,19 +29,19 @@ export class QuipuMinigame {
         <div class="minigame-modal-content">
           <div class="minigame-header">
             <div>
-              <span class="badge">Registro e Contabilidade Andina</span>
-              <h2>O Enigma do Quipu Imperial</h2>
+              <span class="badge">Registro y contabilidad andina</span>
+              <h2>El desafío del quipu</h2>
             </div>
-            <button class="btn-close" id="btn-close-quipu" aria-label="Fechar">&times;</button>
+            <button class="btn-close" id="btn-close-quipu" aria-label="Cerrar">&times;</button>
           </div>
 
           <div class="minigame-intro">
-            <p><strong>Desafio de Tupaq:</strong> "Chegaram novas provisões de milho aos armazéns Qullqa! Precisamos registrar exatamente <strong>342 sacas de milho</strong> no cordão amarelo. Cada nó representa um algarismo de base 10 de acordo com sua altura!"</p>
+            <p><strong>Desafío de Tupaq:</strong> Registra <strong>342 unidades de maíz</strong> en el cordón amarillo. La posición de cada nudo representa un valor decimal.</p>
           </div>
 
           <div class="quipu-workspace">
             <div class="quipu-main-cord">
-              <div class="quipu-top-beam">Cordão Mestre Principal</div>
+              <div class="quipu-top-beam">Cordón principal</div>
               <div class="quipu-hanging-strand strand-yellow">
                 <!-- Centenas -->
                 <div class="knot-zone" data-pos="hundreds">
@@ -56,7 +56,7 @@ export class QuipuMinigame {
 
                 <!-- Dezenas -->
                 <div class="knot-zone" data-pos="tens">
-                  <div class="zone-label">Dezenas (x10)</div>
+                  <div class="zone-label">Decenas (x10)</div>
                   <div class="knots-display" id="knots-tens"></div>
                   <div class="knot-controls">
                     <button class="btn-knot-adjust" data-action="dec" data-target="tens">-</button>
@@ -79,18 +79,18 @@ export class QuipuMinigame {
             </div>
 
             <div class="quipu-summary-panel">
-              <h4>Valor Registrado no Cordão</h4>
+              <h4>Valor registrado en el cordón</h4>
               <div class="calculated-value" id="current-total-val">120</div>
-              <p class="target-hint">Meta a registrar: <strong>342 sacas</strong></p>
+              <p class="target-hint">Meta: <strong>342 unidades</strong></p>
               <div class="academic-note">
-                <small><strong>Nota Histórica:</strong> Os quipus usavam a ausência de nós para representar o zero e cores específicas (amarelo = milho, marrom = batata, branco = prata/lã) para categorizar os bens (Gary Urton, 2003).</small>
+                <small><strong>Nota histórica:</strong> Los quipus podían usar la ausencia de nudos para representar el cero; colores y estructuras ayudaban a categorizar información (Gary Urton, 2003).</small>
               </div>
             </div>
           </div>
 
           <div class="minigame-footer">
             <div class="feedback-msg" id="quipu-feedback"></div>
-            <button class="btn-primary" id="btn-check-quipu">Validar Registro no Quipu</button>
+            <button class="btn-primary" id="btn-check-quipu">Validar registro</button>
           </div>
         </div>
       </div>
@@ -158,7 +158,7 @@ export class QuipuMinigame {
     const el = this.container.querySelector(selector);
     if (!el) return;
     if (count === 0) {
-      el.innerHTML = '<span class="zero-space">(espaço liso: zero)</span>';
+      el.innerHTML = '<span class="zero-space">(espacio sin nudos: cero)</span>';
       return;
     }
     let html = '';
@@ -181,13 +181,13 @@ export class QuipuMinigame {
       state.addKnowledgeFragments(30);
 
       this.setFeedback(
-        'Perfeito! O quipu foi atado com 3 centenas, 4 dezenas e 2 unidades no cordão amarelo do milho. O Quipucamayoc Tupaq arquivou o registro com sucesso!',
+        '¡Correcto! El cordón registra 3 centenas, 4 decenas y 2 unidades.',
         'success'
       );
 
       const checkBtn = this.container.querySelector('#btn-check-quipu') as HTMLButtonElement;
       if (checkBtn) {
-        checkBtn.textContent = 'Registro Validado! (+30 Fragmentos)';
+        checkBtn.textContent = '¡Registro validado! (+30 fragmentos)';
         checkBtn.disabled = true;
       }
 
@@ -199,7 +199,7 @@ export class QuipuMinigame {
       AudioManager.getInstance().playClick();
       const current = this.currentHundreds * 100 + this.currentTens * 10 + this.currentUnits;
       this.setFeedback(
-        `O cordão registra ${current} sacas. Precisamos de exatamente 342 (3 nós de centenas, 4 nós de dezenas e 2 nós de unidades). Ajuste os nós e tente novamente!`,
+        `El cordón registra ${current}. Necesitamos 342: 3 centenas, 4 decenas y 2 unidades. Ajusta los nudos e inténtalo otra vez.`,
         'error'
       );
     }

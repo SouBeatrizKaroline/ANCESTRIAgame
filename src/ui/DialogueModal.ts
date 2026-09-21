@@ -36,7 +36,7 @@ export class DialogueModal {
               <h3 class="speaker-name">${node.speakerName}</h3>
               <span class="speaker-role">${node.role}</span>
             </div>
-            <button class="btn-close-dialogue" id="btn-close-dialogue" aria-label="Fechar Diálogo">&times;</button>
+            <button class="btn-close-dialogue" id="btn-close-dialogue" aria-label="Cerrar diálogo">&times;</button>
           </div>
 
           <div class="dialogue-body">
@@ -63,7 +63,7 @@ export class DialogueModal {
                 ? `
                 <button class="btn-dialogue-choice btn-challenge" id="btn-start-minigame">
                   <span class="choice-arrow">★</span>
-                  <span>Aceitar Desafio Educativo</span>
+                  <span>Aceptar desafío educativo</span>
                 </button>
               `
                 : ''
@@ -114,14 +114,14 @@ export class DialogueModal {
                   ? `
                   <button class="btn-dialogue-choice btn-challenge" id="btn-start-minigame">
                     <span class="choice-arrow">★</span>
-                    <span>Aceitar Desafio Educativo</span>
+                    <span>Aceptar desafío educativo</span>
                   </button>
                 `
                   : ''
               }
               <button class="btn-dialogue-choice" id="btn-finish-dialogue">
                 <span class="choice-arrow">✓</span>
-                <span>Continuar explorando</span>
+                <span>Continuar la exploración</span>
               </button>
             `;
 

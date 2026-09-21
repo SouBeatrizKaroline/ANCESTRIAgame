@@ -133,17 +133,17 @@ export class UIManager {
   public openMinigame(minigameId: 'terraces' | 'quipu' | 'stonework'): void {
     if (minigameId === 'terraces') {
       const game = new TerracesMinigame(this.modalContainer, () => {
-        this.showToast('Desafio dos Andenes Concluído!', 'success');
+        this.showToast('¡Desafío de los andenes completado!', 'success');
       });
       game.render();
     } else if (minigameId === 'quipu') {
       const game = new QuipuMinigame(this.modalContainer, () => {
-        this.showToast('Desafio do Quipu Concluído!', 'success');
+        this.showToast('¡Desafío del quipu completado!', 'success');
       });
       game.render();
     } else if (minigameId === 'stonework') {
       const game = new StoneworkMinigame(this.modalContainer, () => {
-        this.showToast('Desafio da Cantaria Concluído!', 'success');
+        this.showToast('¡Desafío de cantería completado!', 'success');
       });
       game.render();
     }
