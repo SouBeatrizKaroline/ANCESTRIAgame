@@ -53,7 +53,7 @@ export class UIManager {
       onVirtualMove: (dx: number, dz: number) => void;
       onInteract: () => void;
       onJump: () => void;
-      onStartGame: (cultureId: import('../data/types').CultureId) => void;
+      onStartGame: (cultureId: CultureId) => void;
     }
   ) {
     this.uiRoot = uiRoot;
@@ -61,7 +61,6 @@ export class UIManager {
     this.onInteractCallback = callbacks.onInteract;
     this.onJumpCallback = callbacks.onJump;
 
-    // Cria as subcamadas da interface
     this.hudContainer = document.createElement('div');
     this.hudContainer.id = 'hud-container';
     this.uiRoot.appendChild(this.hudContainer);
@@ -78,7 +77,7 @@ export class UIManager {
     this.setupGlobalStateListeners();
   }
 
-  private initComponents(onStartGame: (cultureId: import('../data/types').CultureId) => void): void {
+  private initComponents(onStartGame: (cultureId: CultureId) => void): void {
     this.dialogueModal = new DialogueModal(this.modalContainer, (minigameId) => {
       this.openMinigame(minigameId);
     });
@@ -93,37 +92,63 @@ export class UIManager {
     this.mexicaJourneyModal = new MexicaJourneyModal(this.modalContainer, () => this.cultureSelectionModal.show());
     this.andeanJourneyModal = new AndeanJourneyModal(this.modalContainer, () => this.cultureSelectionModal.show());
     this.peopleJourneyModal = new PeopleJourneyModal(this.modalContainer, () => this.cultureSelectionModal.show());
+
     const openEducation = (cultureId: CultureId) => {
       if (cultureId === 'mexica') this.mexicaJourneyModal.show();
       else if (cultureId === 'inca') this.andeanJourneyModal.show();
       else this.peopleJourneyModal.show(cultureId);
     };
-    this.prototypeCompleteModal = new PrototypeCompleteModal(this.modalContainer, () => {}, () => this.mainMenu.show(), openEducation, (cultureId) => {
-      GameState.getInstance().selectCulture(cultureId); this.hud.render(); onStartGame(cultureId);
-    });
-    this.cultureSelectionModal = new CultureSelectionModal(this.modalContainer, (cultureId) => {
-      this.hud.render();
-      onStartGame(cultureId);
-    }, () => this.mexicaJourneyModal.show(), () => this.andeanJourneyModal.show(), (cultureId) => this.peopleJourneyModal.show(cultureId), () => this.mainMenu.show());
 
-    this.regionMapModal = new RegionMapModal(this.modalContainer, (regionId) => {
-      if (regionId === 'andes') {
-        GameState.getInstance().selectCulture('inca');
+    this.prototypeCompleteModal = new PrototypeCompleteModal(
+      this.modalContainer,
+      () => {},
+      () => this.mainMenu.show(),
+      openEducation,
+      (cultureId) => {
+        GameState.getInstance().selectCulture(cultureId);
         this.hud.render();
-        onStartGame('inca');
-        return;
+        onStartGame(cultureId);
       }
-      this.showToast(`Territorio ${regionId.toUpperCase()} seleccionado.`, 'info');
-      restoreModalOrigin();
-    }, (cultureId) => {
-      GameState.getInstance().selectCulture(cultureId);
-      this.hud.render();
-      onStartGame(cultureId);
-    }, (cultureId) => {
-      if (cultureId === 'mexica') this.mexicaJourneyModal.show();
-      else if (cultureId === 'inca') this.andeanJourneyModal.show();
-      else this.peopleJourneyModal.show(cultureId);
-    }, restoreModalOrigin);
+    );
+
+    this.cultureSelectionModal = new CultureSelectionModal(
+      this.modalContainer,
+      (cultureId) => {
+        this.hud.render();
+        onStartGame(cultureId);
+      },
+      () => this.mexicaJourneyModal.show(),
+      () => this.andeanJourneyModal.show(),
+      (cultureId) => this.peopleJourneyModal.show(cultureId),
+      () => this.mainMenu.show()
+    );
+
+    this.regionMapModal = new RegionMapModal(
+      this.modalContainer,
+      (regionId) => {
+        if (regionId === 'andes') {
+          GameState.getInstance().selectCulture('inca');
+          this.hud.render();
+          onStartGame('inca');
+          return;
+        }
+        const lang = getLanguage();
+        const msg = lang === 'es'
+          ? `Territorio ${regionId.toUpperCase()} seleccionado.`
+          : lang === 'pt-BR'
+          ? `Território ${regionId.toUpperCase()} selecionado.`
+          : `Territory ${regionId.toUpperCase()} selected.`;
+        this.showToast(msg, 'info');
+        restoreModalOrigin();
+      },
+      (cultureId) => {
+        GameState.getInstance().selectCulture(cultureId);
+        this.hud.render();
+        onStartGame(cultureId);
+      },
+      (cultureId) => openEducation(cultureId),
+      restoreModalOrigin
+    );
 
     this.hud = new HUD(this.hudContainer, {
       onOpenJournal: () => { this.modalOrigin = 'game'; this.journalModal.show(); },
@@ -147,7 +172,10 @@ export class UIManager {
   }
 
   public openNpcDialogue(npcId: string): void {
-    if (npcId.startsWith('npc_mexica_')) { this.mexicaDialogueModal.show(npcId as 'npc_mexica_chinampa' | 'npc_mexica_market' | 'npc_mexica_language'); return; }
+    if (npcId.startsWith('npc_mexica_')) {
+      this.mexicaDialogueModal.show(npcId as 'npc_mexica_chinampa' | 'npc_mexica_market' | 'npc_mexica_language');
+      return;
+    }
     if (npcId.startsWith('npc_people_')) {
       const cultureId = npcId.replace('npc_people_', '');
       const profile = PEOPLE_CATALOG.find((item) => item.id === cultureId);
@@ -155,13 +183,19 @@ export class UIManager {
         const lang = getLanguage();
         const key = `ancestria_dialogue_${npcId}`;
         const first = !localStorage.getItem(key);
-        if (first) { localStorage.setItem(key, '1'); GameState.getInstance().addKnowledgeFragments(10); }
-        const suffix = first ? (lang === 'es' ? ' (+10 fragmentos)' : lang === 'pt-BR' ? ' (+10 fragmentos)' : ' (+10 fragments)') : '';
+        if (first) {
+          localStorage.setItem(key, '1');
+          GameState.getInstance().addKnowledgeFragments(10);
+        }
+        const suffix = first
+          ? (lang === 'es' ? ' (+10 fragmentos)' : lang === 'pt-BR' ? ' (+10 fragmentos)' : ' (+10 fragments)')
+          : '';
         this.showToast(`${profile.name[lang]} — ${profile.summary[lang]}${suffix}`, first ? 'success' : 'info');
         this.checkPrototypeCompletion(cultureId as CultureId);
       }
       return;
     }
+
     const dialogueIdMap: Record<string, string> = {
       npc_kuntur: 'dia_kuntur_intro',
       npc_sumaq: 'dia_sumaq_intro',
@@ -174,30 +208,64 @@ export class UIManager {
 
   public openObjectInteraction(objectId: string): void {
     const state = GameState.getInstance();
+    const lang = getLanguage();
 
     if (objectId.startsWith('people_')) {
       const match = objectId.match(/^people_(.+)_(0|1|2)$/);
       const profile = match ? PEOPLE_CATALOG.find((item) => item.id === match[1]) : undefined;
       if (profile && match) {
-        const lang = getLanguage();
-        const text = match[2] === '0' ? profile.territory[lang] : match[2] === '1' ? profile.languages[lang] : profile.summary[lang];
+        const index = Number(match[2]);
+        const text = index === 0
+          ? `${profile.name[lang]} · 📍 ${profile.territory[lang]}`
+          : index === 1
+          ? `${profile.name[lang]} · 🗣️ ${profile.languages[lang]}`
+          : `${profile.name[lang]} · ✦ ${profile.summary[lang]}`;
         const key = `ancestria_find_${objectId}`;
-        if (!localStorage.getItem(key)) { localStorage.setItem(key, '1'); state.addKnowledgeFragments(10); }
-        this.showToast(`${text} (+10 ${lang === 'es' ? 'fragmentos la primera vez' : lang === 'pt-BR' ? 'fragmentos na primeira vez' : 'fragments the first time'})`, 'success');
+        if (!localStorage.getItem(key)) {
+          localStorage.setItem(key, '1');
+          state.addKnowledgeFragments(10);
+        }
+        const rewardMsg = lang === 'es'
+          ? 'fragmentos la primera vez'
+          : lang === 'pt-BR'
+          ? 'fragmentos na primeira vez'
+          : 'fragments the first time';
+        this.showToast(`${text} (+10 ${rewardMsg})`, 'success');
         this.checkPrototypeCompletion(match[1] as CultureId);
       }
       return;
     }
 
     const mexicaFinds: Record<string, string> = {
-      mexica_chinampas: 'Las chinampas combinan suelo construido, canales y manejo continuo del agua. Son una práctica lacustre de larga duración, no una invención aislada de un único pueblo.',
-      mexica_causeway: 'Las calzadas facilitaron el tránsito terrestre; los canales sostuvieron la movilidad por agua y conectaron la ciudad con otros territorios de la cuenca.',
-      mexica_templo: 'El recinto ceremonial se presenta con contexto y fuentes: no reconstruimos ceremonias ni voces como si existiera una interpretación única.'
+      mexica_chinampas: lang === 'es'
+        ? 'Chinampas: agroecosistema lacustre de equilibrio de suelo y humedad.'
+        : lang === 'pt-BR'
+        ? 'Chinampas: agroecossistema lacustre de equilíbrio de solo e umidade.'
+        : 'Chinampas: wetland agroecosystem balancing soil and water.',
+      mexica_causeway: lang === 'es'
+        ? 'Calzadas y diques: ingeniería hidráulica que regulaba el nivel del agua y conectaba la cuenca.'
+        : lang === 'pt-BR'
+        ? 'Calçadas e diques: engenharia hidráulica que regulava o nível das águas e conectava a bacia.'
+        : 'Causeways and dikes: hydraulic engineering regulating water levels across the basin.',
+      mexica_templo: lang === 'es'
+        ? 'Recinto ceremonial del Templo Mayor: centro ceremonial y cosmológico de Mexico-Tenochtitlan.'
+        : lang === 'pt-BR'
+        ? 'Recinto cerimonial do Templo Maior: centro cerimonial e cosmológico de Mexico-Tenochtitlan.'
+        : 'Templo Mayor ceremonial precinct: cosmological center of Mexico-Tenochtitlan.'
     };
+
     if (mexicaFinds[objectId]) {
       const key = `ancestria_find_${objectId}`;
-      if (!localStorage.getItem(key)) { localStorage.setItem(key, '1'); state.addKnowledgeFragments(10); }
-      this.showToast(`${mexicaFinds[objectId]} (+10 fragmentos la primera vez)`, 'success');
+      if (!localStorage.getItem(key)) {
+        localStorage.setItem(key, '1');
+        state.addKnowledgeFragments(10);
+      }
+      const note = lang === 'es'
+        ? '(+10 fragmentos la primera vez)'
+        : lang === 'pt-BR'
+        ? '(+10 fragmentos na primeira vez)'
+        : '(+10 fragments the first time)';
+      this.showToast(`${mexicaFinds[objectId]} ${note}`, 'success');
       this.checkPrototypeCompletion('mexica');
       return;
     }
@@ -205,36 +273,69 @@ export class UIManager {
     if (objectId === 'obj_intihuatana') {
       state.completeMissionStep('mission_main_andes', 'step_intihuatana');
       state.unlockDiscovery('disc_intihuatana');
-      this.showToast(
-        '¡Has observado la alineación solar del Intihuatana! (+25 fragmentos)',
-        'success'
-      );
+      const toastText = lang === 'es'
+        ? '¡Has observado la alineación solar del Intihuatana! (+25 fragmentos)'
+        : lang === 'pt-BR'
+        ? 'Você contemplou o alinhamento solar no Intihuatana! (+25 fragmentos)'
+        : 'You observed the solar alignment at Intihuatana! (+25 fragments)';
+      this.showToast(toastText, 'success');
     } else if (objectId === 'obj_qullqa_deposito') {
       state.unlockDiscovery('disc_qullqa');
-      this.showToast('¡Has examinado el sistema de ventilación de las qullqas!', 'info');
+      const toastText = lang === 'es'
+        ? '¡Has examinado el sistema de conservación de las qullqas!'
+        : lang === 'pt-BR'
+        ? 'Você examinou o sistema de ventilação das Qullqas!'
+        : 'You examined the storage and preservation system of the qullqas!';
+      this.showToast(toastText, 'info');
     } else if (objectId === 'obj_terraces_canal') {
       state.unlockDiscovery('disc_andenes');
-      this.showToast('¡Has observado la ingeniería hidráulica de las terrazas!', 'info');
+      const toastText = lang === 'es'
+        ? '¡Has observado la ingeniería hidráulica de las terrazas!'
+        : lang === 'pt-BR'
+        ? 'Você inspecionou a engenharia hidráulica dos terraços!'
+        : 'You examined the hydraulic engineering of the agricultural terraces!';
+      this.showToast(toastText, 'info');
     } else if (objectId === 'obj_bridge') {
       state.unlockDiscovery('disc_qeswachaka');
-      this.showToast('¡Has cruzado el puente colgante Q\'eswachaka!', 'success');
+      const toastText = lang === 'es'
+        ? '¡Has cruzado el puente colgante Q’eswachaka!'
+        : lang === 'pt-BR'
+        ? 'Você atravessou a ponte pênsil Q’eswachaka!'
+        : 'You crossed the Q’eswachaka suspension bridge!';
+      this.showToast(toastText, 'success');
     }
   }
 
   public openMinigame(minigameId: 'terraces' | 'quipu' | 'stonework'): void {
+    const lang = getLanguage();
     if (minigameId === 'terraces') {
+      const msg = lang === 'es'
+        ? '¡Desafío de los andenes completado!'
+        : lang === 'pt-BR'
+        ? 'Desafio dos Andenes Concluído!'
+        : 'Terraces challenge completed!';
       const game = new TerracesMinigame(this.modalContainer, () => {
-        this.showToast('¡Desafío de los andenes completado!', 'success');
+        this.showToast(msg, 'success');
       });
       game.render();
     } else if (minigameId === 'quipu') {
+      const msg = lang === 'es'
+        ? '¡Desafío del quipu completado!'
+        : lang === 'pt-BR'
+        ? 'Desafio do Quipu Concluído!'
+        : 'Quipu challenge completed!';
       const game = new QuipuMinigame(this.modalContainer, () => {
-        this.showToast('¡Desafío del quipu completado!', 'success');
+        this.showToast(msg, 'success');
       });
       game.render();
     } else if (minigameId === 'stonework') {
+      const msg = lang === 'es'
+        ? '¡Desafío de cantería completado!'
+        : lang === 'pt-BR'
+        ? 'Desafio da Cantaria Concluído!'
+        : 'Stonework challenge completed!';
       const game = new StoneworkMinigame(this.modalContainer, () => {
-        this.showToast('¡Desafío de cantería completado!', 'success');
+        this.showToast(msg, 'success');
       });
       game.render();
     }
@@ -271,22 +372,28 @@ export class UIManager {
     state.on('discovery_unlocked', (discoveryId: string) => {
       AudioManager.getInstance().playDiscovery();
       const disc = ANDES_DISCOVERIES.find((d) => d.id === discoveryId);
-      const name = disc ? disc.name : 'Nuevo saber';
-      this.showToast(`Nuevo descubrimiento registrado: ${name} (+20 fragmentos)`, 'success');
+      const lang = getLanguage();
+      const name = disc ? disc.name : (lang === 'es' ? 'Nuevo saber' : lang === 'pt-BR' ? 'Novo saber' : 'New knowledge');
+      const msg = lang === 'es'
+        ? `Nuevo saber registrado en el diario: ${name} (+20 fragmentos)`
+        : lang === 'pt-BR'
+        ? `Nova descoberta registrada no diário: ${name} (+20 fragmentos)`
+        : `New discovery recorded in journal: ${name} (+20 fragments)`;
+      this.showToast(msg, 'success');
       this.checkPrototypeCompletion('inca');
     });
 
     state.on('mission_completed', (mission) => {
       if (mission) {
         AudioManager.getInstance().playMissionComplete();
-        this.showToast(`Misión completada: ${mission.title} (+${mission.rewardFragments} fragmentos)`, 'success');
+        const lang = getLanguage();
+        const msg = lang === 'es'
+          ? `Misión completada: ${mission.title} (+${mission.rewardFragments} fragmentos)`
+          : lang === 'pt-BR'
+          ? `Missão concluída: ${mission.title} (+${mission.rewardFragments} fragmentos)`
+          : `Mission completed: ${mission.title} (+${mission.rewardFragments} fragments)`;
+        this.showToast(msg, 'success');
       }
     });
-
-    // Aplica configurações iniciais no DOM
-    if (state.settings.highContrast) {
-      document.body.classList.add('high-contrast-mode');
-    }
-    document.body.setAttribute('data-font-size', state.settings.fontSize);
   }
 }

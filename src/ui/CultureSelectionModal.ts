@@ -6,16 +6,23 @@ import { PEOPLE_CATALOG } from '../data/peopleCatalog';
 import { getJourneyProgress, JOURNEY_ORDER, journeyName } from '../data/journeyProgress';
 
 export class CultureSelectionModal {
-  constructor(private container: HTMLElement, private onStart: (cultureId: CultureId) => void, private onExploreMexica: () => void, private onExploreAndean: () => void, private onExplorePeople: (cultureId: CultureId) => void, private onBack: () => void) {}
+  constructor(
+    private container: HTMLElement,
+    private onStart: (cultureId: CultureId) => void,
+    private onExploreMexica: () => void,
+    private onExploreAndean: () => void,
+    private onExplorePeople: (cultureId: CultureId) => void,
+    private onBack: () => void
+  ) {}
 
   public show(): void {
     const lang = getLanguage();
     const state = GameState.getInstance();
     const copy = lang === 'es'
-      ? { intro:'Avanza recorrido por recorrido. Completar las memorias de un pueblo abre el siguiente; lo ya recorrido siempre puede volver a jugarse sin repetir recompensas.', order:'El orden es una ruta educativa curatorial, no una jerarquía entre pueblos.', available:'Disponible', progress:'En curso', complete:'Completado', locked:'Bloqueado', memories:'memorias', play:'Explorar prototipo 3D', replay:'Volver a explorar', learn:'Abrir recorrido educativo', continue:'Continuar recorrido', requires:'Completa primero' }
+      ? { intro: 'Avanza recorrido por recorrido. Cada experiencia parte de fuentes y memorias propias; lo ya recorrido siempre puede volver a jugarse sin duplicar recompensas.', order: 'El orden es una ruta educativa de navegación curatorial, no una jerarquía entre pueblos.', available: 'Disponible', progress: 'En curso', complete: 'Completado', locked: 'Bloqueado', memories: 'memorias', play: 'Explorar prototipo 3D', replay: 'Volver a explorar', learn: 'Abrir recorrido educativo', continue: 'Continuar recorrido', requires: 'Completa primero' }
       : lang === 'pt-BR'
-        ? { intro:'Avance percurso por percurso. Completar as memórias de um povo libera o seguinte; o que já foi percorrido pode ser jogado novamente sem repetir recompensas.', order:'A ordem é uma rota educativa curatorial, não uma hierarquia entre povos.', available:'Disponível', progress:'Em andamento', complete:'Concluído', locked:'Bloqueado', memories:'memórias', play:'Explorar protótipo 3D', replay:'Explorar novamente', learn:'Abrir percurso educativo', continue:'Continuar percurso', requires:'Conclua primeiro' }
-        : { intro:'Advance one journey at a time. Completing one people’s memories unlocks the next; completed journeys remain replayable without duplicate rewards.', order:'The order is a curated learning route, not a hierarchy among peoples.', available:'Available', progress:'In progress', complete:'Completed', locked:'Locked', memories:'memories', play:'Explore 3D prototype', replay:'Explore again', learn:'Open learning journey', continue:'Continue journey', requires:'Complete first' };
+      ? { intro: 'Avance percurso por percurso. Cada experiência parte de fontes e memórias próprias; o que já foi percorrido pode ser jogado novamente sem repetir recompensas.', order: 'A ordem é uma rota educativa curatorial, não uma hierarquia entre povos.', available: 'Disponível', progress: 'Em andamento', complete: 'Concluído', locked: 'Bloqueado', memories: 'memórias', play: 'Explorar protótipo 3D', replay: 'Explorar novamente', learn: 'Abrir percurso educativo', continue: 'Continuar percurso', requires: 'Conclua primeiro' }
+      : { intro: 'Advance one journey at a time. Each experience is grounded in its own sources; completed journeys remain replayable without duplicate rewards.', order: 'The order is a curated learning route, not a cultural hierarchy among peoples.', available: 'Available', progress: 'In progress', complete: 'Completed', locked: 'Locked', memories: 'memories', play: 'Explore 3D prototype', replay: 'Explore again', learn: 'Open learning journey', continue: 'Continue journey', requires: 'Complete first' };
 
     const cards = JOURNEY_ORDER.map((cultureId, index) => {
       const profile = PEOPLE_CATALOG.find((item) => item.id === cultureId)!;
@@ -24,8 +31,8 @@ export class CultureSelectionModal {
       const primary = progress.status === 'completed' ? copy.replay : progress.status === 'in_progress' ? copy.continue : copy.play;
       const prerequisite = progress.prerequisite ? journeyName(progress.prerequisite, lang) : '';
       return `<article class="culture-card ${progress.unlocked ? 'culture-card-active' : 'culture-card-locked'}" data-route-step="${index + 1}">
-        <div class="journey-card-heading"><span class="culture-status">${String(index + 1).padStart(2,'0')} · ${statusLabel}</span><strong>${progress.completed}/${progress.total}</strong></div>
-        <h3>${profile.name[lang]}</h3>${progress.unlocked ? `<p>${profile.summary[lang]}</p><div class="journey-meter" aria-label="${progress.completed}/${progress.total} ${copy.memories}"><span style="width:${(progress.completed/progress.total)*100}%"></span></div>` : `<p class="locked-route-hint">${copy.requires}: ${prerequisite}</p>`}
+        <div class="journey-card-heading"><span class="culture-status">${String(index + 1).padStart(2, '0')} · ${statusLabel}</span><strong>${progress.completed}/${progress.total}</strong></div>
+        <h3>${profile.name[lang]}</h3>${progress.unlocked ? `<p>${profile.summary[lang]}</p><div class="journey-meter" aria-label="${progress.completed}/${progress.total} ${copy.memories}"><span style="width:${(progress.completed / progress.total) * 100}%"></span></div>` : `<p class="locked-route-hint">${copy.requires}: ${prerequisite}</p>`}
         ${progress.unlocked
           ? `<button class="btn-menu-primary culture-start-any" data-culture-id="${cultureId}">${primary}</button><button class="btn-menu-option culture-learn culture-journey-any" data-culture-id="${cultureId}">${copy.learn}</button>`
           : `<span class="route-lock" aria-hidden="true">🔒</span>`}
@@ -38,14 +45,27 @@ export class CultureSelectionModal {
     </div></div>`;
 
     this.container.querySelectorAll<HTMLButtonElement>('.culture-start-any').forEach((button) => button.addEventListener('click', () => {
-      const id = button.dataset.cultureId as CultureId; GameState.getInstance().selectCulture(id); AudioManager.getInstance().playClick(); this.close(); this.onStart(id);
+      const id = button.dataset.cultureId as CultureId;
+      GameState.getInstance().selectCulture(id);
+      AudioManager.getInstance().playClick();
+      this.close();
+      this.onStart(id);
     }));
+
     this.container.querySelectorAll<HTMLButtonElement>('.culture-journey-any').forEach((button) => button.addEventListener('click', () => {
-      const id = button.dataset.cultureId as CultureId; AudioManager.getInstance().playClick(); this.close();
-      if (id === 'mexica') this.onExploreMexica(); else if (id === 'inca') this.onExploreAndean(); else this.onExplorePeople(id);
+      const id = button.dataset.cultureId as CultureId;
+      AudioManager.getInstance().playClick();
+      this.close();
+      if (id === 'mexica') this.onExploreMexica();
+      else if (id === 'inca') this.onExploreAndean();
+      else this.onExplorePeople(id);
     }));
+
     this.container.querySelector('#culture-close')?.addEventListener('click', () => { this.close(); this.onBack(); });
     this.container.querySelector('#culture-back')?.addEventListener('click', () => { this.close(); this.onBack(); });
   }
-  public close(): void { this.container.innerHTML = ''; }
+
+  public close(): void {
+    this.container.innerHTML = '';
+  }
 }
