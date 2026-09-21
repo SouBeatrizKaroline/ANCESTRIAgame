@@ -48,13 +48,24 @@ const chapters = [
 
 export class MexicaJourneyModal {
   private chapterIndex = 0;
+  private optionOrders = new Map<number, number[]>();
 
   constructor(private container: HTMLElement, private onBack: () => void) {}
 
   public show(): void {
+    this.optionOrders.clear();
     const saved = Number(localStorage.getItem(PROGRESS_KEY) || 0);
     this.chapterIndex = Math.min(Math.max(saved, 0), chapters.length - 1);
     this.renderOverview(saved);
+  }
+
+  private optionOrder(): number[] {
+    if (!this.optionOrders.has(this.chapterIndex)) {
+      const order = chapters[this.chapterIndex].options.map((_, index) => index);
+      for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+      this.optionOrders.set(this.chapterIndex, order);
+    }
+    return this.optionOrders.get(this.chapterIndex)!;
   }
 
   private renderOverview(saved: number): void {
@@ -83,7 +94,7 @@ export class MexicaJourneyModal {
             <section class="mexica-activity">
               <span class="badge">ACTIVIDAD DE MEMORIA</span>
               <h3>${chapter.question}</h3>
-              <div class="mexica-options">${chapter.options.map((option, index) => `<button data-option="${index}">${option}</button>`).join('')}</div>
+              <div class="mexica-options">${this.optionOrder().map((originalIndex) => `<button data-option="${originalIndex}">${chapter.options[originalIndex]}</button>`).join('')}</div>
               <p class="mexica-feedback" aria-live="polite">${feedback}</p>
             </section>
           </div>
